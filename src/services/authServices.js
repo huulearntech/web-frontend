@@ -23,7 +23,7 @@ const activateAccount = async (token) => {
 
 const getUserData = async () => {
   try {
-    const response = await axiosInstance.get('/auth/user');
+    const response = await axiosInstance.get('/auth/get-user-data');
     return response.data;
   } catch (error) {
     console.error('Error fetching user data:', error);

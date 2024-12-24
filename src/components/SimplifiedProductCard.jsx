@@ -1,5 +1,5 @@
 import React from 'react';
-import { Rate, Button } from 'antd';
+import { Rate } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { FaBuilding as AccommodationIcon } from 'react-icons/fa';
 import { PiMapPinFill as LocationIcon } from 'react-icons/pi';
@@ -13,7 +13,7 @@ const SimplifiedProductCard = ({ product }) => {
   const cardDescription = 'flex flex-col flex-grow items-start h-full space-y-2';
 
   return (
-    <div className={cardWrapper} onClick={() => console.log('clicked')}>
+    <div className={cardWrapper} onClick={() => navigate(`/product/${product.id}`)}>
       <img alt={product.name} src={product.images? product.images[0] : null} className={cardImage} />
       <div className={cardContent}>
         <div className={cardDescription}>

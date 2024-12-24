@@ -23,8 +23,8 @@ const AuthModal = ({ isOpen, onClose, mode, setMode }) => {
   const handleSignIn = async (values) => {
     setLoading(true);
     try {
-      const response = await signIn(values);
-      if (response) console.log('Đăng nhập thành công', response);
+      await signIn(values);
+      console.log('Đăng nhập thành công', response);
     } catch (error) {
       console.error('Đăng nhập thất bại', error);
     } finally {

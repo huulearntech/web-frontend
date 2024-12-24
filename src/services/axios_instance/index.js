@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const axiosInstance = axios.create({
-  baseURL: 'http://localhost:8080', // Replace with your API URL
+  baseURL: 'https://hotel-booking-v1-0.onrender.com', // Replace with your API URL
   timeout: 10000,
 });
 

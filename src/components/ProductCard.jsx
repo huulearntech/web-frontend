@@ -99,7 +99,7 @@ const ProductCard = ({ product, isListView, isLoading, isLiked }) => {
               type="primary"
               onClick={() => {
                 console.log('View product');
-                navigate(`/product-detail/${product.id}`);
+                navigate(`/product/${product.id}`);
               }}
             >
               Xem

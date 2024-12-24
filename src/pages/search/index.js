@@ -15,6 +15,7 @@ import ShowOnMapImage from '../../assets/images/show_on_map.svg';
 import mapMarkerIcon from '../../assets/images/map_marker.png';
 import noResult from '../../assets/images/no_result.webp';
 
+import hotelServices from "../../services/hotelServices";
 import searchServices from "../../services/searchServices";
 import withCommonLayout from "../../layouts_hoc/Common";
 
@@ -147,16 +148,12 @@ const SearchPage = () => {
     async function getResults() {
       setIsLoading(true);
       try {
-        const response = await searchServices.searchBySpec_Filter_Sort_Page(
+        const response = await hotelServices.getAvailableHotels(
           location,
           validCheckIn,
           validCheckOut,
           validAdults,
           validChildren,
-          validRooms,
-          filter,
-          sortBy,
-          currentPage
         );
         setSearchResults(response.data);
         setTotalResults(response.total);
@@ -262,7 +259,7 @@ const SearchPage = () => {
                         ))}
                       </div>
                       <Pagination
-                        pageSize={2}
+                        pageSize={6}
                         current={currentPage}
                         total={totalResults}
                         onChange={(page) => setCurrentPage(page)}

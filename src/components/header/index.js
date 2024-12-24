@@ -58,11 +58,10 @@ const Header = ({ onOpenAuthModal, isHeaderVisible }) => {
             <HeaderLogo className="h-10" />
           </Link>
 
-          <div className="hidden lg:flex space-x-6">
+          {/* <div className="hidden lg:flex space-x-6">
             <Link to={paths.home} className="hover:bg-gray-200 px-4 py-2 text-lg rounded-full hover:underline">Home</Link>
             <Link to={paths.search} className="hover:bg-gray-200 px-4 py-2 text-lg rounded-full hover:underline">Explore</Link>
-            <Link to={paths.partnershipRegister} className="flex items-center justify-center hover:text-blue-500 hover:underline">Trở thành đối tác của chúng tôi</Link>
-          </div>
+          </div> */}
 
           <div className="flex items-center space-x-6">
             {user ? (
@@ -72,6 +71,7 @@ const Header = ({ onOpenAuthModal, isHeaderVisible }) => {
               </>
             ) : (
               <>
+                <Link to={paths.partnershipRegister} className="flex items-center justify-center hover:text-blue-500 hover:underline">Trở thành đối tác của chúng tôi</Link>
                 <Button
                   onClick={() => onOpenAuthModal('signIn')}
                   className="bg-blue-500 text-white font-semibold hover:bg-blue-600"
