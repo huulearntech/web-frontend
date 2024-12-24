@@ -1,16 +1,16 @@
 import React, { useState } from 'react';
-import { Steps } from 'antd';
+import { Steps, Form } from 'antd';
 import PartnerEmailFormStep from './PartnerEmailFormStep';
 import AccommodationFormStep from './AccommodationFormStep';
-
-
 
 const PartnershipRegister = () => {
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({});
+  const [form] = Form.useForm();
 
   const handleEmailPasswordSubmit = (values) => {
-    setFormData(values);
+    const { confirmPassword, ...filteredValues } = values;
+    setFormData({ ...formData, ...filteredValues });
     setStep(2);
   };
 
@@ -22,11 +22,11 @@ const PartnershipRegister = () => {
   const renderContent = () => {
     switch (step) {
       case 1:
-        return <PartnerEmailFormStep onSubmit={handleEmailPasswordSubmit} />;
+        return <PartnerEmailFormStep form={form} onSubmit={handleEmailPasswordSubmit} formData={formData} />;
       case 2:
-        return <AccommodationFormStep onSubmit={handleAccommodationSubmit} onBack={() => setStep(1)}/>;
+        return <AccommodationFormStep form={form} onSubmit={handleAccommodationSubmit} onBack={() => setStep(1)} formData={formData} />;
       default:
-        return <PartnerEmailFormStep onSubmit={handleEmailPasswordSubmit} />;
+        return <PartnerEmailFormStep form={form} onSubmit={handleEmailPasswordSubmit} formData={formData} />;
     }
   };
 

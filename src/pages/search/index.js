@@ -1,20 +1,21 @@
 import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { useLocation } from "react-router-dom";
 import { Pagination, Button, Divider, Spin } from "antd";
+import { LeftOutlined } from '@ant-design/icons';
+import dayjs from "dayjs";
+
 import SearchBar from "../../components/search_bar";
 import Filter from "../../components/filter/index1";
 import Map from "./map";
 import ProductCard from "../../components/ProductCard";
 import SearchStatus from "./SearchStatus";
 
-import { LeftOutlined } from '@ant-design/icons';
 import ShowOnMapImage from '../../assets/images/show_on_map.svg';
 import mapMarkerIcon from '../../assets/images/map_marker.png';
 import noResult from '../../assets/images/no_result.webp';
 
 import searchServices from "../../services/searchServices";
-
-import dayjs from "dayjs";
+import withCommonLayout from "../../layouts_hoc/Common";
 
 const gMinPrice = 100_000;
 const gMaxPrice = 20_000_000;
@@ -42,6 +43,7 @@ const SearchPage = () => {
 
   const [isLoading, setIsLoading] = useState(false);
   const [searchResults, setSearchResults] = useState([]);
+  const [statusLocation, setStatusLocation] = useState('');
   const totalResults = 20;
 
   const [location, setLocation] = useState('');
@@ -126,6 +128,7 @@ const SearchPage = () => {
     const validChildren = isNaN(children) ? 0 : children;
     const validRooms = isNaN(rooms) ? 1 : rooms;
 
+    setStatusLocation(location);
     setLocation(location);
     setCheckInOut([validCheckIn, validCheckOut]);
     setGuestsAndRooms({ adults: validAdults, children: validChildren, rooms: validRooms });
@@ -206,7 +209,7 @@ const SearchPage = () => {
 
             <div className="flex flex-col w-full items-center space-y-4">
               <SearchStatus
-                location={location}
+                location={statusLocation}
                 found={searchResults.length}
                 onSort={(value) => console.log(value)}
                 isListView={isListView}
@@ -254,4 +257,4 @@ const SearchPage = () => {
   );
 };
 
-export default SearchPage;
+export default withCommonLayout(SearchPage);

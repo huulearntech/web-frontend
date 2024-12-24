@@ -1,72 +1,51 @@
 import React from 'react';
-import { Form, Input, Button, InputNumber } from 'antd';
+import { Tabs, Table, Form, Input, Button } from 'antd';
 import XlsxHandler from './XlsxHandler';
 
 const AddRoom = () => {
-  const [form] = Form.useForm();
-
-  const onFinish = (values) => {
-    console.log('Success:', values);
-  };
-
-  const onFinishFailed = (errorInfo) => {
-    console.log('Failed:', errorInfo);
-  };
+  const { TabPane } = Tabs;
+  
+  const pendingRooms = [
+    { key: '1', roomNumber: '101', roomType: 'Single', price: '$100', availability: 'Available' },
+    { key: '2', roomNumber: '102', roomType: 'Double', price: '$150', availability: 'Occupied' },
+  ];
 
   return (
-    <div className="bg-white p-8 rounded shadow-md w-full max-w-md">
-      {/* <h2 className="text-2xl font-bold mb-6 text-center">Add New Room</h2>
-      <Form
-        form={form}
-        name="addRoom"
-        layout="vertical"
-        onFinish={onFinish}
-        onFinishFailed={onFinishFailed}
-      >
-        <Form.Item
-          label="Room Number"
-          name="roomNumber"
-          rules={[{ required: true, message: 'Please input the room number!' }]}
-        >
-          <Input />
-        </Form.Item>
-
-        <Form.Item
-          label="Room Type"
-          name="roomType"
-          rules={[{ required: true, message: 'Please input the room type!' }]}
-        >
-          <Input />
-        </Form.Item>
-
-        <Form.Item
-          label="Price"
-          name="price"
-          rules={[{ required: true, message: 'Please input the price!' }]}
-        >
-          <InputNumber
-            min={0}
-            formatter={value => `$ ${value}`}
-            parser={value => value.replace('$', '')}
-            className="w-full"
-          />
-        </Form.Item>
-
-        <Form.Item
-          label="Description"
-          name="description"
-          rules={[{ required: true, message: 'Please input the description!' }]}
-        >
-          <Input.TextArea rows={4} />
-        </Form.Item>
-
-        <Form.Item>
-          <Button type="primary" htmlType="submit" className="w-full">
-            Add Room
-          </Button>
-        </Form.Item>
-      </Form> */}
-      <XlsxHandler />
+    <div className="bg-white p-8 rounded shadow-md w-full flex">
+      <div className="w-1/4 pr-4">
+        <Tabs defaultActiveKey="1">
+          <TabPane tab="Import Room by Form" key="1">
+            <Form layout="vertical">
+              <Form.Item label="Room Number" name="roomNumber">
+                <Input />
+              </Form.Item>
+              <Form.Item label="Room Type" name="roomType">
+                <Input />
+              </Form.Item>
+              <Form.Item label="Price" name="price">
+                <Input />
+              </Form.Item>
+              <Form.Item label="Availability" name="availability">
+                <Input />
+              </Form.Item>
+              <Form.Item>
+                <Button type="primary" htmlType="submit">Submit</Button>
+              </Form.Item>
+            </Form>
+          </TabPane>
+          <TabPane tab="Import Room by Excel File" key="2">
+            <XlsxHandler />
+          </TabPane>
+        </Tabs>
+      </div>
+      <div className="w-3/4 pl-4">
+        <Table dataSource={pendingRooms} columns={[
+          { title: 'Room Number', dataIndex: 'roomNumber', key: 'roomNumber' },
+          { title: 'Room Type', dataIndex: 'roomType', key: 'roomType' },
+          { title: 'Price', dataIndex: 'price', key: 'price' },
+          { title: 'Availability', dataIndex: 'availability', key: 'availability' },
+        ]} />
+      </div>
     </div>
   );
 };

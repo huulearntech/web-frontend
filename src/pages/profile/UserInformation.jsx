@@ -1,27 +1,33 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Input, Button, Form, notification } from 'antd';
 import { EditOutlined, CheckOutlined } from '@ant-design/icons';
-import { fake_user } from '../../fake_data';
 
-const UserInformation = () => {
-  const [user, setUser] = useState(fake_user);
-  const [editing, setEditing] = useState(false);
+const UserInformation = ({ user, setUser, editing, setEditing, handleSave, handleCancel }) => {
+  const [form] = Form.useForm();
+  const [localUser, setLocalUser] = useState(user);
+
+  useEffect(() => {
+    setLocalUser(user);
+    form.setFieldsValue(user);
+  }, [user, form]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setUser((prev) => ({ ...prev, [name]: value }));
+    setLocalUser((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSave = () => {
-    setEditing(false);
-    notification.success({
-      message: 'Cập nhật thông tin thành công!',
-      placement: 'bottomRight'
-    });
+  const onSave = () => {
+    handleSave(localUser);
+  };
+
+  const onCancel = () => {
+    setLocalUser(user);
+    form.resetFields();
+    handleCancel();
   };
 
   return (
-    <div className="w-full flex justify-center">
+    <div className="flex justify-center p-6">
       <div className="w-full max-w-xl">
         <div className="flex h-16 justify-between items-center mb-4">
           <h2 className="text-2xl font-semibold">Thông tin cá nhân</h2>
@@ -38,8 +44,9 @@ const UserInformation = () => {
         </div>
         <Form
           layout="vertical"
-          onFinish={handleSave}
-          initialValues={user}
+          form={form}
+          onFinish={onSave}
+          initialValues={localUser}
           className="space-y-6"
         >
           <Form.Item
@@ -49,7 +56,7 @@ const UserInformation = () => {
           >
             <Input
               name="fullName"
-              value={user.fullName}
+              value={localUser.fullName}
               onChange={handleChange}
               readOnly={!editing}
               size='large'
@@ -62,7 +69,7 @@ const UserInformation = () => {
           >
             <Input
               name="phone"
-              value={user.phone}
+              value={localUser.phone}
               onChange={handleChange}
               readOnly={!editing}
               size='large'
@@ -75,7 +82,7 @@ const UserInformation = () => {
           >
             <Input
               name="email"
-              value={user.email}
+              value={localUser.email}
               onChange={handleChange}
               readOnly={!editing}
               size='large'
@@ -85,7 +92,7 @@ const UserInformation = () => {
             <div className="flex justify-end space-x-4">
               <Button
                 type="default"
-                onClick={() => setEditing(false)}
+                onClick={onCancel}
                 className="flex items-center"
               >
                 Hủy

@@ -1,54 +1,89 @@
 import React, { useState } from 'react';
 
-import AccountManagement from './AccountManagement';
-import UserInformation from './UserInformation';
-import { Layout, Menu } from 'antd';
+import { Divider, Layout, Menu, notification } from 'antd';
 import { UserOutlined, SettingOutlined } from '@ant-design/icons';
 
-const { Header, Sider, Content } = Layout;
+import AccountManagement from './AccountManagement';
+import UserInformation from './UserInformation';
+
+import withCommonLayout from '../../layouts_hoc/Common';
+
+import { fake_user } from '../../fake_data'
 
 const ProfilePage = () => {
   const [selectedMenu, setSelectedMenu] = useState('userInformation');
 
+  const [user, setUser] = useState(fake_user);
+  const [editing, setEditing] = useState(false);
+
+  const handleSave = (updatedUser) => {
+    setUser(updatedUser);
+    setEditing(false);
+    notification.success({
+      message: 'Cập nhật thông tin thành công!',
+    });
+  };
+
+  const handleCancel = () => {
+    setEditing(false);
+  };
+
   const renderContent = () => {
     switch (selectedMenu) {
       case 'userInformation':
-        return <UserInformation />;
+        return <UserInformation
+          user={user}
+          setUser={setUser}
+          editing={editing}
+          setEditing={setEditing}
+          handleSave={handleSave}
+          handleCancel={handleCancel}
+        />;
       case 'accountManagement':
         return <AccountManagement />;
       default:
-        return <UserInformation />;
+        return <UserInformation
+          user={user}
+          setUser={setUser}
+          editing={editing}
+          setEditing={setEditing}
+          handleSave={handleSave}
+          handleCancel={handleCancel}
+        />;
     }
   };
 
   return (
-    <Layout className="min-h-screen">
-      <Header className="bg-gray-800 text-white flex items-center">
-        <div className="text-xl font-bold">Profile Management</div>
-      </Header>
-      <Layout>
-        <Sider width={300} className="bg-gray-100">
-          <Menu
-            mode="inline"
-            selectedKeys={[selectedMenu]}
-            onClick={({ key }) => setSelectedMenu(key)}
-            style={{ height: '100%', borderRight: 0 }}
-          >
-            <Menu.Item key="userInformation" icon={<UserOutlined />} style={{ padding: '16px', fontSize: '16px' }}>
-              User Information
-            </Menu.Item>
-            <Menu.Item key="accountManagement" icon={<SettingOutlined />} style={{ padding: '16px', fontSize: '16px' }}>
-              Account Management
-            </Menu.Item>
-          </Menu>
-        </Sider>
-        <Layout style={{ padding: '0 24px 24px' }}>
-          <Content className="p-6 bg-white">
-            {renderContent()}
-          </Content>
+    <div className="w-full min-h-screen flex justify-center items-center">
+      <Layout className="w-full max-w-7xl min-h-screen">
+        <Layout.Header className="bg-gray-800 text-white flex items-center">
+          <div className="text-xl font-bold">Profile Management</div>
+        </Layout.Header>
+        <Layout>
+          <Layout.Sider width={300}>
+            <Menu
+              mode="inline"
+              selectedKeys={[selectedMenu]}
+              onClick={({ key }) => setSelectedMenu(key)}
+              style={{ height: '100%', borderRight: 0 }}
+            >
+              <Menu.Item key="userInformation" icon={<UserOutlined style={{ fontSize: '20px' }} />} style={{ fontSize: '16px', fontWeight: 600 }}>
+                User Information
+              </Menu.Item>
+              <Menu.Item key="accountManagement" icon={<SettingOutlined style={{ fontSize: '20px' }} />} style={{ fontSize: '16px', fontWeight: 600 }}>
+                Account Management
+              </Menu.Item>
+            </Menu>
+          </Layout.Sider>
+          <Divider type="vertical" style={{ height: '100%' }} />
+          <Layout>
+            <Layout.Content className="bg-white">
+              {renderContent()}
+            </Layout.Content>
+          </Layout>
         </Layout>
       </Layout>
-    </Layout>
+    </div>
   );
 };
 

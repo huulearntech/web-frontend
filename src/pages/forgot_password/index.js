@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { notification, Steps } from 'antd';
+
 import EmailStep from './EmailStep';
 import OtpStep from './OtpStep';
 import SetNewPasswordStep from './SetNewPasswordStep';
+
 import paths from '../../router/paths';
 import userServices from '../../services/userServices'; // Import user services
 

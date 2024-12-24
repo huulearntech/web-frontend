@@ -31,7 +31,7 @@ const ProductCard = ({ product, isListView, isLoading, isLiked }) => {
   };
 
   const cardWrapper = isListView ? 'relative flex flex-row w-full max-w-6xl mx-auto bg-white shadow-lg rounded-lg overflow-hidden duration-300 hover:shadow-blue-300' : 'relative w-full mx-auto bg-white shadow-lg rounded-lg overflow-hidden duration-300 hover:shadow-blue-300';
-  const cardImage = isListView ? 'object-cover h-full w-72' : 'object-cover h-48 w-full';
+  const cardImage = isListView ? 'object-cover h-full w-72 bg-gray-300' : 'object-cover h-48 w-full bg-gray-300';
   const cardContent = isListView ? 'flex flex-row p-4 w-full space-x-4 divide-x divide-gray-200' : 'flex flex-col p-4 w-full space-y-4 divide-y divide-gray-200';
   const cardDescription = isListView ? 'flex flex-col w-full space-y-4' : 'h-48 flex flex-col space-y-4';
   const cardPricing = isListView ? 'flex flex-col w-60 justify-end items-end border-l border-gray-200 space-y-6' : 'h-12 flex flex-row justify-between items-end';
@@ -106,13 +106,13 @@ const ProductCard = ({ product, isListView, isLoading, isLiked }) => {
             </Button>
           </div>
         </div>
-        <Button
+        {/* <Button
           className={"absolute top-2 right-2 flex items-center justify-center w-8 h-8 rounded-full"}
           onClick={handleLike}
           loading={false}
           icon={isLiked ? <HeartFilled className='text-red-500' /> : <HeartOutlined />}
         >
-        </Button>
+        </Button> */}
       </div>
     </Skeleton>
   );

@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Form, Input, Button, Select, Row, Col } from 'antd';
 
-const AccommodationFormStep = ({ form, onSubmit, onBack }) => {
-  // const [form] = Form.useForm();
+const AccommodationFormStep = ({ form, onSubmit, onBack, formData }) => {
+  useEffect(() => {
+    form.setFieldsValue(formData);
+  }, [form, formData]);
 
   const handleSubmit = (values) => {
     onSubmit(values);

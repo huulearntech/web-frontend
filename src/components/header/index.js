@@ -5,6 +5,7 @@ import { Button, Menu, Badge, Avatar, Dropdown } from 'antd';
 import { ShoppingCartOutlined, LogoutOutlined, UserOutlined } from '@ant-design/icons';
 import { ReactComponent as HeaderLogo } from '../../assets/icons/logo_header.svg';
 import SignOutModal from './SignOutModal'
+import paths from '../../router/paths'
 
 
 const CartButton = ({ itemCount }) => (
@@ -58,9 +59,9 @@ const Header = ({ onOpenAuthModal, isHeaderVisible }) => {
           </Link>
 
           <div className="hidden lg:flex space-x-6">
-            <Link to="/" className="hover:bg-gray-200 px-4 py-2 text-lg rounded-full hover:underline">Home</Link>
-            <Link to="/search" className="hover:bg-gray-200 px-4 py-2 text-lg rounded-full hover:underline">Explore</Link>
-            <Link to="/" className="hover:bg-gray-200 px-4 py-2 text-lg rounded-full hover:underline">Hop tac voi chung toi</Link>
+            <Link to={paths.home} className="hover:bg-gray-200 px-4 py-2 text-lg rounded-full hover:underline">Home</Link>
+            <Link to={paths.search} className="hover:bg-gray-200 px-4 py-2 text-lg rounded-full hover:underline">Explore</Link>
+            <Link to={paths.partnershipRegister} className="flex items-center justify-center hover:text-blue-500 hover:underline">Trở thành đối tác của chúng tôi</Link>
           </div>
 
           <div className="flex items-center space-x-6">

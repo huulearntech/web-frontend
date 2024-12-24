@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import RoomManagement from './RoomManagement';
-import Statistics from './Statistics';
-import AddRoom from './AddRoom';
 import { Layout, Menu } from 'antd';
 import { AppstoreOutlined } from '@ant-design/icons';
 
+import RoomManagement from './RoomManagement';
+import Statistics from './Statistics';
+import AddRoom from './AddRoom';
+import BookingManagement from './BookingManagement';
 
 const { Header, Sider, Content } = Layout;
 
@@ -21,6 +22,9 @@ const HotelManager = () => {
       case 'addRoom':
         return <AddRoom />;
 
+      case 'bookingManagement':
+        return <BookingManagement />;
+
       default:
         return <RoomManagement />;
     }
@@ -32,7 +36,7 @@ const HotelManager = () => {
         <div className="text-xl font-bold">Hotel Management System</div>
       </Header>
       <Layout>
-        <Sider width={200} className="bg-gray-100">
+        <Sider width={200}>
           <Menu
             mode="inline"
             selectedKeys={[selectedMenu]}
@@ -47,6 +51,9 @@ const HotelManager = () => {
             </Menu.Item>
             <Menu.Item key="statistics" icon={<AppstoreOutlined />}>
               Statistics
+            </Menu.Item>
+            <Menu.Item key="bookingManagement" icon={<AppstoreOutlined />}>
+              Booking Management
             </Menu.Item>
 
             {/* Add more Menu.Item here for other details */}

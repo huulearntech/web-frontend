@@ -4,18 +4,17 @@ import { useNavigate } from 'react-router-dom';
 import { FaBuilding as AccommodationIcon } from 'react-icons/fa';
 import { PiMapPinFill as LocationIcon } from 'react-icons/pi';
 
-const MapProductCard = ({ product }) => {
+const SimplifiedProductCard = ({ product }) => {
   const navigate = useNavigate();
 
-  const cardWrapper = 'w-60 mx-auto shadow-lg rounded-lg overflow-hidden duration-300 hover:shadow-blue-300';
-  const cardImage = 'object-cover h-48 w-full';
-  const cardContent = 'flex flex-col p-4 w-full space-y-4 divide-y divide-gray-200';
-  const cardDescription = 'flex flex-col space-y-2';
-  const cardPricing = 'h-12 flex flex-row justify-between items-center';
+  const cardWrapper = 'flex flex-col w-60 h-96 bg-white shadow-lg rounded-lg overflow-hidden duration-300 hover:shadow-blue-300 cursor-pointer';
+  const cardImage = 'object-cover h-48 bg-gray-300 w-full';
+  const cardContent = 'flex flex-col p-4 w-full h-full justify-between'; // Updated
+  const cardDescription = 'flex flex-col flex-grow items-start h-full space-y-2';
 
   return (
-    <div className={cardWrapper}>
-      <img alt={product.name} src={product.images[0]} className={cardImage} />
+    <div className={cardWrapper} onClick={() => console.log('clicked')}>
+      <img alt={product.name} src={product.images? product.images[0] : null} className={cardImage} />
       <div className={cardContent}>
         <div className={cardDescription}>
           <h2 className="font-bold line-clamp-2 text-sm">{product.name}</h2>
@@ -37,20 +36,10 @@ const MapProductCard = ({ product }) => {
             </div>
           </div>
         </div>
-        <div className={cardPricing}>
-          <p className='text-xl font-bold text-orange-600'>${product.price}</p>
-          <Button
-            type="primary"
-            onClick={() => {
-              navigate(`/product-detail/${product.id}`, { state: { product } });
-            }}
-          >
-            Xem
-          </Button>
-        </div>
+        <span className='self-start text-lg font-semibold text-orange-600'>${product.price}</span>
       </div>
     </div>
   );
 };
 
-export default MapProductCard;
+export default SimplifiedProductCard;

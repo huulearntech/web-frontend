@@ -58,9 +58,23 @@ const getLocationsContaining = async (query, amount = 5) => {
   return fake_locations.filter(location => location.name.toLowerCase().includes(query.toLowerCase())).slice(0, amount);
 }
 
+const getFavoriteHotelsAtLocation = async (location) => {
+  // try {
+  //   const response = await axiosInstance.get('/search', {
+  //     params
+  //   });
+  //   return response.data;
+  // } catch (error) {
+  //   console.error("Error searching:", error);
+  //   throw error.response?.data || error.message;
+  // }
+  return fake_products;
+};
+
 export default {
   searchBySpec,
   searchBySearchList,
   searchByMapBounds,
-  getLocationsContaining
+  getLocationsContaining,
+  getFavoriteHotelsAtLocation
 };

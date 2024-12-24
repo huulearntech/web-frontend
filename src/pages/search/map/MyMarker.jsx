@@ -4,7 +4,7 @@ import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import './Map.css';
 
-import MapProductCard from './MapProductCard';
+import SimplifiedProductCard from '../../../components/SimplifiedProductCard';
 
 const createCustomIcon = (price, isSelected, isVisited) => {
   const iconHtml = isSelected
@@ -56,7 +56,7 @@ const MyMarker = ({ hotel, isSelected, isVisited, onClick, onClose }) => {
     >
       { isSelected &&
         <Popup eventHandlers={{ remove: () => onClose() }} closeButton={false}>
-            <MapProductCard product={hotel}/>
+            <SimplifiedProductCard product={hotel}/>
         </Popup>
       }
     </Marker>

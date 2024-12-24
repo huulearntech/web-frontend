@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Form, Input, Button } from 'antd';
 
-const PartnerEmailFormStep = ({ form, onSubmit }) => {
-  // const [form] = Form.useForm();
+const PartnerEmailFormStep = ({ form, onSubmit, formData }) => {
+  useEffect(() => {
+    form.setFieldsValue(formData);
+  }, [form, formData]);
 
   const handleSubmit = (values) => {
     onSubmit(values);
@@ -24,7 +26,7 @@ const PartnerEmailFormStep = ({ form, onSubmit }) => {
         <Input.Password placeholder="Password" />
       </Form.Item>
       <Form.Item
-        name="confirm"
+        name="confirmPassword"
         dependencies={['password']}
         hasFeedback
         rules={[
