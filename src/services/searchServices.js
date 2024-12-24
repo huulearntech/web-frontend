@@ -1,6 +1,6 @@
 import axiosInstance from "./axios_instance";
 
-import { fake_locations } from "../fake_data";
+import { fake_locations, fake_products } from "../fake_data";
 
 const searchBySpec = async (location, checkInDate, checkOutDate, adults, children, rooms) => {
   // try {
@@ -19,7 +19,7 @@ const searchBySpec = async (location, checkInDate, checkOutDate, adults, childre
   //   console.error("Error searching:", error);
   //   throw error.response?.data || error.message;
   // }
-  console.log('Searching for:', location, checkInDate, checkOutDate, adults, children, rooms, 'from searchServices.js');
+  return fake_products;
 }
 
 const searchBySearchList = async (searchList) => {
@@ -31,6 +31,17 @@ const searchBySearchList = async (searchList) => {
     throw error.response?.data || error.message;
   }
 };
+
+const searchByMapBounds = async (mapBounds) => {
+  // try {
+  //   const response = await axiosInstance.post('/search', mapBounds);
+  //   return response.data;
+  // } catch (error) {
+  //   console.error("Error searching:", error);
+  //   throw error.response?.data || error.message;
+  // }
+  return fake_products;
+}
 
 const getLocationsContaining = async (query, amount = 5) => {
   // try {

@@ -6,7 +6,7 @@ import paths from './router/paths';
 import CommonLayout from './layouts/common';
 import HomePage from './pages/home';
 import ProfilePage from './pages/profile';
-import SearchPage from './pages/search/index copy';
+import SearchPage from './pages/search';
 import ForgotPassword from './pages/forgot_password';
 import { AuthProvider, AuthRequired } from './context/AuthContext';
 import HotelManager from './pages/hotel_manager';

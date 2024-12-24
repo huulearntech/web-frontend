@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
-import { Input, Button, Form } from 'antd';
+import { Input, Button, Form, notification } from 'antd';
 import { EditOutlined, CheckOutlined } from '@ant-design/icons';
-import { toast } from 'react-toastify';
 import { fake_user } from '../../fake_data';
 
 const UserInformation = () => {
@@ -15,7 +14,10 @@ const UserInformation = () => {
 
   const handleSave = () => {
     setEditing(false);
-    toast.success("Saved!");
+    notification.success({
+      message: 'Cập nhật thông tin thành công!',
+      placement: 'bottomRight'
+    });
   };
 
   return (

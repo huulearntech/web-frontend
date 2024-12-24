@@ -129,53 +129,33 @@ export const fake_user = {
 
 export const fake_locations = [
   {
-    id: 1,
     name: "Hà Nội",
-    count: 123
   },
   {
-    id: 2,
     name: "Hồ Chí Minh",
-    count: 123
   },
   {
-    id: 3,
     name: "Đà Nẵng",
-    count: 123
   },
   {
-    id: 4,
     name: "Hải Phòng",
-    count: 123
   },
   {
-    id: 5,
     name: "Cần Thơ",
-    count: 123
   },
   {
-    id: 6,
     name: "Vũng Tàu",
-    count: 123
   },
   {
-    id: 7,
     name: "Quảng Ninh",
-    count: 123
   },
   {
-    id: 8,
     name: "Nha Trang",
-    count: 123
   },
   {
-    id: 9,
     name: "Đà Lạt",
-    count: 123
   },
   {
-    id: 10,
     name: "Phú Quốc",
-    count: 123
   }
 ];

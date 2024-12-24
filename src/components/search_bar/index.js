@@ -23,48 +23,27 @@ const SearchButton = React.memo(({ handleSubmit, isLoading }) => {
   );
 });
 
-const SearchBar = ({ spec, setSpec }) => {
+const SearchBar = ({ location, checkInOut, guestsAndRooms, setLocation, setCheckInOut, setGuestsAndRooms }) => {
   const navigate = useNavigate();
-  const { location, checkInOut, guestsAndRooms } = spec;
+  console.log('SearchBar location:', location);
   const [isLoading, setIsLoading] = useState(false);
-
-  const setLocation = (newLocation) => {
-    setSpec((prevSpec) => ({ ...prevSpec, location: newLocation }));
-  };
-
-  const setCheckInOut = (newCheckInOut) => {
-    setSpec((prevSpec) => ({ ...prevSpec, checkInOut: newCheckInOut }));
-  };
-
-  const setGuestsAndRooms = (newGuestsAndRooms) => {
-    setSpec((prevSpec) => ({ ...prevSpec, guestsAndRooms: newGuestsAndRooms }));
-  };
 
   const handleSubmit = useCallback((e) => {
     e.preventDefault();
-    setIsLoading(true);
-    const { checkInDate, checkOutDate } = checkInOut.reduce((acc, date, index) => {
-      if (index === 0) {
-        acc.checkInDate = date.format('YYYY-MM-DD');
-      } else {
-        acc.checkOutDate = date.format('YYYY-MM-DD');;
-      }
-      return acc;
-    }, {});
+    const checkInOutDate = checkInOut.map(date => date ? date.toDate() : null);
 
-    // Replace with actual fetch logic
-    // searchServices.searchBySpec(location, checkInDate, checkOutDate, guestsAndRooms.adults, guestsAndRooms.children, guestsAndRooms.rooms);
     const queryParams = new URLSearchParams({
       location: location,
-      checkInDate: checkInDate,
-      checkOutDate: checkOutDate,
+      checkIn: checkInOutDate[0]? checkInOutDate[0].toISOString() : '',
+      checkOut: checkInOutDate[1]? checkInOutDate[1].toISOString() : '',
       adults: guestsAndRooms.adults,
       children: guestsAndRooms.children,
-      rooms: guestsAndRooms.rooms,
+      rooms: guestsAndRooms.rooms
     }).toString();
 
-    setIsLoading(false);
     navigate(`/search?${queryParams}`);
+    // navigate(`/search?location=${location}&checkIn=${checkInOutDate[0].toISOString()}&checkOut=${checkInOutDate[1].toISOString()}&adults=${guestsAndRooms.adults}&children=${guestsAndRooms.children}&rooms=${guestsAndRooms.rooms}`);
+
   }, [location, checkInOut, guestsAndRooms, navigate]);
 
   return (
