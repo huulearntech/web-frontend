@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { Marker, Popup } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import '../Map.css';
+import './Map.css';
 
 import MapProductCard from './MapProductCard';
 

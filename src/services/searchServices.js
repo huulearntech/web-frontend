@@ -61,5 +61,6 @@ const getLocationsContaining = async (query, amount = 5) => {
 export default {
   searchBySpec,
   searchBySearchList,
+  searchByMapBounds,
   getLocationsContaining
 };

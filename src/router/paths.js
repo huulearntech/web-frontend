@@ -8,6 +8,7 @@ const paths = {
   search: '/search',
   forgotPassword: '/forgot-password',
   hotelManager: '/hotel-manager',
+  partnershipRegister: '/partnership-register',
 };
 
 export default paths;

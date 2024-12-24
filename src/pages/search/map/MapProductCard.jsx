@@ -1,5 +1,5 @@
 import React from 'react';
-import { Rate, Button, Skeleton } from 'antd';
+import { Rate, Button } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { FaBuilding as AccommodationIcon } from 'react-icons/fa';
 import { PiMapPinFill as LocationIcon } from 'react-icons/pi';

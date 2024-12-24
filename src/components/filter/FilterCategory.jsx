@@ -5,7 +5,7 @@ const FilterCategory = ({ name, characteristics, selectedCharacteristics, onChan
   return (
     <Collapse
       expandIcon={({ isActive }) => <DownOutlined rotate={isActive ? 180 : 0} />}
-      className="bg-white border border-gray-300 rounded-lg"
+      className="w-full bg-white border border-gray-300 rounded-lg"
       defaultActiveKey={[name]}
     >
       <Collapse.Panel header={<span className="font-semibold">{name}</span>} key={name}>

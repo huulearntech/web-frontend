@@ -1,41 +1,19 @@
-import React, { useEffect, useState } from 'react';
-import { MapContainer, TileLayer } from 'react-leaflet';
-import { useMap } from 'react-leaflet';
-import 'leaflet/dist/leaflet.css';
-import '../Map.css';
-import MyMarker from './MyMarker';
+import React, { useState, useEffect } from 'react';
+import { MapContainer, TileLayer, useMapEvents } from 'react-leaflet';
+import MyMarker from './MyMarker'; // Assuming you have a MyMarker component
 
-import searchServices from '../../../services/searchServices';
-
-
-const MapComponent = ({ setMapBounds }) => {
-  const map = useMap();
-
-  useEffect(() => {
-    const handleMoveEnd = () => {
-      const bounds = map.getBounds();
-      setMapBounds(bounds);
-    };
-
-    map.on('moveend', handleMoveEnd);
-
-    // Cleanup the event listener on component unmount
-    return () => {
-      map.off('moveend', handleMoveEnd);
-    };
-  }, [map, setMapBounds]);
-
-  return null;
-};
-
-const Map = ({ center, zoom=13, results }) => {
+const Map = ({ center, zoom = 13, results, fetchHotelsWithinBounds }) => {
   const [selectedMarker, setSelectedMarker] = useState(null);
   const [visitedMarkers, setVisitedMarkers] = useState(new Set());
   const [mapBounds, setMapBounds] = useState(null);
+  
 
   useEffect(() => {
+    if (mapBounds) {
+      fetchHotelsWithinBounds(mapBounds);
+    }
     console.log('Map bounds:', mapBounds);
-  } , [mapBounds]);
+  }, [mapBounds, fetchHotelsWithinBounds]);
 
   const handleMarkerClick = (markerId) => {
     setSelectedMarker((prevSelectedMarker) => {
@@ -61,7 +39,7 @@ const Map = ({ center, zoom=13, results }) => {
       zoom={zoom}
       style={{ height: '100vh', width: '100%' }}
     >
-      <MapComponent setMapBounds={setMapBounds} />
+      <MapEvents setMapBounds={setMapBounds} />
       <TileLayer
         url='https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png'
       />
@@ -81,6 +59,20 @@ const Map = ({ center, zoom=13, results }) => {
       })}
     </MapContainer>
   );
+};
+
+const MapEvents = ({ setMapBounds }) => {
+  useMapEvents({
+    moveend: (event) => {
+      const bounds = event.target.getBounds();
+      setMapBounds(bounds);
+    },
+    zoomend: (event) => {
+      const bounds = event.target.getBounds();
+      setMapBounds(bounds);
+    },
+  });
+  return null;
 };
 
 export default Map;

@@ -26,7 +26,6 @@ const SearchButton = React.memo(({ handleSubmit, isLoading }) => {
 const SearchBar = ({ location, checkInOut, guestsAndRooms, setLocation, setCheckInOut, setGuestsAndRooms }) => {
   const navigate = useNavigate();
   console.log('SearchBar location:', location);
-  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = useCallback((e) => {
     e.preventDefault();
@@ -51,9 +50,9 @@ const SearchBar = ({ location, checkInOut, guestsAndRooms, setLocation, setCheck
       <Location location={location} setLocation={setLocation} />
       <InoutDate checkInOut={checkInOut} setCheckInOut={setCheckInOut} />
       <GuestsAndRooms guestsAndRooms={guestsAndRooms} setGuestsAndRooms={setGuestsAndRooms} />
-      <SearchButton handleSubmit={handleSubmit} isLoading={isLoading} />
+      <SearchButton handleSubmit={handleSubmit} isLoading={false} />
     </div>
   );
 }
 
-export default SearchBar;
+export default React.memo(SearchBar);

@@ -65,7 +65,7 @@ const ProductCard = ({ product, isListView, isLoading, isLiked }) => {
                     allowHalf
                     style={{ fontSize: '14px', marginRight: '-4px' }}
                   />
-                  <span className="text-sm text-gray-700">( ... )</span>
+                  <span className="text-sm text-gray-700">{'(' + product.numberOfReviews + ' đánh giá)'}</span>
                 </div>
               </div>
 

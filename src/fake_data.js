@@ -60,6 +60,7 @@ export const fake_products = [
       "https://placehold.co/100x75?text=Image+3"
     ],
     rating: 2.7,
+    numberOfReviews: 100,
     accommodation: "Hotel",
     location: "New York, USA",
     description: "This product is good",
@@ -77,6 +78,7 @@ export const fake_products = [
       "https://placehold.co/100x75?text=Image+3"
     ],
     rating: 2.8,
+    numberOfReviews: 100,
     accommodation: "Hotel",
     location: "New York, USA",
     description: "Bla bla bla",
@@ -94,6 +96,7 @@ export const fake_products = [
       "https://placehold.co/100x75?text=Image+3"
     ],
     rating: 4.9,
+    numberOfReviews: 100,
     accommodation: "Hotel",
     location: "New York, USA",
     description: "This product is good",
@@ -111,6 +114,7 @@ export const fake_products = [
       "https://placehold.co/100x75?text=Image+3"
     ],
     rating: 3.2,
+    numberOfReviews: 100,
     accommodation: "Hotel",
     location: "New York, USA",
     description: "Bla bla bla",
