@@ -3,9 +3,10 @@ import { useLocation } from "react-router-dom";
 import { Pagination, Button, Divider, Spin } from "antd";
 import { LeftOutlined } from '@ant-design/icons';
 import dayjs from "dayjs";
+import { debounce } from "lodash";
 
 import SearchBar from "../../components/search_bar";
-import Filter from "../../components/filter/index1";
+import Filter from "../../components/filter";
 import Map from "./map";
 import ProductCard from "../../components/ProductCard";
 import SearchStatus from "./SearchStatus";
@@ -44,7 +45,7 @@ const SearchPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [searchResults, setSearchResults] = useState([]);
   const [statusLocation, setStatusLocation] = useState('');
-  const totalResults = 20;
+  const [totalResults, setTotalResults] = useState(0);
 
   const [location, setLocation] = useState('');
   const [checkInOut, setCheckInOut] = useState([]);
@@ -57,6 +58,18 @@ const SearchPage = () => {
     'Loại hình lưu trú': [],
     'Tiện nghi': []
   });
+
+  const [filter, setFilter] = useState({
+    minPrice: gMinPrice,
+    maxPrice: gMaxPrice,
+    selectedCharacteristics: {
+      'Điểm đánh giá': [],
+      'Loại hình lưu trú': [],
+      'Tiện nghi': []
+    }
+  });
+
+  const [sortBy, setSortBy] = useState('price-asc');
 
   const handleSliderChange = useCallback((value) => {
     setMinPrice(value[0]);
@@ -86,14 +99,12 @@ const SearchPage = () => {
   }, []);
 
   const handleApplyFilters = useCallback(() => {
-    const filters = {
+    setFilter({
       minPrice,
       maxPrice,
       selectedCharacteristics
-    };
-    // Send filters to the server
-    console.log('Filters to send:', filters);
-    // Example: axios.post('/api/filters', filters);
+    });
+    console.log(filter, sortBy, currentPage);
   }, [minPrice, maxPrice, selectedCharacteristics]);
 
   const handleResetFilters = useCallback(() => {
@@ -136,8 +147,19 @@ const SearchPage = () => {
     async function getResults() {
       setIsLoading(true);
       try {
-        const response = await searchServices.searchBySpec(location, validCheckIn, validCheckOut, validAdults, validChildren, validRooms);
-        setSearchResults(response);
+        const response = await searchServices.searchBySpec_Filter_Sort_Page(
+          location,
+          validCheckIn,
+          validCheckOut,
+          validAdults,
+          validChildren,
+          validRooms,
+          filter,
+          sortBy,
+          currentPage
+        );
+        setSearchResults(response.data);
+        setTotalResults(response.total);
       } catch (error) {
         console.error("Error occurred during search:", error);
         // Handle the error, e.g., show an error message to the user
@@ -148,9 +170,9 @@ const SearchPage = () => {
 
     getResults();
 
-  }, [reactLocation.search]);
+  }, [reactLocation.search, filter, sortBy, currentPage]);
 
-  const fetchHotelsWithinBounds = useCallback(async (bounds) => {
+  const fetchHotelsWithinBounds = useCallback(debounce(async (bounds) => {
     setIsLoading(true);
     try {
       const response = await searchServices.searchByMapBounds(bounds);
@@ -161,7 +183,7 @@ const SearchPage = () => {
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, 500), []);
 
   return (
     isMapView ? (
@@ -211,7 +233,7 @@ const SearchPage = () => {
               <SearchStatus
                 location={statusLocation}
                 found={searchResults.length}
-                onSort={(value) => console.log(value)}
+                onChange={(value) => setSortBy(value)}
                 isListView={isListView}
                 setIsListView={setIsListView}
               />
@@ -240,7 +262,7 @@ const SearchPage = () => {
                         ))}
                       </div>
                       <Pagination
-                        pageSize={24}
+                        pageSize={2}
                         current={currentPage}
                         total={totalResults}
                         onChange={(page) => setCurrentPage(page)}

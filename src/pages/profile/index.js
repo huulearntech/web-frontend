@@ -1,90 +1,53 @@
-import React, { useState } from 'react';
-
-import { Divider, Layout, Menu, notification } from 'antd';
-import { UserOutlined, SettingOutlined } from '@ant-design/icons';
-
-import AccountManagement from './AccountManagement';
-import UserInformation from './UserInformation';
-
+import React, { useState, useEffect } from 'react';
+import { Tabs } from 'antd';
+import UserInfoTab from './UserInfoTab';
+import ChangePasswordTab from './ChangePasswordTab';
 import withCommonLayout from '../../layouts_hoc/Common';
 
-import { fake_user } from '../../fake_data'
-
 const ProfilePage = () => {
-  const [selectedMenu, setSelectedMenu] = useState('userInformation');
+  const initialFormData = {
+    name: '',
+    email: '',
+  };
 
-  const [user, setUser] = useState(fake_user);
-  const [editing, setEditing] = useState(false);
+  const [formData, setFormData] = useState(initialFormData);
 
-  const handleSave = (updatedUser) => {
-    setUser(updatedUser);
-    setEditing(false);
-    notification.success({
-      message: 'Cập nhật thông tin thành công!',
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value,
     });
   };
 
-  const handleCancel = () => {
-    setEditing(false);
+  const handleSubmit = () => {
+    // Handle form submission logic here
+    console.log('Form submitted:', formData);
   };
 
-  const renderContent = () => {
-    switch (selectedMenu) {
-      case 'userInformation':
-        return <UserInformation
-          user={user}
-          setUser={setUser}
-          editing={editing}
-          setEditing={setEditing}
-          handleSave={handleSave}
-          handleCancel={handleCancel}
-        />;
-      case 'accountManagement':
-        return <AccountManagement />;
-      default:
-        return <UserInformation
-          user={user}
-          setUser={setUser}
-          editing={editing}
-          setEditing={setEditing}
-          handleSave={handleSave}
-          handleCancel={handleCancel}
-        />;
-    }
+  const handleCancel = () => {
+    setFormData(initialFormData);
   };
 
   return (
-    <div className="w-full min-h-screen flex justify-center items-center">
-      <Layout className="w-full max-w-7xl min-h-screen">
-        <Layout.Header className="bg-gray-800 text-white flex items-center">
-          <div className="text-xl font-bold">Profile Management</div>
-        </Layout.Header>
-        <Layout>
-          <Layout.Sider width={300}>
-            <Menu
-              mode="inline"
-              selectedKeys={[selectedMenu]}
-              onClick={({ key }) => setSelectedMenu(key)}
-              style={{ height: '100%', borderRight: 0 }}
-            >
-              <Menu.Item key="userInformation" icon={<UserOutlined style={{ fontSize: '20px' }} />} style={{ fontSize: '16px', fontWeight: 600 }}>
-                User Information
-              </Menu.Item>
-              <Menu.Item key="accountManagement" icon={<SettingOutlined style={{ fontSize: '20px' }} />} style={{ fontSize: '16px', fontWeight: 600 }}>
-                Account Management
-              </Menu.Item>
-            </Menu>
-          </Layout.Sider>
-          <Divider type="vertical" style={{ height: '100%' }} />
-          <Layout>
-            <Layout.Content className="bg-white">
-              {renderContent()}
-            </Layout.Content>
-          </Layout>
-        </Layout>
-      </Layout>
+    <div className="flex justify-center items-center h-screen -translate-y-20">
+      <div className="w-full max-w-xl h-128 p-5 bg-white border border-gray-300 rounded-lg">
+        <Tabs defaultActiveKey="1" size='large'>
+          <Tabs.TabPane tab="Thông tin cá nhân" key="1">
+            <UserInfoTab
+              formData={formData}
+              onInputChange={handleInputChange}
+              onSubmit={handleSubmit}
+              onCancel={handleCancel}
+            />
+          </Tabs.TabPane>
+          <Tabs.TabPane tab="Đổi mật khẩu" key="2">
+            <ChangePasswordTab />
+          </Tabs.TabPane>
+        </Tabs>
+      </div>
     </div>
   );
 };
 
-export default ProfilePage;
+export default withCommonLayout(ProfilePage);

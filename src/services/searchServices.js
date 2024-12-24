@@ -2,7 +2,17 @@ import axiosInstance from "./axios_instance";
 
 import { fake_locations, fake_products } from "../fake_data";
 
-const searchBySpec = async (location, checkInDate, checkOutDate, adults, children, rooms) => {
+const searchBySpec_Filter_Sort_Page = async (
+  location,
+  checkInDate,
+  checkOutDate,
+  adults,
+  children,
+  rooms,
+  filter,
+  sortBy,
+  currentPage
+) => {
   // try {
   //   const response = await axiosInstance.get('/search', {
   //     params: {
@@ -19,7 +29,7 @@ const searchBySpec = async (location, checkInDate, checkOutDate, adults, childre
   //   console.error("Error searching:", error);
   //   throw error.response?.data || error.message;
   // }
-  return fake_products;
+  return { data: fake_products, total: fake_products.length };
 }
 
 const searchBySearchList = async (searchList) => {
@@ -72,7 +82,7 @@ const getFavoriteHotelsAtLocation = async (location) => {
 };
 
 export default {
-  searchBySpec,
+  searchBySpec_Filter_Sort_Page,
   searchBySearchList,
   searchByMapBounds,
   getLocationsContaining,

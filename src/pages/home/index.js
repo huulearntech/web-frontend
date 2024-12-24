@@ -41,14 +41,19 @@ const HomePage = () => {
       </div>
       <div className="flex flex-col w-full max-w-7xl space-y-4">
 
-        <FavoriteDestination title={"Deal nội địa tiết kiệm cuối năm"} locations={['Đà Nẵng', 'Vũng Tàu', 'Hồ Chí Minh', 'Hà Nội', 'Đà Lạt']}/>
+        <FavoriteDestination title={"Deal nội địa tiết kiệm cuối năm"} locations={['Đà Nẵng', 'Vũng Tàu', 'Hồ Chí Minh', 'Hà Nội', 'Đà Lạt']} />
         <Divider />
         <FavoriteDestination title={"Vi vu quốc tế cuối năm"} locations={['Bangkok', 'Singapore', 'Kuala Lumpur', 'Seoul']} />
-        <Divider />
+        <div className='flex flex-col items-center justify-center h-20'>
+          <Divider />
+        </div>
+
         <Partners title="Đối tác khách sạn" description="Chúng tôi hợp tác với các chuỗi khách sạn trên toàn thế giới để bảo đảm mang lại kỳ nghỉ tuyệt vời nhất tại mọi điểm đến trong mơ của bạn!" imageSrc={HotelPartners} />
         <Divider />
         <Partners title="Đối tác thanh toán" description="Những đối tác thanh toán đáng tin cậy của chúng tôi sẽ giúp cho bạn luôn an tâm thực hiện mọi giao dịch một cách thuận lợi nhất!" imageSrc={PaymentPartners} />
-        <Divider />
+        <div className='flex flex-col items-center justify-center h-20'>
+          <Divider />
+        </div>
         <WhyUs />
       </div>
     </div>

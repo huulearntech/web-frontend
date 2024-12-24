@@ -23,6 +23,7 @@ const RoomManagement = () => {
     { title: 'Room Number', dataIndex: 'roomNumber', key: 'roomNumber' },
     { title: 'Type', dataIndex: 'type', key: 'type' },
     { title: 'Price', dataIndex: 'price', key: 'price' },
+    { title: 'Availability', dataIndex: 'availability', key: 'availability' },
     {
       title: 'Actions',
       key: 'actions',

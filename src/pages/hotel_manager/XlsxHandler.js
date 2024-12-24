@@ -50,23 +50,6 @@ const XlsxHandler = () => {
         <p className="ant-upload-text">Click or drag file to this area to upload</p>
         <p className="ant-upload-hint">Support for a single upload. Only xlsx files are allowed.</p>
       </Dragger>
-      <Form form={form} layout="vertical" style={{ marginTop: 16 }}>
-        <Form.Item name="roomNumber" label="Room Number">
-          <Input />
-        </Form.Item>
-        <Form.Item name="roomType" label="Room Type">
-          <Input />
-        </Form.Item>
-        <Form.Item name="price" label="Price">
-          <Input />
-        </Form.Item>
-        <Form.Item name="availability" label="Availability">
-          <Input />
-        </Form.Item>
-        <Form.Item>
-          <Button type="primary" htmlType="submit">Submit</Button>
-        </Form.Item>
-      </Form>
     </div>
   );
 };

@@ -5,7 +5,7 @@ import {
 } from "react-icons/ci";
 
 
-const SearchStatus = ({ location, found, onSort, isListView, setIsListView }) => {
+const SearchStatus = ({ location, found, onChange, isListView, setIsListView }) => {
   return (
     <div className="flex flex-row justify-between items-center w-full">
       <div className="flex flex-col">
@@ -17,7 +17,7 @@ const SearchStatus = ({ location, found, onSort, isListView, setIsListView }) =>
         <div className="flex items-center">
           <span className="text-sm text-gray-500 mr-2">Sắp xếp theo:</span>
           <Select
-            onChange={(value) => onSort(value)} // Replace with your sorting logic
+            onChange={(value) => onChange(value)} // Replace with your sorting logic
             defaultValue="price-asc"
             className="w-40 h-8"
           >

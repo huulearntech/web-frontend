@@ -11,7 +11,7 @@ const AddRoom = () => {
   ];
 
   return (
-    <div className="bg-white p-8 rounded shadow-md w-full flex">
+    <div className="bg-white w-full flex">
       <div className="w-1/4 pr-4">
         <Tabs defaultActiveKey="1">
           <TabPane tab="Import Room by Form" key="1">

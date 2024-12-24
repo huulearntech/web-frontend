@@ -58,13 +58,9 @@ const deleteUser = async (id) => {
   }
 };
 
-const changePassword = async (token, changePasswordRequest) => {
+const changePassword = async (changePasswordRequest) => {
   try {
-    const response = await axiosInstance.post('/v3/api-docs/users/change-password', changePasswordRequest, {
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
-    });
+    const response = await axiosInstance.post('/v3/api-docs/users/change-password', changePasswordRequest);
     return response.data;
   } catch (error) {
     console.error("Error changing password:", error);

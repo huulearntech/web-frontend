@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
 import { Layout, Menu } from 'antd';
-import { AppstoreOutlined } from '@ant-design/icons';
+import { AppstoreOutlined, LineChartOutlined, PlusSquareOutlined, UnorderedListOutlined } from '@ant-design/icons';
 
 import RoomManagement from './RoomManagement';
 import Statistics from './Statistics';
 import AddRoom from './AddRoom';
 import BookingManagement from './BookingManagement';
 
-const { Header, Sider, Content } = Layout;
+import withCommonLayout from '../../layouts_hoc/Common';
+
+const { Sider, Content } = Layout;
 
 const HotelManager = () => {
   const [selectedMenu, setSelectedMenu] = useState('roomManagement');
@@ -32,35 +34,32 @@ const HotelManager = () => {
 
   return (
     <Layout className="min-h-screen">
-      <Header className="bg-gray-800 text-white flex items-center">
-        <div className="text-xl font-bold">Hotel Management System</div>
-      </Header>
       <Layout>
-        <Sider width={200}>
+        <Sider width={300}>
           <Menu
             mode="inline"
             selectedKeys={[selectedMenu]}
             onClick={({ key }) => setSelectedMenu(key)}
-            style={{ height: '100%', borderRight: 0 }}
+            style={{ height: '100%', borderRight: 0, paddingTop: '24px' }}
           >
-            <Menu.Item key="addRoom" icon={<AppstoreOutlined />}>
-              Add Room
-            </Menu.Item>
             <Menu.Item key="roomManagement" icon={<AppstoreOutlined />}>
-              Room Management
+              Quản lý phòng
             </Menu.Item>
-            <Menu.Item key="statistics" icon={<AppstoreOutlined />}>
-              Statistics
+            <Menu.Item key="addRoom" icon={<PlusSquareOutlined />}>
+            Tạo phòng
             </Menu.Item>
-            <Menu.Item key="bookingManagement" icon={<AppstoreOutlined />}>
-              Booking Management
+            <Menu.Item key="bookingManagement" icon={<UnorderedListOutlined />}>
+              Quản lý đơn đặt phòng
+            </Menu.Item>
+            <Menu.Item key="statistics" icon={<LineChartOutlined />}>
+              Thống kê
             </Menu.Item>
 
             {/* Add more Menu.Item here for other details */}
           </Menu>
         </Sider>
-        <Layout style={{ padding: '0 24px 24px' }}>
-          <Content className="p-6 bg-white">
+        <Layout>
+          <Content className="h-screen p-4 bg-white">
             {renderContent()}
           </Content>
         </Layout>
@@ -69,4 +68,4 @@ const HotelManager = () => {
   );
 };
 
-export default HotelManager;
+export default withCommonLayout(HotelManager);

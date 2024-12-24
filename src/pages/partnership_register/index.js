@@ -32,7 +32,7 @@ const PartnershipRegister = () => {
 
   return (
     <div className="w-full flex items-center justify-center min-h-screen bg-gray-100">
-      <div className="relative flex w-full max-w-4xl items-center justify-center -translate-y-20 bg-white rounded-lg p-8 shadow-lg">
+      <div className="relative flex w-full max-w-3xl items-center justify-center -translate-y-20 bg-white rounded-lg p-8 shadow-lg">
         <div className="absolute -top-20 w-full max-w-xl">
           <Steps current={step - 1} responsive={false}>
             <Steps.Step title="Email & Password" />

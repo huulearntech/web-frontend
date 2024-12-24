@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Table, Button } from 'antd';
+import { Table, Button, Select } from 'antd';
 
 const BookingManagement = () => {
   const [bookings, setBookings] = useState([]);
@@ -57,6 +57,16 @@ const BookingManagement = () => {
       key: 'roomPrice',
     },
     {
+      title: 'Status',
+      key: 'status',
+      render: (text, record) => (
+        <Select defaultValue="booked" style={{ width: 120 }}>
+          <Select.Option value="booked">Đã thanh toán</Select.Option>
+          <Select.Option value="checked-in">Đã trả phòng</Select.Option>
+        </Select>
+      ),
+    },
+    {
       title: 'Actions',
       key: 'actions',
       render: (text, record) => (
@@ -68,10 +78,7 @@ const BookingManagement = () => {
   ];
 
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">Booking Management</h1>
-      <Table dataSource={bookings} columns={columns} rowKey="bookingId" />
-    </div>
+    <Table dataSource={bookings} columns={columns} rowKey="bookingId" />
   );
 };
 

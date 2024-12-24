@@ -36,7 +36,7 @@ const SimplifiedProductCard = ({ product }) => {
             </div>
           </div>
         </div>
-        <span className='self-start text-lg font-semibold text-orange-600'>${product.price}</span>
+        <span className='self-start font-semibold text-orange-600'>{product.price} VND</span>
       </div>
     </div>
   );

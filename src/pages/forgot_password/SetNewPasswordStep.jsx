@@ -20,7 +20,9 @@ const SetNewPasswordStep = ({ onSubmit }) => {
           <Form.Item
             name="newPassword"
             label="Mật khẩu mới"
-            rules={[{ required: true, message: "Vui lòng điền vào ô này!" }]}
+            rules={[{ required: true, message: "Vui lòng điền vào ô này!" },
+            { min: 8, message: "Mật khẩu phải có ít nhất 8 ký tự!" }
+            ]}
           >
             <Input.Password
               placeholder="New Password"
@@ -43,6 +45,7 @@ const SetNewPasswordStep = ({ onSubmit }) => {
                   return Promise.reject(new Error("Mật khẩu xác nhận không khớp!"));
                 },
               }),
+              { min: 8, message: "Mật khẩu phải có ít nhất 8 ký tự!" }
             ]}
           >
             <Input.Password
