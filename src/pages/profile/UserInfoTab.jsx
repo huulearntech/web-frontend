@@ -14,9 +14,12 @@ const UserInfoTab = () => {
   
   useEffect(() => {
     if (user) {
+      console.log('User:', user);
       const { fullName, email } = user;
-      setInitialFormData({ fullName, email });
+      setInitialFormData({ fullName: fullName || '', email: email || '' });
       setFormData(initialFormData);
+    } else {
+      console.error('User not found!');
     }
   }, [user]);
 
