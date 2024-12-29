@@ -6,7 +6,7 @@ import { useAuth } from '../../context/AuthContext';
 const UserInfoTab = () => {
   const { user } = useAuth();
 
-  const initialFormData = { fullName: '', email: '' };
+  const [initialFormData, setInitialFormData] = useState({ fullName: '', email: '' });
   
   const [formData, setFormData] = useState(initialFormData);
   const [avatarUrl, setAvatarUrl] = useState('');
@@ -15,8 +15,7 @@ const UserInfoTab = () => {
   useEffect(() => {
     if (user) {
       const { fullName, email } = user;
-      initialFormData.fullName = fullName;
-      initialFormData.email = 'cdmm@cochobomayguireqko.com';
+      setInitialFormData({ fullName, email });
       setFormData(initialFormData);
     }
   }, [user]);
