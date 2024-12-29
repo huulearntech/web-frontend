@@ -1,57 +1,87 @@
-import React, { useState } from 'react';
-import { Form, Input, Button, Upload, Avatar, message } from 'antd';
-import { UserOutlined, UploadOutlined } from '@ant-design/icons';
+import React, { useEffect, useState } from 'react';
+import { Form, Input, Button } from 'antd';
+import userServices from '../../services/userServices';
+import { useAuth } from '../../context/AuthContext';
 
-const UserInfoTab = ({ formData, onInputChange, onSubmit, onCancel }) => {
-  const [editing, setEditing] = useState(false);
+const UserInfoTab = () => {
+  const { user } = useAuth();
 
-  const [avatarUrl, setAvatarUrl] = useState(formData.avatar);
+  const initialFormData = { fullName: '', email: '' };
+  
+  const [formData, setFormData] = useState(initialFormData);
+  const [avatarUrl, setAvatarUrl] = useState('');
+  const [avatarFile, setAvatarFile] = useState(null);
+  
+  useEffect(() => {
+    if (user) {
+      const { fullName, email } = user;
+      initialFormData.fullName = fullName;
+      initialFormData.email = 'cdmm@cochobomayguireqko.com';
+      setFormData(initialFormData);
+    }
+  }, [user]);
 
-  const handleAvatarChange = (info) => {
-    if (info.file.status === 'done') {
-      // Get the URL of the uploaded file
-      const url = URL.createObjectURL(info.file.originFileObj);
-      setAvatarUrl(url);
-      message.success(`${info.file.name} file uploaded successfully`);
-    } else if (info.file.status === 'error') {
-      message.error(`${info.file.name} file upload failed.`);
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+  };
+
+  const handleAvatarChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const imageUrl = URL.createObjectURL(file);
+      setAvatarUrl(imageUrl);
+      setAvatarFile(file);
+    }
+  };
+
+  const handleSubmit = async () => {
+    try {
+      await userServices.updateUserData(formData.fullName, avatarFile);
+      console.log('User data updated successfully!');
+    } catch (error) {
+      console.error('Error updating user data:', error);
     }
   };
 
   return (
-    <Form layout="vertical" onFinish={onSubmit} readOnly={!editing}>
+    <Form layout="vertical" onFinish={handleSubmit}>
       <Form.Item
         label={<span className="font-semibold">Ảnh đại diện</span>}
         className="text-center">
-        <Upload
-          name="avatar"
-          listType="picture-card"
-          showUploadList={false}
-          beforeUpload={() => false} // Prevent automatic upload
-          onChange={handleAvatarChange}
-        >
-          {avatarUrl ? (
-            <Avatar size={64} src={avatarUrl} />
-          ) : (
-            <Avatar size={64} icon={<UserOutlined />} />
-          )}
-        </Upload>
+        <input
+          type='file'
+          onChange={handleAvatarChange} />
       </Form.Item>
+      <Form.Item
+        label={<span className="font-semibold">Ảnh đại diện</span>}
+        className="text-center">
+        <img
+          src={avatarUrl}
+          alt="Avatar"
+          style={{ width: '100px', height: '100px', borderRadius: '50%' }}
+        />
+      </Form.Item>
+
       <Form.Item
         label={<span className="font-semibold">Họ tên</span>}
         name="name"
         rules={[{ required: true, message: 'Vui lòng nhập họ tên!' }]}
       >
-        <Input name="name" value={formData.name} onChange={onInputChange} size='large' />
+        <Input name="name" value={formData.fullName} onChange={handleInputChange} size='large' />
       </Form.Item>
+
       <Form.Item
         label={<span className="font-semibold">Email</span>}
-        name="email"
-      >
-        <Input name="email" value={formData.email} onChange={onInputChange} size='large' readOnly/>
+        className="text-center">
+        <Input value={formData.email} readOnly />
       </Form.Item>
+
       <Form.Item className="text-center">
-        <Button style={{ marginRight: '8px' }} onClick={onCancel}>Hủy</Button>
+        <Button style={{ marginRight: '8px' }} onClick={() => setFormData(initialFormData)}>Hủy</Button>
         <Button type="primary" htmlType="submit">Lưu</Button>
       </Form.Item>
     </Form>

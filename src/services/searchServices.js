@@ -42,7 +42,7 @@ const searchBySearchList = async (searchList) => {
   }
 };
 
-const searchByMapBounds = async (mapBounds) => {
+const searchByMapBounds = async (mapBounds, amount=10) => {
   // try {
   //   const response = await axiosInstance.post('/search', mapBounds);
   //   return response.data;
@@ -53,7 +53,7 @@ const searchByMapBounds = async (mapBounds) => {
   return fake_products;
 }
 
-const getLocationsContaining = async (query, amount = 5) => {
+const getLocationsContaining = async (query, amount=5) => {
   // try {
   //   const response = await axiosInstance.get(API_URL + query);
   //   return response.data;

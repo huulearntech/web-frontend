@@ -1,32 +1,6 @@
 import axiosInstance from './axios_instance';
 
-// const addFavorite = async (roomId) => {
-//   const token = localStorage.getItem('token');
-//   if (!token) {
-//     console.warn("User is not logged in. Please log in to add favorites.");
-//     return { message: "User is not logged in. Please log in to add favorites." };
-//   }
-
-//   try {
-//     const response = await axiosInstance.post("/favorite", { roomId });
-//     return response.data;
-//   } catch (error) {
-//     console.error("Error adding favorite:", error);
-//     throw error.response?.data || error.message;
-//   }
-// }
-
-// const removeFavorite = async (roomId) => {
-//   try {
-//     const response = await axiosInstance.delete("/favorite", { data: { roomId } });
-//     return response.data;
-//   } catch (error) {
-//     console.error("Error removing favorite:", error);
-//     throw error.response?.data || error.message;
-//   }
-// }
-
-const addFeedback = async (userId, roomId, content) => {
+const postFeedback = async (userId, roomId, content) => {
   try {
     const response = await axiosInstance.post("/feedback", { userId, roomId, content });
     return response.data;
@@ -34,33 +8,11 @@ const addFeedback = async (userId, roomId, content) => {
     console.error("Error adding feedback:", error);
     throw error.response?.data || error.message;
   }
-}
+};
 
-// const getFavorites = async () => {
-//   try {
-//     const response = await axiosInstance.get("/favorites");
-//     return response.data;
-//   } catch (error) {
-//     console.error("Error getting favorites:", error);
-//     throw error.response?.data || error.message;
-//   }
-// }
-
-////////////////////////////////////////
-
-// const deleteUser = async (id) => {
-//   try {
-//     const response = await axiosInstance.delete(`/v3/api-docs/users/delete/${id}`);
-//     return response.data;
-//   } catch (error) {
-//     console.error("Error deleting user:", error);
-//     throw error.response?.data || error.message;
-//   }
-// };
-
-const changePassword = async (changePasswordRequest) => {
+const changePassword = async (oldPassword, newPassword) => {
   try {
-    const response = await axiosInstance.post('/v3/api-docs/users/change-password', changePasswordRequest);
+    const response = await axiosInstance.put('/v3/api-docs/users/change-password', { oldPassword, newPassword });
     console.log("changePassword response:", response);
   } catch (error) {
     console.error("Error changing password:", error);
@@ -104,10 +56,38 @@ const resetPassword = async (email, password) => {
   }
 };
 
+const getUserData = async () => {
+  try {
+    const response = await axiosInstance.get(`/v3/api-docs/users/get-user-data`);
+    return response.data;
+  } catch (error) {
+    console.error("Error getting user data:", error);
+    throw error.response?.data || error.message;
+  }
+};
+
+const updateUserData = async (fullName, imageFile) => {
+  try {
+    const response = await axiosInstance.put(`/v3/api-docs/users/update`, {imageFile}, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+      params: { fullName },
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error('Error updating user:', error);
+    throw error;
+  }
+};
+
 export default {
-  addFeedback,
+  postFeedback,
   changePassword,
   sendVerificationCode,
   verifyCode,
-  resetPassword
+  resetPassword,
+  getUserData,
+  updateUserData,
 };

@@ -148,12 +148,13 @@ const SearchPage = () => {
     async function getResults() {
       setIsLoading(true);
       try {
-        const response = await hotelServices.getAvailableHotels(
+        const response = await searchServices.searchBySpec_Filter_Sort_Page(
           location,
           validCheckIn,
           validCheckOut,
           validAdults,
           validChildren,
+          
         );
         setSearchResults(response.data);
         setTotalResults(response.total);

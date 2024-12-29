@@ -94,13 +94,14 @@ const ProductCard = ({ product, isListView, isLoading, isLiked }) => {
             </div>
           </div>
           <div className={cardPricing}>
-            <p className='font-bold text-orange-600'>{product.price} VND</p>
+            <p className='font-bold text-lg text-orange-600'>{product.price} VND</p>
             <Button
               type="primary"
               onClick={() => {
                 console.log('View product');
                 navigate(`/product/${product.id}`);
               }}
+              className="font-semibold"
             >
               Xem
             </Button>

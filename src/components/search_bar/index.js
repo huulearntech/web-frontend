@@ -29,9 +29,14 @@ const SearchBar = ({ location, checkInOut, guestsAndRooms, setLocation, setCheck
 
   const handleSubmit = useCallback((e) => {
     e.preventDefault();
-    const checkInOutDate = checkInOut.map(date => date ? date.toDate() : null);
-    const checkInDate = checkInOut[0] ? checkInOut[0].toDate() : new Date(new Date().setDate(new Date().getDate() + 1));
-    const checkOutDate = checkInOut[1] ? checkInOut[1].toDate() : new Date(new Date().setDate(new Date().getDate() + 2));
+    const checkInDate = (checkInOut && checkInOut[0]) ?
+      checkInOut[0].toDate()
+      :
+      new Date(new Date().setDate(new Date().getDate() + 1));
+    const checkOutDate = (checkInOut && checkInOut[1]) ?
+      checkInOut[1].toDate()
+      :
+      new Date(new Date().setDate(new Date().getDate() + 2));
 
     const queryParams = new URLSearchParams({
       location: location,

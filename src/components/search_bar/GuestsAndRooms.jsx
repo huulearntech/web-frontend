@@ -7,25 +7,25 @@ const GuestsAndRoomsContent = ({ guestsAndRooms, increment, decrement, setPopove
     <div className="flex justify-between items-center mb-2">
       <span className="font-semibold">Người lớn</span>
       <div className="flex items-center space-x-2">
-        <Button onClick={() => decrement('adults', guestsAndRooms.rooms)}>-</Button>
-        <span className="font-semibold">{guestsAndRooms.adults}</span>
-        <Button onClick={() => increment('adults', 30)}>+</Button>
+        <Button className='border-none font-semibold text-blue-500 text-xl' onClick={() => decrement('adults', guestsAndRooms.rooms)}>-</Button>
+        <span className="font-semibold w-10 text-center">{guestsAndRooms.adults}</span>
+        <Button className='border-none font-semibold text-blue-500 text-xl' onClick={() => increment('adults', 30)}>+</Button>
       </div>
     </div>
     <div className="flex justify-between items-center mb-2">
       <span className="font-semibold">Trẻ em</span>
       <div className="flex items-center space-x-2">
-        <Button onClick={() => decrement('children', 0)}>-</Button>
-        <span className="font-semibold">{guestsAndRooms.children}</span>
-        <Button onClick={() => increment('children', 15)}>+</Button>
+        <Button className='border-none font-semibold text-blue-500 text-xl' onClick={() => decrement('children', 0)}>-</Button>
+        <span className="font-semibold w-10 text-center">{guestsAndRooms.children}</span>
+        <Button className='border-none font-semibold text-blue-500 text-xl' onClick={() => increment('children', 15)}>+</Button>
       </div>
     </div>
     <div className="flex justify-between items-center mb-2">
       <span className="font-semibold">Phòng</span>
       <div className="flex items-center space-x-2">
-        <Button onClick={() => decrement('rooms', 1)}>-</Button>
-        <span className="font-semibold">{guestsAndRooms.rooms}</span>
-        <Button onClick={() => increment('rooms', guestsAndRooms.adults)}>+</Button>
+        <Button className='border-none font-semibold text-blue-500 text-xl' onClick={() => decrement('rooms', 1)}>-</Button>
+        <span className="font-semibold w-10 text-center">{guestsAndRooms.rooms}</span>
+        <Button className='border-none font-semibold text-blue-500 text-xl' onClick={() => increment('rooms', guestsAndRooms.adults)}>+</Button>
       </div>
     </div>
     <div className="flex justify-end mt-4">

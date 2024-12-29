@@ -42,16 +42,16 @@ const HotelManager = () => {
             onClick={({ key }) => setSelectedMenu(key)}
             style={{ height: '100%', borderRight: 0, paddingTop: '24px' }}
           >
-            <Menu.Item key="roomManagement" icon={<AppstoreOutlined />}>
+            <Menu.Item key="roomManagement" icon={<AppstoreOutlined style={{fontSize: '20px'}}/>} style={{fontSize: '16px'}}>
               Quản lý phòng
             </Menu.Item>
-            <Menu.Item key="addRoom" icon={<PlusSquareOutlined />}>
+            <Menu.Item key="addRoom" icon={<PlusSquareOutlined style={{fontSize: '20px'}}/>} style={{fontSize: '16px'}}>
             Tạo phòng
             </Menu.Item>
-            <Menu.Item key="bookingManagement" icon={<UnorderedListOutlined />}>
+            <Menu.Item key="bookingManagement" icon={<UnorderedListOutlined style={{fontSize: '20px'}}/>} style={{fontSize: '16px'}}>
               Quản lý đơn đặt phòng
             </Menu.Item>
-            <Menu.Item key="statistics" icon={<LineChartOutlined />}>
+            <Menu.Item key="statistics" icon={<LineChartOutlined style={{fontSize: '20px'}}/>} style={{fontSize: '16px'}}>
               Thống kê
             </Menu.Item>
 

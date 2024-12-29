@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Modal, Button, Form } from 'antd';
+import { Modal, Button, Form, notification } from 'antd';
 
 import { useAuth } from "../../context/AuthContext";
 import authServices from "../../services/authServices";
@@ -15,6 +15,7 @@ const AuthModal = ({ isOpen, onClose, mode, setMode }) => {
   const [isOtpStep, setIsOtpStep] = useState(false);
   const [loading, setLoading] = useState(false);
   const [form] = Form.useForm();
+  const [email, setEmail] = useState('');
 
   useEffect(() => {
     setIsSignUp(mode === 'signUp');
@@ -24,46 +25,61 @@ const AuthModal = ({ isOpen, onClose, mode, setMode }) => {
     setLoading(true);
     try {
       await signIn(values);
-      console.log('Đăng nhập thành công', response);
+      notification.success({
+        message: 'Đăng nhập thành công',
+        description: 'Chào mừng bạn trở lại!',
+      });
     } catch (error) {
       console.error('Đăng nhập thất bại', error);
+      if (error.response && error.response.status === 401) {
+        notification.error({
+          message: 'Đăng nhập thất bại',
+          description: 'Email hoặc mật khẩu không chính xác.',
+        });
+      }
     } finally {
       setLoading(false);
-      form.resetFields();
       onClose();
     }
-  }
+  };
 
   const handleSignUp = async (values) => {
     setLoading(true);
     try {
       const { confirmPassword, ...registrationRequest } = values;
-      console.log(registrationRequest);
+      setEmail(registrationRequest.email); // Store the email
       await authServices.register(registrationRequest);
       setIsOtpStep(true);
-      console.log(registrationRequest);
     } catch (error) {
       console.error('Đăng ký thất bại', error);
+      if (error.response && error.response.status === 500 && error.response.data.error.includes('Email already exists')) {
+        notification.error({
+          message: 'Email đã được đăng ký',
+          description: 'Email bạn đã nhập đã được đăng ký. Vui lòng sử dụng email khác hoặc đăng nhập.',
+        });
+      }
     } finally {
       setLoading(false);
     }
-  }
+  };
 
   const handleOtp = async (values) => {
     setLoading(true);
     try {
-      await authServices.verifyOtp(values.email, values.otp);
-      console.log(values.email, values.otp);
+      await authServices.verifyOtp(email, values.otp); // Use the stored email
       console.log('OTP verified successfully');
+      notification.success({
+        message: 'Đăng ký thành công',
+        description: 'Tài khoản của bạn đã được tạo thành công.',
+      });
       setIsOtpStep(false);
       onClose();
     } catch (error) {
       console.error('Error verifying OTP:', error);
     } finally {
       setLoading(false);
-      form.resetFields();
     }
-  }
+  };
 
   return (
     <Modal

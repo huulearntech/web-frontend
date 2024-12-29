@@ -2,8 +2,11 @@ import React, { useState } from 'react';
 import { Form, Input, Button, Modal } from 'antd';
 
 import userServices from '../../services/userServices';
+import { useAuth } from '../../context/AuthContext';
 
 const ChangePasswordTab = () => {
+  const { user } = useAuth();
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [form] = Form.useForm();
@@ -13,10 +16,8 @@ const ChangePasswordTab = () => {
     const oldPassword = form.getFieldValue('oldPassword');
     const newPassword = form.getFieldValue('newPassword');
     try {
-
-      // await userServices.changePassword(oldPassword, newPassword);
+      await userServices.changePassword(oldPassword, newPassword);
       setIsModalOpen(true);
-
     } catch (error) {
       console.error(error);
     } finally {
@@ -33,8 +34,8 @@ const ChangePasswordTab = () => {
     setIsLoading(true);
 
     try {
-      await userServices.verifyCode(form.getFieldValue('otp'));
-
+      // Thang nay dang nhap roi thi can token thoi ko can email
+      await userServices.verifyCode(user.email, form.getFieldValue('otp'));
       setIsModalOpen(false);
       form.resetFields(); // Reset all fields after submission
     } catch (error) {
@@ -47,7 +48,7 @@ const ChangePasswordTab = () => {
 
   return (
     <>
-      <Form form={form} layout="vertical" onFinish={showModal}>
+      <Form form={form} layout="vertical" onFinish={showModal} disabled={isLoading}>
         <Form.Item
           label="Mật khẩu "
           name="oldPassword"
@@ -59,7 +60,7 @@ const ChangePasswordTab = () => {
           label="Mật khẩu mới"
           name="newPassword"
           rules={[{ required: true, message: 'Vui lòng nhập mật khẩu mới!' },
-          { min: 8, message: 'Mật khẩu phải có ít nhất 8 ký tự!' }
+          { min: 8, message: ' khẩu phải có ít nhất 8 ký tự!' }
           ]}
         >
           <Input.Password size='large' />
@@ -68,7 +69,7 @@ const ChangePasswordTab = () => {
           label="Xác nhận mật khẩu mới"
           name="confirmNewPassword"
           hasFeedback
-          rules={[{ required: true, message: 'Vui lòng nhập mật khẩu mới!' },
+          rules={[{ required: true, message: 'Vui lòng xác nhận mật khẩu mới!' },
           ({ getFieldValue }) => ({
             validator(rule, value) {
               if (!value || getFieldValue('newPassword') === value) {
@@ -99,7 +100,15 @@ const ChangePasswordTab = () => {
           <p>Vui lòng nhập mã OTP đã được gửi đến email của bạn</p>
           <div className='flex justify-center mt-4'>
             <Form.Item name="otp">
-              <Input.OTP size='large' />
+              <Input.OTP
+              placeholder="OTP"
+              length={6}
+              formatter={(value) => value.replace(/\D/g, '')}
+              autoFocus
+              className="w-full p-3 border border-gray-300 rounded"
+              inputMode='numeric'
+              size='large'
+               />
             </Form.Item>
           </div>
           <div className='flex justify-center mt-2'>

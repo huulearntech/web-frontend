@@ -15,7 +15,7 @@ const OtpForm = ({ form, onSubmit }) => {
           >
             <Input.OTP
               placeholder="OTP"
-              maxLength={6}
+              length={6}
               formatter={(value) => value.replace(/\D/g, '')}
               autoFocus
               className="w-full p-3 border border-gray-300 rounded"

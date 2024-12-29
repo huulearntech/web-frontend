@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Steps, Form } from 'antd';
 import PartnerEmailFormStep from './PartnerEmailFormStep';
 import AccommodationFormStep from './AccommodationFormStep';
+import LocationPicker from './LocationPicker';
 
 const PartnershipRegister = () => {
   const [step, setStep] = useState(1);

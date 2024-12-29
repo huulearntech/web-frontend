@@ -8,6 +8,8 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
 import { Navigate } from 'react-router-dom';
 import authServices from '../services/authServices';
+import userServices from '../services/userServices';
+import paths from '../router/paths';
 
 // Tạo context để quản lý trạng thái đăng nhập
 const AuthContext = createContext();
@@ -24,8 +26,9 @@ export const AuthProvider = ({ children }) => {
         return;
       }
       try {
-        const response = await authServices.getUserData(token);
-        setUser(response.data);
+        const user = await userServices.getUserData();
+        setUser(user);
+        console.log('User:', user.fullName, user.email);
       } catch (error) {
         console.error('Failed to fetch user', error);
       }
@@ -38,7 +41,11 @@ export const AuthProvider = ({ children }) => {
     try {
       const response = await authServices.authenticateUser(authenticationRequest);
       localStorage.setItem('token', response.data.token);
-      setUser(response.data.user);
+
+      const user = await userServices.getUserData();
+      setUser(user);
+      console.log('Signed in successfully');
+      console.log('User:', user.fullName, user.email);
     } catch (error) {
       console.error('Failed to sign in', error);
     }
@@ -57,10 +64,12 @@ export const withAuthContext = (WrappedComponent) => (props) => {
   return <WrappedComponent {...props} authContext={authContext} />;
 };
 
-export const AuthRequired = ({ children }) => {
+export const AuthRequired = ({ children, requiredRole }) => {
   const { user } = useAuth();
-  if (user === null) {
-    return <div>Loading...</div>;
+
+  if (!user || requiredRole && !user.authorities.include(requiredRole)) {
+    return <Navigate to={paths.notAuthorized} />;
   }
-  return user ? children : <Navigate to="/" />;
+
+  return children;
 }
