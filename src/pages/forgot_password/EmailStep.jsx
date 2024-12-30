@@ -1,7 +1,7 @@
 import React from 'react';
 import { Form, Input, Button } from 'antd';
 
-const EmailStep = ({ onSubmit, email, setEmail }) => {
+const EmailStep = ({ onSubmit, email, setEmail, isLoading }) => {
   const handleEmailSubmit = (values) => {
     onSubmit(values.email);
   };
@@ -12,7 +12,7 @@ const EmailStep = ({ onSubmit, email, setEmail }) => {
         <h2 className="text-3xl font-semibold">Đặt lại mật khẩu</h2>
         <p className="text-gray-500">Nhập email mà bạn đã sử dụng để đăng ký tài khoản</p>
       </div>
-      <Form onFinish={handleEmailSubmit} className='w-full'>
+      <Form onFinish={handleEmailSubmit} className='w-full' disabled={isLoading}>
         <Form.Item
           name="email"
           rules={[{ required: true, message: 'Vui lòng nhập email của bạn!' }]}

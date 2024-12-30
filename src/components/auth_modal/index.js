@@ -3,7 +3,7 @@ import { Modal, Button, Form, notification } from 'antd';
 
 import { useAuth } from "../../context/AuthContext";
 import authServices from "../../services/authServices";
-import paths from "../../router/paths";
+import paths from "../../const/paths";
 
 import AuthForm from './AuthForm';
 import OtpForm from './OtpForm';
@@ -24,25 +24,25 @@ const AuthModal = ({ isOpen, onClose, mode, setMode }) => {
   const handleSignIn = async (values) => {
     setLoading(true);
     try {
-      await signIn(values);
+      console.log('Sign in:', values);
+      const response = await signIn(values);
       notification.success({
         message: 'Đăng nhập thành công',
         description: 'Chào mừng bạn trở lại!',
       });
-    } catch (error) {
-      console.error('Đăng nhập thất bại', error);
-      if (error.response && error.response.status === 401) {
+      if (response?.businessErrorCode === 304) {
         notification.error({
           message: 'Đăng nhập thất bại',
-          description: 'Email hoặc mật khẩu không chính xác.',
+          description: 'Nhập sai email hoặc mật khẩu. Vui lòng thử lại.',
         });
       }
+    } catch (error) {
+      console.error('Đăng nhập thất bại', error);
     } finally {
       setLoading(false);
       onClose();
     }
   };
-
   const handleSignUp = async (values) => {
     setLoading(true);
     try {
@@ -89,7 +89,7 @@ const AuthModal = ({ isOpen, onClose, mode, setMode }) => {
       className="rounded-lg p-6"
     >
       {isOtpStep ?
-        <OtpForm form={form} onSubmit={handleOtp} />
+        <OtpForm form={form} onSubmit={handleOtp} isLoading={loading}/>
         : isSignUp ?
           <>
             <AuthForm form={form} isSignUp={true} isLoading={loading} onSubmit={handleSignUp} />

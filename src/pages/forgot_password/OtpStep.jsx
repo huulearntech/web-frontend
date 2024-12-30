@@ -1,7 +1,7 @@
 import React from 'react';
 import { Form, Input, Button } from 'antd';
 
-const OtpStep = ({ onSubmit }) => {
+const OtpStep = ({ onSubmit, isLoading }) => {
   const handleOtpSubmit = (values) => {
     onSubmit(values.otp);
   };
@@ -13,7 +13,7 @@ const OtpStep = ({ onSubmit }) => {
         <p className="text-gray-500">Chúng tôi đã gửi một mã OTP về email của bạn</p>
       </div>
       <div className="flex flex-col w-full h-full justify-center items-end">
-        <Form onFinish={handleOtpSubmit} layout='vertical' className="flex w-full justify-end">
+        <Form onFinish={handleOtpSubmit} layout='vertical' className="flex w-full justify-end" disabled={isLoading}>
           <Form.Item
             name="otp"
             rules={[{ required: true, message: 'Please input the OTP!' }]}

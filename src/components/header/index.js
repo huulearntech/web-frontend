@@ -5,7 +5,7 @@ import { Button, Menu, Badge, Avatar, Dropdown } from 'antd';
 import { ShoppingCartOutlined, LogoutOutlined, UserOutlined } from '@ant-design/icons';
 import { ReactComponent as HeaderLogo } from '../../assets/icons/logo_header.svg';
 import SignOutModal from './SignOutModal'
-import paths from '../../router/paths'
+import paths from '../../const/paths'
 
 
 const CartButton = ({ itemCount }) => (
@@ -66,7 +66,7 @@ const Header = ({ onOpenAuthModal, isHeaderVisible }) => {
           <div className="flex items-center space-x-6">
             {user ? (
               <>
-                <CartButton itemCount={1009} />
+                {/* <CartButton itemCount={1009} /> */}
                 <AvatarButton user={user} onOpenSignOutModal={() => setIsSignOutModalOpen(true)} />
               </>
             ) : (

@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { Button, Result } from "antd";
-import paths from "../../router/paths";
+import paths from "../../const/paths";
 
 const Unauthorized = () => {
   const navigate = useNavigate();

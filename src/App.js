@@ -1,7 +1,7 @@
-import React, { use } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
-import paths from './router/paths';
+import PATHS from './const/paths';
 import { AuthProvider, AuthRequired } from './context/AuthContext';
 
 import HomePage from './pages/home';
@@ -13,6 +13,8 @@ import PartnershipRegister from './pages/partnership_register';
 import HotelDetail from './pages/hotel_detail';
 import Unauthorized from './pages/unauthorized';
 import NotFound from './pages/not_found';
+import BookingPage from './pages/booking';
+
 // import Admin from './pages/admin';
 
 
@@ -21,23 +23,24 @@ const App = () => {
     <Router>
       <AuthProvider >
         <Routes>
-          <Route path={paths.notAuthorized} element={<Unauthorized />} />
-          <Route path={paths.notFound} element={<NotFound />} />
-          <Route path={paths.home} element={<HomePage />} />
-          <Route path={paths.account} element={<ProfilePage />} />
-          <Route path={paths.search} element={<SearchPage />} />
-          <Route path={paths.hotelDetail} element={<HotelDetail />} />
-          <Route path={paths.forgotPassword} element={<ForgotPassword />} />
-          <Route path={paths.partnershipRegister} element={<PartnershipRegister />} />
+          <Route path={PATHS.notAuthorized} element={<Unauthorized />} />
+          <Route path={PATHS.notFound} element={<NotFound />} />
+          <Route path={PATHS.home} element={<HomePage />} />
+          <Route path={PATHS.search} element={<SearchPage />} />
+          <Route path={PATHS.hotelDetail} element={<HotelDetail />} />
+          <Route path={PATHS.forgotPassword} element={<ForgotPassword />} />
+          <Route path={PATHS.partnershipRegister} element={<PartnershipRegister />} />
 
-          {/* Admin layout */}
-          {/* <Route path={paths.admin} element={<Admin />} /> */}
           
           {/* Auth required */}
-          {/* <Route path={paths.account} element={<AuthRequired><ProfilePage /></AuthRequired>} /> */}
-          <Route path={paths.hotelManager} element={<AuthRequired><HotelManager /></AuthRequired>} />
+          {/* <Route path={PATHS.admin} element={<Admin />} /> */}
 
+          {/* <Route path={PATHS.account} element={<AuthRequired><ProfilePage /></AuthRequired>} />
+          <Route path={PATHS.hotelManager} element={<AuthRequired><HotelManager /></AuthRequired>} />
+          <Route path={PATHS.booking} element={<BookingPage />} /> */}
 
+          <Route path={PATHS.account} element={<ProfilePage />} />
+          <Route path={PATHS.hotelManager} element={<HotelManager />} />
         </Routes>
       </AuthProvider>
     </Router>

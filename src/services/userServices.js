@@ -75,12 +75,28 @@ const updateUserData = async (fullName, imageFile) => {
       params: { fullName },
     });
 
+    return response;
+  } catch (error) {
+    console.error('Error updating user:', error);
+    throw error;
+  }
+};
+
+const uploadImage = async (imageFile) => {
+  try {
+    const response = await axiosInstance.post(`/v3/api-docs/images/upload`, {file: imageFile}, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    console.log("uploadImage response:", response);
     return response.data;
   } catch (error) {
     console.error('Error updating user:', error);
     throw error;
   }
 };
+
 
 export default {
   postFeedback,
@@ -90,4 +106,5 @@ export default {
   resetPassword,
   getUserData,
   updateUserData,
+  uploadImage,
 };

@@ -42,7 +42,7 @@ const withCommonLayout = (WrappedComponent) => {
         <main className='pt-20 w-full min-h-screen'>
           <WrappedComponent {...props} />
         </main>
-        <Footer className='mt-10'/>
+        <Footer/>
       </div>
     );
   };

@@ -14,31 +14,47 @@ const AccommodationFormStep = ({ form, onSubmit, onBack, formData }) => {
     <Form form={form} onFinish={handleSubmit} className="w-full">
       <h2 className="text-2xl font-bold mb-6 text-center">Accommodation Info</h2>
       <Form.Item
-        name="accommodationName"
+        name="name"
         rules={[{ required: true, message: 'Please input the accommodation name!' }]}
       >
         <Input placeholder="Accommodation Name" />
       </Form.Item>
       <Form.Item
-        name="accommodationAddress"
-        rules={[{ required: true, message: 'Please input the accommodation address!' }]}
+        name="province"
+        rules={[{ required: true, message: 'Please input the accommodation province!' }]}
       >
-        <Input placeholder="Accommodation Address" />
+        <Input placeholder="Accommodation Province" />
       </Form.Item>
+
       <Form.Item
-        name="accommodationPositionLongitude"
+        name="district"
+        rules={[{ required: true, message: 'Please input the accommodation district!' }]}
+      >
+        <Input placeholder="Accommodation District" />
+      </Form.Item>
+
+      <Form.Item
+        name="ward"
+        rules={[{ required: true, message: 'Please input the accommodation ward!' }]}
+      >
+        <Input placeholder="Accommodation Ward" />
+      </Form.Item>
+      
+
+      <Form.Item
+        name="longitude"
         rules={[{ required: true, message: 'Please input the longitude!' }]}
       >
         <Input placeholder="Longitude" />
       </Form.Item>
       <Form.Item
-        name="accommodationPositionLatitude"
+        name="latitude"
         rules={[{ required: true, message: 'Please input the latitude!' }]}
       >
         <Input placeholder="Latitude" />
       </Form.Item>
       <Form.Item
-        name="accommodationType"
+        name="type"
         rules={[{ required: true, message: 'Please select the accommodation type!' }]}
       >
         <Select placeholder="Select Accommodation Type">

@@ -154,7 +154,10 @@ const SearchPage = () => {
           validCheckOut,
           validAdults,
           validChildren,
-          
+          validRooms,
+          filter,
+          sortBy,
+          currentPage
         );
         setSearchResults(response.data);
         setTotalResults(response.total);

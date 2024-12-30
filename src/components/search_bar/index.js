@@ -8,6 +8,7 @@ import searchServices from '../../services/searchServices';
 import Location from './Location';
 import InoutDate from './InoutDate';
 import GuestsAndRooms from './GuestsAndRooms';
+import PATHS from '../../const/paths';
 
 const SearchButton = React.memo(({ handleSubmit, isLoading }) => {
   return (
@@ -23,7 +24,7 @@ const SearchButton = React.memo(({ handleSubmit, isLoading }) => {
   );
 });
 
-const SearchBar = ({ location, checkInOut, guestsAndRooms, setLocation, setCheckInOut, setGuestsAndRooms }) => {
+const SearchBar = ({ location, checkInOut, guestsAndRooms, setLocation, setCheckInOut, setGuestsAndRooms, navigateTo=PATHS.search }) => {
   const navigate = useNavigate();
   console.log('SearchBar location:', location);
 
@@ -47,7 +48,7 @@ const SearchBar = ({ location, checkInOut, guestsAndRooms, setLocation, setCheck
       rooms: guestsAndRooms.rooms
     }).toString();
 
-    navigate(`/search?${queryParams}`);
+    navigate(`${navigateTo}?${queryParams}`);
     // navigate(`/search?location=${location}&checkIn=${checkInOutDate[0].toISOString()}&checkOut=${checkInOutDate[1].toISOString()}&adults=${guestsAndRooms.adults}&children=${guestsAndRooms.children}&rooms=${guestsAndRooms.rooms}`);
 
   }, [location, checkInOut, guestsAndRooms, navigate]);

@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
-import { Steps, Form } from 'antd';
+import { Steps, Form, notification } from 'antd';
 import PartnerEmailFormStep from './PartnerEmailFormStep';
 import AccommodationFormStep from './AccommodationFormStep';
 import LocationPicker from './LocationPicker';
+import hotelServices from '../../services/hotelServices';
 
 const PartnershipRegister = () => {
+  const [loading, setLoading] = useState(false);
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({});
   const [form] = Form.useForm();
@@ -15,9 +17,26 @@ const PartnershipRegister = () => {
     setStep(2);
   };
 
-  const handleAccommodationSubmit = (values) => {
+  const handleAccommodationSubmit = async (values) => {
     const finalData = { ...formData, ...values };
     console.log('Received values of form: ', finalData);
+
+    setLoading(true);
+    try {
+      await hotelServices.registerHotel(finalData);
+      notification.success({
+        message: 'Hotel registration successful',
+        description: 'Your hotel has been registered successfully. We will review your information and get back to you soon.',
+      });
+    } catch (error) {
+      console.error('Error registering hotel:', error);
+      notification.error({
+        message: 'Hotel registration failed',
+        description: 'An error occurred while registering your hotel. Please try again later.',
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   const renderContent = () => {

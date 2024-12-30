@@ -6,34 +6,43 @@ import EmailStep from './EmailStep';
 import OtpStep from './OtpStep';
 import SetNewPasswordStep from './SetNewPasswordStep';
 
-import paths from '../../router/paths';
+import paths from '../../const/paths';
 import userServices from '../../services/userServices'; // Import user services
+import { set } from 'lodash';
 
 const ForgotPassword = () => {
+  const [isLoading, setIsLoading] = useState(false);
   const [email, setEmail] = useState('');
   const [step, setStep] = useState(1);
   const navigate = useNavigate();
 
   const handleEmailSubmit = async (email) => {
+    setIsLoading(true);
     try {
       await userServices.sendVerificationCode(email); // Use sendVerificationCode service
       setEmail(email);
       setStep(2);
     } catch (error) {
       console.error('Error sending OTP:', error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const handleOtpSubmit = async (otp) => {
+    setIsLoading(true);
     try {
       await userServices.verifyCode(email, otp); // Use verifyCode service
       setStep(3);
     } catch (error) {
       console.error('Error verifying OTP:', error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const handlePasswordReset = async (newPassword) => {
+    setIsLoading(true);
     try {
       await userServices.resetPassword(email, newPassword); // Use resetPassword service
       notification.success({
@@ -46,19 +55,21 @@ const ForgotPassword = () => {
       navigate(paths.home);
     } catch (error) {
       console.error('Error resetting password:', error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const renderContent = () => {
     switch (step) {
       case 1:
-        return <EmailStep onSubmit={handleEmailSubmit} email={email} setEmail={setEmail} />;
+        return <EmailStep onSubmit={handleEmailSubmit} email={email} setEmail={setEmail} isLoading={isLoading}/>;
       case 2:
-        return <OtpStep onSubmit={handleOtpSubmit} />;
+        return <OtpStep onSubmit={handleOtpSubmit}  isLoading={isLoading}/>;
       case 3:
-        return <SetNewPasswordStep onSubmit={handlePasswordReset} />;
+        return <SetNewPasswordStep onSubmit={handlePasswordReset}  isLoading={isLoading}/>;
       default:
-        return <EmailStep onSubmit={handleEmailSubmit} email={email} setEmail={setEmail} />;
+        return <EmailStep onSubmit={handleEmailSubmit} email={email} setEmail={setEmail}  isLoading={isLoading}/>;
     }
   };
 

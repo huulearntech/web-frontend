@@ -2,7 +2,7 @@ import React from 'react';
 import { Form, Input, Button } from 'antd';
 import { EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
 
-const SetNewPasswordStep = ({ onSubmit }) => {
+const SetNewPasswordStep = ({ onSubmit, isLoading }) => {
   const [form] = Form.useForm();
 
   const handleSubmit = (values) => {
@@ -16,7 +16,7 @@ const SetNewPasswordStep = ({ onSubmit }) => {
         <p className="text-gray-500">Hãy ghi nhớ mật khẩu của bạn nhé!</p>
       </div>
       <div className="flex flex-col w-full h-full justify-center items-end">
-        <Form form={form} onFinish={handleSubmit} layout='vertical' className="w-full">
+        <Form form={form} onFinish={handleSubmit} layout='vertical' className="w-full" disabled={isLoading}>
           <Form.Item
             name="newPassword"
             label="Mật khẩu mới"
