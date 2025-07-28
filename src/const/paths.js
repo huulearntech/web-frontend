@@ -1,5 +1,8 @@
-const PATHS = {
+const paths = {
   home: '/',
+  signIn: '/signin',
+  signUp: '/signup',
+  favorites: '/favorites',
   account: '/account',
   admin: '/admin',
   hotelDetail: '/hotel',
@@ -12,4 +15,4 @@ const PATHS = {
   notFound: '/notfound'
 };
 
-export default PATHS;
+export default paths;

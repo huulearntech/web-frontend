@@ -1,8 +1,9 @@
 import React from 'react';
 import { Rate } from 'antd';
 import { useNavigate } from 'react-router-dom';
-import { FaBuilding as AccommodationIcon } from 'react-icons/fa';
-import { PiMapPinFill as LocationIcon } from 'react-icons/pi';
+import { BuildOutlined as AccommodationIcon,
+  EnvironmentOutlined as LocationIcon
+ } from '@ant-design/icons';
 
 const SimplifiedProductCard = ({ product }) => {
   const navigate = useNavigate();
