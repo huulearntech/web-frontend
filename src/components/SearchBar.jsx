@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 
-import { Button, Input, Popover, DatePicker, AutoComplete, Dropdown, Form } from "antd";
+import { Button, Input, Tooltip, DatePicker, AutoComplete, Dropdown, Form } from "antd";
 import { UserOutlined, SearchOutlined, CalendarOutlined, CloseCircleFilled, EnvironmentOutlined } from "@ant-design/icons";
 import { useSearchBar } from "../contexts/SearchBarContext";
 import searchServices from "../services/searchServices";
@@ -75,7 +75,7 @@ const SearchBar = () => {
         >
           <AutoComplete
             options={options}
-            allowClear={{ clearIcon: <CloseCircleFilled /> }}
+            allowClear={{ clearIcon: <CloseCircleFilled style={{ fontSize: "14px" }} /> }}
             onChange={setLocation}
             value={location}
           >
@@ -194,12 +194,9 @@ const SearchBar = () => {
               </div>
             )}
           >
-            <Popover
+            <Tooltip
               open={warningAdultRoom}
-              content={
-                <div>Số phòng không thể nhiều hơn số khách người lớn</div>
-              }
-              placement="right"
+              title={ <span>Số phòng không thể nhiều hơn số khách người lớn</span> }
             >
               <Input
                 placeholder="Khách và Phòng"
@@ -207,13 +204,13 @@ const SearchBar = () => {
                 prefix={<UserOutlined style={{ marginRight: "4px", color: "#1677ff" }} />}
                 value={`${guestsAndRooms.adults} người lớn, ${guestsAndRooms.children} trẻ em, ${guestsAndRooms.rooms} phòng`}
               />
-            </Popover>
+            </Tooltip>
           </Dropdown>
         </Form.Item>
 
         <Form.Item style={{ display: "flex", alignItems: "end"}} >
-          <Button type="primary" htmlType="submit">
-            <span>Tìm kiếm</span>
+          <Button type="primary" htmlType="submit" icon={<SearchOutlined />}>
+            Tìm kiếm
           </Button>
         </Form.Item>
       </Form>

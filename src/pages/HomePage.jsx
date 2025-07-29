@@ -1,17 +1,17 @@
 import { useState, useEffect } from 'react';
 import { Divider, Tabs } from 'antd';
 
-import SearchBar from '../components/search_bar';
+import SearchBar from '../components/SearchBar';
 
-import HomePageBg from '../../assets/images/homepage_bg.jpeg';
-import HotelPartners from '../../assets/images/hotel_partners.png';
-import PaymentPartners from '../../assets/images/payment_partner.png';
-import SimplifiedProductCard from '../components/SimplifiedProductCard';
+import HomePageBg from '../assets/images/homepage_bg.jpeg';
+import HotelPartners from '../assets/images/hotel_partners.png';
+import PaymentPartners from '../assets/images/payment_partner.png';
+import SimplifiedProductCard from '../components/SimpleHotelCard';
 import searchServices from '../services/searchServices';
 
-import luggage from '../../assets/icons/luggage.webp';
-import checklist from '../../assets/icons/checklist.webp';
-import shield from '../../assets/icons/shield.webp';
+import luggage from '../assets/icons/luggage.webp';
+import checklist from '../assets/icons/checklist.webp';
+import shield from '../assets/icons/shield.webp';
 
 const FavoriteDestination = ({ title, locations }) => {
   const [selectedLocation, setSelectedLocation] = useState(locations[0]);
@@ -42,7 +42,7 @@ const FavoriteDestination = ({ title, locations }) => {
           <Tabs.TabPane tab={location} key={location}>
             <div className="flex flex-row flex-wrap gap-4 transition-opacity duration-300">
               {hotels[location]?.slice(0, 5).map((hotel) => (
-                <SimplifiedProductCard key={hotel.id} product={hotel} />
+                <SimplifiedProductCard key={hotel.id} hotel={hotel} />
               ))}
             </div>
           </Tabs.TabPane>
@@ -104,7 +104,6 @@ const HomePage = () => {
           backgroundPosition: 'center'
         }}
       >
-        <div className="flex w-full max-w-7xl p-2 rounded-lg bg-white">
           <SearchBar
             location={location}
             checkInOut={checkInOut}
@@ -113,7 +112,8 @@ const HomePage = () => {
             setLocation={setLocation}
             setGuestsAndRooms={setGuestsAndRooms}
           />
-        </div>
+        {/* <div className="flex w-full max-w-7xl p-2 rounded-lg bg-white">
+        </div> */}
       </div>
       <div className="flex flex-col w-full max-w-7xl space-y-4">
 

@@ -1,4 +1,3 @@
-
 import hanoiImage from './assets/images/hanoi.webp';
 import hoianImage from './assets/images/hoian.jpg';
 import dalatImage from './assets/images/dalat.jpg';
@@ -49,11 +48,11 @@ export const slides = [
 
 
 
-export const fake_products = [
+export const fake_hotels = [
   {
     id: 1,
-    name: "Dummy product",
-    images: [
+    name: "Dummy hotel",
+    imageSrcs: [
       "https://placehold.co/400x300?text=Main+Image",
       "https://placehold.co/100x75?text=Image+1",
       "https://placehold.co/100x75?text=Image+2",
@@ -61,17 +60,17 @@ export const fake_products = [
     ],
     rating: 2.7,
     numberOfReviews: 100,
-    accommodation: "Hotel",
+    type: "Hotel",
     location: "New York, USA",
-    description: "This product is good",
+    description: "This hotel is not good",
     amenities: ["Wifi", "Parking", "Pool"],
     price: 129.99,
     position: [51.505, -0.09]
   },
   {
     id: 2,
-    name: "Another dummy product",
-    images: [
+    name: "Another dummy hotel",
+    imageSrcs: [
       "https://placehold.co/400x300?text=Main+Image",
       "https://placehold.co/100x75?text=Image+1",
       "https://placehold.co/100x75?text=Image+2",
@@ -79,8 +78,8 @@ export const fake_products = [
     ],
     rating: 2.8,
     numberOfReviews: 100,
-    accommodation: "Hotel",
-    location: "New York, USA",
+    type: "Resort",
+    location: "California, USA",
     description: "Bla bla bla",
     amenities: ["Wifi", "Parking", "Pool", "Gym", "Spa"],
     price: 129.99,
@@ -89,7 +88,7 @@ export const fake_products = [
   {
     id: 3,
     name: "This is a very long name to test the overflow of the text",
-    images: [
+    imageSrcs: [
       "https://placehold.co/400x300?text=Main+Image",
       "https://placehold.co/100x75?text=Image+1",
       "https://placehold.co/100x75?text=Image+2",
@@ -97,30 +96,12 @@ export const fake_products = [
     ],
     rating: 4.9,
     numberOfReviews: 100,
-    accommodation: "Hotel",
-    location: "New York, USA",
-    description: "This product is good",
+    type: "Apartment",
+    location: "London, UK",
+    description: "This hotel is good",
     amenities: ["Wifi", "Parking", "Pool", "Bar", "Restaurant"],
     price: 129.99,
     position: [51.525, -0.11]
-  },
-  {
-    id: 4,
-    name: "Another dummy product",
-    images: [
-      "https://placehold.co/400x300?text=Main+Image",
-      "https://placehold.co/100x75?text=Image+1",
-      "https://placehold.co/100x75?text=Image+2",
-      "https://placehold.co/100x75?text=Image+3"
-    ],
-    rating: 3.2,
-    numberOfReviews: 100,
-    accommodation: "Hotel",
-    location: "New York, USA",
-    description: "Bla bla bla",
-    amenities: ["Wifi", "Parking", "Pool", "Casino"],
-    price: 129.99,
-    position: [51.535, -0.12]
   },
 ];
 

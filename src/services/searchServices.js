@@ -1,6 +1,6 @@
 import axiosInstance from "./axios_instance";
 
-import { fake_locations, fake_products } from "../fake_data";
+import { fake_locations, fake_hotels } from "../mock_data";
 
 const searchBySpec_Filter_Sort_Page = async (
   location,
@@ -29,7 +29,7 @@ const searchBySpec_Filter_Sort_Page = async (
   //   console.error("Error searching:", error);
   //   throw error.response?.data || error.message;
   // }
-  return { data: fake_products, total: fake_products.length };
+  return { data: fake_hotels, total: fake_hotels.length };
 }
 
 const searchBySearchList = async (searchList) => {
@@ -50,7 +50,7 @@ const searchByMapBounds = async (mapBounds, amount=10) => {
   //   console.error("Error searching:", error);
   //   throw error.response?.data || error.message;
   // }
-  return fake_products;
+  return fake_hotels;
 }
 
 const getLocationsContaining = async (query, amount=5) => {
@@ -78,7 +78,7 @@ const getFavoriteHotelsAtLocation = async (location) => {
   //   console.error("Error searching:", error);
   //   throw error.response?.data || error.message;
   // }
-  return fake_products;
+  return fake_hotels;
 };
 
 export default {
