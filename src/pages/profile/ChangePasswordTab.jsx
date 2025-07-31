@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Form, Input, Button, notification } from 'antd';
 
 import userServices from '../../services/userServices';
@@ -64,8 +64,7 @@ const ChangePasswordTab = () => {
               }
               return Promise.reject('Xác nhận mật khẩu không khớp!');
             },
-          }),
-          { min: 8, message: 'Mật khẩu phải có ít nhất 8 ký tự!'}
+          })
           ]}
         >
           <Input.Password size='large'/>

@@ -6,7 +6,7 @@ export const SearchBarContextProvider = ({ children }) => {
   const [location, setLocation] = useState("");
   const [checkInOut, setCheckInOut] = useState([null, null]);
   const [guestsAndRooms, setGuestsAndRooms] = useState({
-    adults: 1,
+    adults: 2,
     children: 0,
     rooms: 1,
   });

@@ -1,4 +1,5 @@
 import { Steps, Form, Input, Button } from 'antd';
+import { ArrowRightOutlined } from '@ant-design/icons';
 import { useForgotPasswordContext } from '../contexts/ForgotPasswordContext';
 
 const EmailStep = () => {
@@ -21,7 +22,7 @@ const EmailStep = () => {
           />
         </Form.Item>
         <Form.Item >
-          <Button type="primary" htmlType="submit">
+          <Button type="primary" htmlType="submit" icon={<ArrowRightOutlined />} iconPosition="end">
             Tiếp theo
           </Button>
         </Form.Item>
@@ -53,7 +54,7 @@ const OtpStep = () => {
             />
           </Form.Item>
         <Form.Item >
-          <Button type="primary" htmlType="submit">
+          <Button type="primary" htmlType="submit" icon={<ArrowRightOutlined />} iconPosition="end">
             Tiếp theo
           </Button>
         </Form.Item>

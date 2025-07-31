@@ -2,16 +2,17 @@ import { useState, useEffect } from 'react';
 import { Divider, Tabs } from 'antd';
 
 import SearchBar from '../components/SearchBar';
+import Footer from '../components/Footer';
 
-import HomePageBg from '../assets/images/homepage_bg.jpeg';
 import HotelPartners from '../assets/images/hotel_partners.png';
 import PaymentPartners from '../assets/images/payment_partner.png';
-import SimplifiedProductCard from '../components/SimpleHotelCard';
+import SimpleHotelCard from '../components/SimpleHotelCard';
 import searchServices from '../services/searchServices';
 
-import luggage from '../assets/icons/luggage.webp';
-import checklist from '../assets/icons/checklist.webp';
-import shield from '../assets/icons/shield.webp';
+const home_page_bg = "https://ik.imagekit.io/tvlk/image/imageResource/2025/01/05/1736039153373-64c979a852c7ec9063c6f2104bcf58dd.png?tr=q-75";
+const luggage_icon = "https://ik.imagekit.io/tvlk/image/imageResource/2023/06/14/1686718236517-bf9a3e5ffd872b781ba2e56e93fe8840.webp?tr=h-64,q-75,w-64";
+const checklist_icon = "https://ik.imagekit.io/tvlk/image/imageResource/2023/06/14/1686718238370-9ef6b6e0701e9074614951c0bd49930c.webp?tr=h-64,q-75,w-64";
+const shield_icon = "https://ik.imagekit.io/tvlk/image/imageResource/2023/06/14/1686718240417-96131eb957c39a098a12d2d7926e3342.webp?tr=h-64,q-75,w-64";
 
 const FavoriteDestination = ({ title, locations }) => {
   const [selectedLocation, setSelectedLocation] = useState(locations[0]);
@@ -42,7 +43,7 @@ const FavoriteDestination = ({ title, locations }) => {
           <Tabs.TabPane tab={location} key={location}>
             <div className="flex flex-row flex-wrap gap-4 transition-opacity duration-300">
               {hotels[location]?.slice(0, 5).map((hotel) => (
-                <SimplifiedProductCard key={hotel.id} hotel={hotel} />
+                <SimpleHotelCard key={hotel.id} hotel={hotel} />
               ))}
             </div>
           </Tabs.TabPane>
@@ -64,59 +65,58 @@ const Partners = ({ title, description, imageSrc }) => {
   );
 };
 
-const WhyUsCard = ({ icon, title, description }) => {
+const WhyUsCard = ({ imageSrc, title, description }) => {
   return (
-    <div className="flex flex-row w-full items-center bg-white rounded-lg shadow-sm p-4 space-x-4">
-      <img src={icon} alt={title} />
-      <div className="flex flex-col">
+    <div className="flex w-full items-center bg-white rounded-lg shadow-lg p-4 gap-4">
+      <img src={imageSrc} alt={title} />
+      <div className="flex flex-col gap-1">
         <h2 className="font-semibold">{title}</h2>
-        <p className="text-sm text-gray-600">{description}</p>
+        <p className="text-sm text-gray-700">{description}</p>
       </div>
     </div>
   );
-}
+};
 
-const WhyUs = () => {
+const WhyUsSection = () => {
   return (
-    <div className="flex flex-col items-center justify-center py-10 bg-gray-100">
+    <div className="flex flex-col items-center justify-center py-10">
       <h1 className="text-2xl font-semibold">Lý do nên đặt chỗ với Traveloka?</h1>
       <div className="flex flex-row w-full justify-center space-x-10 mt-10">
-        <WhyUsCard icon={luggage} title="Đáp ứng mọi nhu cầu của bạn" description="Từ chuyến bay, lưu trú, đến điểm tham quan, bạn có thể tin chọn sản phẩm hoàn chỉnh và Hướng Dẫn Du Lịch của chúng tôi." />
-        <WhyUsCard icon={checklist} title="Tùy chọn đặt chỗ linh hoạt" description="Kế hoạch thay đổi bất ngờ? Đừng lo!Đổi lịch hoặc Hoàn tiền dễ dàng." />
-        <WhyUsCard icon={shield} title="Thanh toán an toàn và thuận tiện" description="Tận hưởng nhiều cách thanh toán an toàn, bằng loại tiền thuận tiện nhất cho bạn." />
+        <WhyUsCard
+          imageSrc={luggage_icon}
+          title="Đáp ứng mọi nhu cầu của bạn"
+          description={<>Từ chuyến bay, lưu trú, đến điểm tham quan, bạn có thể tin chọn <b>sản phẩm hoàn chỉnh</b> và <b>Hướng Dẫn Du Lịch</b> của chúng tôi.</>} 
+        />
+        <WhyUsCard
+          imageSrc={checklist_icon}
+          title="Tùy chọn đặt chỗ linh hoạt"
+          description={<>Kế hoạch thay đổi bất ngờ? Đừng lo! <b>Đổi lịch</b> hoặc <b>Hoàn tiền</b> dễ dàng.</>}
+        />
+        <WhyUsCard
+          imageSrc={shield_icon}
+          title="Thanh toán an toàn và thuận tiện"
+          description={<>Tận hưởng nhiều cách <b>thanh toán an toàn</b>, bằng loại tiền thuận tiện nhất cho bạn.</>}
+        />
       </div>
     </div>
   );
 };
 
 const HomePage = () => {
-  const [location, setLocation] = useState('');
-  const [checkInOut, setCheckInOut] = useState([]);
-  const [guestsAndRooms, setGuestsAndRooms] = useState({ adults: 2, children: 0, rooms: 1 });
-
   return (
     <div className="flex flex-col items-center justify-start space-y-4">
       <div
         className="flex w-full h-96 items-center justify-center bg-gray-300"
         style={{
-          backgroundImage: `url(${HomePageBg})`,
+          backgroundImage: `url(${home_page_bg})`,
           backgroundSize: 'cover',
           backgroundPosition: 'center'
         }}
       >
-          <SearchBar
-            location={location}
-            checkInOut={checkInOut}
-            guestsAndRooms={guestsAndRooms}
-            setCheckInOut={setCheckInOut}
-            setLocation={setLocation}
-            setGuestsAndRooms={setGuestsAndRooms}
-          />
-        {/* <div className="flex w-full max-w-7xl p-2 rounded-lg bg-white">
-        </div> */}
+        <SearchBar />
       </div>
-      <div className="flex flex-col w-full max-w-7xl space-y-4">
 
+      <div className="flex flex-col w-full max-w-7xl space-y-4">
         <FavoriteDestination title={"Deal nội địa tiết kiệm cuối năm"} locations={['Đà Nẵng', 'Vũng Tàu', 'Hồ Chí Minh', 'Hà Nội', 'Đà Lạt']} />
         <Divider />
         <FavoriteDestination title={"Vi vu quốc tế cuối năm"} locations={['Bangkok', 'Singapore', 'Kuala Lumpur', 'Seoul']} />
@@ -125,13 +125,17 @@ const HomePage = () => {
         </div>
 
         <Partners title="Đối tác khách sạn" description="Chúng tôi hợp tác với các chuỗi khách sạn trên toàn thế giới để bảo đảm mang lại kỳ nghỉ tuyệt vời nhất tại mọi điểm đến trong mơ của bạn!" imageSrc={HotelPartners} />
-        <Divider />
+        <div className='flex flex-col items-center justify-center h-20'>
+          <Divider />
+        </div>
         <Partners title="Đối tác thanh toán" description="Những đối tác thanh toán đáng tin cậy của chúng tôi sẽ giúp cho bạn luôn an tâm thực hiện mọi giao dịch một cách thuận lợi nhất!" imageSrc={PaymentPartners} />
         <div className='flex flex-col items-center justify-center h-20'>
           <Divider />
         </div>
-        <WhyUs />
+        <WhyUsSection />
       </div>
+
+      <Footer />
     </div>
   );
 };

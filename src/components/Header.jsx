@@ -4,6 +4,8 @@ import { HeartOutlined, LogoutOutlined, UserOutlined } from '@ant-design/icons';
 import paths from '../const/paths'
 import { useSignOutModal } from '../contexts/SignOutModalContext';
 
+const tvlk_header_logo = "https://d1785e74lyxkqq.cloudfront.net/_next/static/v4.6.0/9/97f3e7a54e9c6987283b78e016664776.svg";
+
 const Header = () => {
   const { openSignOutModal } = useSignOutModal();
   const items = [
@@ -29,31 +31,32 @@ const Header = () => {
 
   return (
     <header className="flex justify-between items-center p-4 bg-white shadow-md">
+      <div className="flex w-full max-w-7xl mx-auto justify-between items-center">
         <Link to={paths.home}>
-          <img src="src/assets/icons/logo_header.svg" alt="Logo" style={{ height: '40px' }} />
+          <img src={tvlk_header_logo} alt="Traveloka Header Logo" style={{ height: '40px' }} />
         </Link>
 
-      <div className="flex items-center gap-16">
-        {user ? (
-          <>
-            <Link to={paths.favorites}>
-              <Badge count={itemCount} overflowCount={99} offset={[10, 0]}>
-                <HeartOutlined style={{ fontSize: '24px' }} />
-              </Badge>
-            </Link>
-            <Dropdown menu={{ items }} trigger={['click']}>
-              <Avatar
-                src={"src/assets/react.svg"} // replace with user.avatar if available
-                alt="user avatar"
-                style={{ cursor: 'pointer' }}
-              >
-                {!user.avatar && user.email.charAt(0).toUpperCase()}
-                lmao
-              </Avatar>
-            </Dropdown>
-          </>
-        ) : (
-            <div className="flex items-center gap-4">
+        <div className="flex items-center gap-16">
+          {user ? (
+            <>
+              <Link to={paths.favorites}>
+                <Badge count={itemCount} overflowCount={99} offset={[10, 0]}>
+                  <HeartOutlined style={{ fontSize: '24px' }} />
+                </Badge>
+              </Link>
+              <Dropdown menu={{ items }} trigger={['click']}>
+                <Avatar
+                  src={"src/assets/react.svg"} // replace with user.avatar if available
+                  alt="user avatar"
+                  style={{ cursor: 'pointer' }}
+                >
+                  {!user.avatar && user.email.charAt(0).toUpperCase()}
+                  lmao
+                </Avatar>
+              </Dropdown>
+            </>
+          ) : (
+            <div className="flex items-center gap-2">
               <Link to={paths.partnershipRegister}>
                 <span className="hover:text-blue-500 text-sm">
                   Trở thành đối tác của chúng tôi
@@ -70,7 +73,8 @@ const Header = () => {
                 </div>
               </Link>
             </div>
-        )}
+          )}
+        </div>
       </div>
     </header>
   );
