@@ -1,32 +1,14 @@
-import { Slider, Input, Checkbox, Collapse } from 'antd';
-import { DownOutlined } from '@ant-design/icons';
+import { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { setPriceRange, setAmenities, setPropertyTypes, setSortOrder } from '../store/filtersSlice';
+import { setPriceRange, setCheckboxGroup, setSortOrder } from '../store/filtersSlice';
 
+import { Slider, Input, Checkbox, Collapse, Select, Flex } from 'antd';
 
 // Why is that when I change only one of the filters, the others are re-rendered?
 // According to Copilot, it is because the whole value in the context provider is changing,
 // causing all components that consume the context to re-render.
-const FilterCategory = ({ name, options, selectedOptions, onChange }) => {
-  return (
-    <Collapse
-      expandIcon={({ isActive }) => <DownOutlined rotate={isActive ? 180 : 0} />}
-      defaultActiveKey={[name]}
-      items={[
-        {
-          key: name,
-          label: <span className="font-semibold">{name}</span>,
-          children:
-            <Checkbox.Group
-              options={options}
-              value={selectedOptions}
-              onChange={(checkedValues) => onChange(name, checkedValues)}
-            />
-        }
-      ]}
-    />
-  );
-};
+
+// Haven't solved re-rendering issue yet, but I will try to use Redux for state management.
 
 const PriceRange = () => {
   const priceRange = useSelector((state) => state.filters.priceRange);
@@ -34,7 +16,7 @@ const PriceRange = () => {
 
   return (
     <div className="w-full bg-white border border-gray-300 rounded-lg p-4">
-      <h3 className="font-semibold">Khoảng giá</h3>
+      <h3 className="text-sm font-semibold">Khoảng giá</h3>
       <p className="text-sm text-gray-500 mb-2">1 phòng, 1 đêm (VND)</p>
       <Slider
         range
@@ -43,31 +25,35 @@ const PriceRange = () => {
         step={100_000}
         value={priceRange}
         onChange={value => dispatch(setPriceRange(value))}
-        tooltip={{ formatter: (value) => `VND ${value.toLocaleString('vi-VN')}` }}
+        tooltip={{ formatter: (value) => `VND ${value.toLocaleString('vi-vn')}` }}
       />
-      <div className="flex space-x-2">
+      <div className="flex gap-2">
         <Input
           type="text"
-          id="minPrice"
+          inputMode="numeric"
           name="minPrice"
           placeholder="Min Price"
-          value={priceRange[0].toLocaleString('vi-VN')}
+          value={priceRange[0].toLocaleString('vi-vn')}
           onChange={(e) => {
             const value = parseInt(e.target.value.replace(/\D/g, ''), 10) || 0;
             dispatch(setPriceRange([value, priceRange[1]]));
           }}
+          suffix="VND"
+          size="small"
         />
-        <span className="self-center">-</span>
+        <span className="text-center">-</span>
         <Input
           type="text"
-          id="maxPrice"
+          inputMode="numeric"
           name="maxPrice"
           placeholder="Max Price"
-          value={priceRange[1].toLocaleString('vi-VN')}
+          value={priceRange[1].toLocaleString('vi-vn')}
           onChange={(e) => {
             const value = parseInt(e.target.value.replace(/\D/g, ''), 10) || 0;
             dispatch(setPriceRange([priceRange[0], value]));
           }}
+          suffix="VND"
+          size="small"
         />
       </div>
     </div>
@@ -75,47 +61,63 @@ const PriceRange = () => {
 };
 
 const Filter = () => {
-  const { amenities, propertyTypes, sortOrder } = useSelector((state) => state.filters);
   const dispatch = useDispatch();
+  const checkboxGroups = useSelector((state) => state.filters.checkboxGroups);
+
+  const [filterCategories, setFilterCategories] = useState([]);
+  useEffect(() => {
+    // TODO: Implement API
+    // Fetch filter categories from an API
+    setFilterCategories([
+      { id: 'amenities', label: 'Tiện nghi', options: ['WiFi', 'Parking', 'Pool', 'Gym'] },
+      { id: 'propertyTypes', label: 'Loại hình lưu trú', options: ['Apartment', 'House', 'Condo', 'Villa'] },
+    ]);
+  }, []);
+
   return (
-    <div>
+    <div className="w-full max-w-xs flex flex-col space-y-4">
+      <button
+        className="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 cursor-pointer"
+        onClick={() => {
+          dispatch(setSortOrder('Popularity'));
+          dispatch(setPriceRange([100_000, 20_000_000]));
+          filterCategories.forEach(category => {
+            dispatch(setCheckboxGroup({ group: category.id, selectedOptions: [] }));
+          });
+        }}
+      >
+        Đặt lại bộ lọc
+      </button>
       <PriceRange />
-      <FilterCategory
-        name="Amenities"
-        options={['WiFi', 'Parking', 'Pool', 'Gym']}
-        selectedOptions={amenities || []}
-        onChange={(_, checkedValues) => {
-          dispatch(setAmenities(checkedValues));
-        }}
-      />
-      <FilterCategory
-        name="Property Types"
-        options={['Apartment', 'House', 'Condo', 'Villa']}
-        selectedOptions={propertyTypes || []}
-        onChange={(_, checkedValues) => {
-          dispatch(setPropertyTypes(checkedValues));
-        }}
-      />
-      <FilterCategory
-        name="Sort Order"
-        options={['Relevance', 'Price: Low to High', 'Price: High to Low']}
-        selectedOptions={[sortOrder || 'Relevance']}
-        onChange={(_, checkedValues) => {
-          dispatch(setSortOrder(checkedValues[0]));
-        }}
-      />
-      <div className="mt-4">
-        <button
-          className="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 transition-colors"
-          onClick={() => {
-            dispatch(setAmenities([]));
-            dispatch(setPropertyTypes([]));
-            dispatch(setSortOrder('Relevance'));
-          }}
-        >
-          Clear Filters
-        </button>
-      </div>
+      {filterCategories.length > 0 && (
+        <Collapse
+          defaultActiveKey={filterCategories.map(category => category.id)}
+          items={filterCategories.map(category => ({
+            key: category.id,
+            label: <span className="font-semibold">{category.label}</span>,
+            children: (
+              <Checkbox.Group
+                value={checkboxGroups[category.id] || []}
+                onChange={(checkedValues) => dispatch(
+                  setCheckboxGroup({ group: category.id, selectedOptions: checkedValues })
+                )}
+              >
+                <Flex vertical gap="small">
+                  {category.options.map(option => (
+                    <Checkbox
+                      key={option}
+                      value={option}
+                      checked={checkboxGroups[category.id]?.includes(option)}
+                    >
+                      {option}
+                    </Checkbox>
+                  ))}
+                </Flex>
+              </Checkbox.Group>
+            ),
+          }))}
+        />
+      )}
     </div>
   );
 };

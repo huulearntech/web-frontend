@@ -4,24 +4,19 @@ const filtersSlice = createSlice({
   name: "filters",
   initialState: {
     priceRange: [100000, 20000000],
-    amenities: [],
-    propertyTypes: [],
-    sortOrder: "Relevance",
+    checkboxGroups: {
+      amenities: [],
+      propertyTypes: [],
+    },
+    sortOrder: "Popularity",
   },
   reducers: {
     setPriceRange: (state, action) => {
-      const [min, max] = action.payload;
-      const [origMin, origMax] = [100000, 20000000];
-      state.priceRange = [
-        Math.max(origMin, Math.min(min, origMax)),
-        Math.max(origMin, Math.min(max, origMax)),
-      ];
+      state.priceRange = action.payload;
     },
-    setAmenities: (state, action) => {
-      state.amenities = action.payload;
-    },
-    setPropertyTypes: (state, action) => {
-      state.propertyTypes = action.payload;
+    setCheckboxGroup: (state, action) => {
+      const { group, selectedOptions } = action.payload;
+      state.checkboxGroups[group] = selectedOptions;
     },
     setSortOrder: (state, action) => {
       state.sortOrder = action.payload;
@@ -29,5 +24,5 @@ const filtersSlice = createSlice({
   },
 });
 
-export const { setPriceRange, setAmenities, setPropertyTypes, setSortOrder } = filtersSlice.actions;
+export const { setPriceRange, setCheckboxGroup, setSortOrder } = filtersSlice.actions;
 export default filtersSlice.reducer;

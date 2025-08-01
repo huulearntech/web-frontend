@@ -108,46 +108,6 @@ const Footer = () => {
           </div>
 
         </div>
-        
-        {/* This section should be under the About Us section in the original site */}
-        {/* Social Media Links */}
-        <div className="mt-8">
-          <h3 className="font-semibold mb-2 justify-between">Theo dõi chúng tôi trên</h3>
-          <div className="flex justify-between space-x-6">
-            <ul className="flex flex-col space-y-3 text-sm text-gray-300">
-              <li>
-                <a href="https://www.facebook.com/TravelokaVN" className="inline-flex gap-2">
-                  <img src={facebook_icon} alt="Facebook" />
-                  <span>Facebook</span>
-                </a>
-              </li>
-              <li>
-                <a href="https://www.instagram.com/traveloka.vn/" className="inline-flex gap-2">
-                  <img src={instagram_icon} alt="Instagram" />
-                  <span>Instagram</span>
-                </a>
-              </li>
-              <li>
-                <a href="https://www.tiktok.com/@traveloka.vn" className="inline-flex gap-2">
-                  <img src={tiktok_icon} alt="TikTok" />
-                  <span>TikTok</span>
-                </a>
-              </li>
-              <li>
-                <a href="https://www.youtube.com/@travelokavn" className="inline-flex gap-2">
-                  <img src={youtube_icon} alt="YouTube" />
-                  <span>YouTube</span>
-                </a>
-              </li>
-              <li>
-                <a href="https://t.me/travelokavietnamofficial" className="inline-flex gap-2">
-                  <img src={telegram_icon} alt="Telegram" />
-                  <span>Telegram</span>
-                </a>
-              </li>
-            </ul>
-          </div>
-        </div>
 
         {/* Our productions */}
         <div className="mt-8">
@@ -199,6 +159,46 @@ const Footer = () => {
               </a>
             </li>
           </ul>
+        </div>
+        
+        {/* This section should be under the About Us section in the original site */}
+        {/* Social Media Links */}
+        <div className="mt-8">
+          <h3 className="font-semibold mb-2 justify-between">Theo dõi chúng tôi trên</h3>
+          <div className="flex justify-between space-x-6">
+            <ul className="flex flex-col space-y-3 text-sm text-gray-300">
+              <li>
+                <a href="https://www.facebook.com/TravelokaVN" className="inline-flex gap-2">
+                  <img src={facebook_icon} alt="Facebook" />
+                  <span>Facebook</span>
+                </a>
+              </li>
+              <li>
+                <a href="https://www.instagram.com/traveloka.vn/" className="inline-flex gap-2">
+                  <img src={instagram_icon} alt="Instagram" />
+                  <span>Instagram</span>
+                </a>
+              </li>
+              <li>
+                <a href="https://www.tiktok.com/@traveloka.vn" className="inline-flex gap-2">
+                  <img src={tiktok_icon} alt="TikTok" />
+                  <span>TikTok</span>
+                </a>
+              </li>
+              <li>
+                <a href="https://www.youtube.com/@travelokavn" className="inline-flex gap-2">
+                  <img src={youtube_icon} alt="YouTube" />
+                  <span>YouTube</span>
+                </a>
+              </li>
+              <li>
+                <a href="https://t.me/travelokavietnamofficial" className="inline-flex gap-2">
+                  <img src={telegram_icon} alt="Telegram" />
+                  <span>Telegram</span>
+                </a>
+              </li>
+            </ul>
+          </div>
         </div>
       </div>
       <hr className="w-full my-4 border-gray-500" />

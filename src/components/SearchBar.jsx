@@ -72,7 +72,7 @@ const SearchBar = () => {
 
   // FIXME: Change Form to something else because antd's Form is pre-styled
   return (
-    <div className="p-4 bg-white rounded-lg shadow-md">
+    <div className="w-7xl p-4 bg-white rounded-lg shadow-md">
       <Form
         onFinish={handleSubmit}
         layout="inline"
@@ -90,6 +90,7 @@ const SearchBar = () => {
             value={location}
             size="large"
             prefix={<EnvironmentOutlined style={{ marginRight: "4px", color: "#1677ff" }} />}
+            placeholder="Thành phố, khách sạn, điểm đến"
           />
         </Form.Item>
         <Form.Item
