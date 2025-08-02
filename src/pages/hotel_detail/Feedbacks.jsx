@@ -18,7 +18,7 @@ const FeedbackCard = ({ feedback }) => {
 
 const Feedbacks = ({ feedbacks, hotelName }) => {
 	return (
-		<div className="w-full rounded-lg shadow-lg bg-white p-4">
+		<div id='feedbacks' className="w-full rounded-lg shadow-lg bg-white p-4">
 			<h1 className="text-xl font-bold mb-4">Những review khác của du khách về  {hotelName}</h1>
 			<ul className="w-full">
 				{feedbacks.map((feedback) => (

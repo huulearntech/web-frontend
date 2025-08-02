@@ -5,7 +5,7 @@ const paths = {
   favorites: '/favorites',
   account: '/account',
   admin: '/admin',
-  hotelDetail: '/hotel',
+  hotelDetail: '/hotel-detail',
   booking: '/booking',
   search: '/search',
   forgotPassword: '/forgot-password',

@@ -12,41 +12,6 @@ export const images = {
   danang: danangImage,
 }
 
-export const slides = [
-    {
-      id: 1,
-      name: 'Ha Noi',
-      image: hanoiImage,
-      link: '/products/hanoi'
-    },
-    {
-      id: 2,
-      name: 'Hoi An',
-      image: hoianImage,
-      link: '/products/hanoi'
-    },
-    {
-      id: 3,
-      name: 'Da Lat',
-      image: dalatImage,
-      link: '/products/hanoi'
-    },
-    {
-      id: 4,
-      name: 'Sai Gon',
-      image: saigonImage,
-      link: '/products/hanoi'
-    },
-    {
-      id: 5,
-      name: 'Da Nang',
-      image: danangImage,
-      link: '/products/hanoi'
-    },
-    // Add more products as needed
-];
-
-
 
 export const fake_hotels = [
   {
@@ -54,9 +19,9 @@ export const fake_hotels = [
     name: "Dummy hotel",
     imageSrcs: [
       "https://placehold.co/400x300?text=Main+Image",
-      "https://placehold.co/100x75?text=Image+1",
-      "https://placehold.co/100x75?text=Image+2",
-      "https://placehold.co/100x75?text=Image+3"
+      "https://placehold.co/400x300?text=Image+1",
+      "https://placehold.co/400x300?text=Image+2",
+      "https://placehold.co/400x300?text=Image+3"
     ],
     rating: 2.7,
     numberOfReviews: 100,
@@ -72,9 +37,9 @@ export const fake_hotels = [
     name: "Another dummy hotel",
     imageSrcs: [
       "https://placehold.co/400x300?text=Main+Image",
-      "https://placehold.co/100x75?text=Image+1",
-      "https://placehold.co/100x75?text=Image+2",
-      "https://placehold.co/100x75?text=Image+3"
+      "https://placehold.co/400x300?text=Image+1",
+      "https://placehold.co/400x300?text=Image+2",
+      "https://placehold.co/400x300?text=Image+3"
     ],
     rating: 2.8,
     numberOfReviews: 100,
@@ -90,9 +55,9 @@ export const fake_hotels = [
     name: "This is a very long name to test the overflow of the text",
     imageSrcs: [
       "https://placehold.co/400x300?text=Main+Image",
-      "https://placehold.co/100x75?text=Image+1",
-      "https://placehold.co/100x75?text=Image+2",
-      "https://placehold.co/100x75?text=Image+3"
+      "https://placehold.co/400x300?text=Image+1",
+      "https://placehold.co/400x300?text=Image+2",
+      "https://placehold.co/400x300?text=Image+3"
     ],
     rating: 4.9,
     numberOfReviews: 100,

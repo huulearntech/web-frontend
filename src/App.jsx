@@ -7,6 +7,7 @@ import SignUp from "./pages/SignUp"
 import HomePage from "./pages/HomePage"
 import ForgotPassword from "./pages/ForgotPassword"
 import SearchPage from './pages/search'
+import HotelDetail from "./pages/hotel_detail"
 
 import Header from "./components/Header"
 import SignOutModal from "./components/SignOutModal"
@@ -45,6 +46,7 @@ function App() {
               </ForgotPasswordProvider>
             } />
             <Route path="/hotels" element={<HotelCard hotel={fake_hotels[2]} />} />
+            <Route path="/hotel-detail/:hotelId" element={<HotelDetail />} />
             {/* Add other routes here as needed */}
           </Routes>
         </Router>

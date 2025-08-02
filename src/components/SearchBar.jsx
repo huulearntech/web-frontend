@@ -2,17 +2,20 @@ import { useState, useEffect, useCallback } from "react";
 
 import { Button, Input, Tooltip, DatePicker, AutoComplete, Dropdown, Form } from "antd";
 import {
-  UserOutlined,
   SearchOutlined,
-  CalendarOutlined,
   CloseCircleFilled,
-  EnvironmentOutlined,
   PlusOutlined,
-  MinusOutlined
+  MinusOutlined,
+  CalendarTwoTone
 } from "@ant-design/icons";
 import { useSearchBar } from "../contexts/SearchBarContext";
 import searchServices from "../services/searchServices";
 
+const map_pin_icon = "https://d1785e74lyxkqq.cloudfront.net/_next/static/v4.6.0/7/7f57d24fd3db681418a3694bd71cb93b.svg";
+const adult_icon = "https://d1785e74lyxkqq.cloudfront.net/_next/static/v4.6.0/4/4c4f475da027590bc183e3debcba1a91.svg";
+const children_icon = "https://d1785e74lyxkqq.cloudfront.net/_next/static/v4.6.0/a/a5bc5e133ac74e2be6308b545ec556eb.svg";
+const room_icon = "https://d1785e74lyxkqq.cloudfront.net/_next/static/v4.6.0/c/c129054df5ccd27157e3257819d5af9d.svg";
+const guest_and_room_icon = "https://d1785e74lyxkqq.cloudfront.net/_next/static/v4.6.0/a/ae73fa0a5c08e7064d9dafe34d1408e8.svg";
 
 function debounce(func, delay) {
   let timer; // Holds the timeout ID
@@ -30,6 +33,17 @@ function debounce(func, delay) {
   };
 }
 
+const MyButton = ({ onClick, disabled, children }) => (
+  <button
+    onClick={onClick}
+    disabled={disabled}
+    className={`px-2 py-1 rounded
+      ${disabled ? "bg-gray-100 text-gray-400"
+      : "bg-blue-50 hover:bg-blue-100 text-blue-600"}`}
+  >
+    {children}
+  </button>
+);
 
 const SearchBar = () => {
   const { location, setLocation, checkInOut, setCheckInOut,
@@ -89,7 +103,7 @@ const SearchBar = () => {
             onChange={setLocation}
             value={location}
             size="large"
-            prefix={<EnvironmentOutlined style={{ marginRight: "4px", color: "#1677ff" }} />}
+            prefix={<img src={map_pin_icon} alt="Map Pin Icon" className="size-5 mr-1" />}
             placeholder="Thành phố, khách sạn, điểm đến"
           />
         </Form.Item>
@@ -101,7 +115,7 @@ const SearchBar = () => {
         >
           <DatePicker.RangePicker
             placeholder={["Ngày nhận", "Ngày trả"]}
-            prefix={<CalendarOutlined style={{ fontSize: "16px", marginRight: "4px", color: "#1677ff" }} />}
+            prefix={<CalendarTwoTone style={{ fontSize: "20px", marginRight: "4px" }} />}
             suffixIcon={null}
             format={"DD/MM/YYYY"}
             value={checkInOut}
@@ -122,10 +136,12 @@ const SearchBar = () => {
             popupRender={_ => (
               <div className="flex flex-col p-4 bg-white rounded-lg shadow-xl">
                 <div className="flex flex-row items-center justify-between mb-4">
-                  <label htmlFor="adults-input" className="text-base">Người lớn:</label>
+                  <label htmlFor="adults-input" className="text-base inline-flex items-center">
+                    <img src={adult_icon} alt="Adult Icon" className="size-5 mr-1"/>
+                    Người lớn:
+                  </label>
                   <div className="flex flex-row items-center">
-                    <button
-                      className="px-2 py-1 bg-blue-50 text-blue-600 rounded hover:bg-blue-100"
+                    <MyButton
                       onClick={() => {
                         if (guestsAndRooms.adults > guestsAndRooms.rooms) {
                           setGuestsAndRooms(prev => ({ ...prev, adults: prev.adults - 1 }));
@@ -136,49 +152,55 @@ const SearchBar = () => {
                           }, 2000);
                         }
                       }}
+                      disabled={guestsAndRooms.adults === 1}
                     >
                       <MinusOutlined />
-                    </button>
+                    </MyButton>
                     <span className="w-12 p-1 text-center text-base border-b border-gray-300" id="adults-input">{guestsAndRooms.adults}</span>
-                    <button
-                      className="px-2 py-1 bg-blue-50 text-blue-600 rounded hover:bg-blue-100"
+                    <MyButton
                       onClick={() => setGuestsAndRooms(prev => ({ ...prev, adults: prev.adults + 1 }))}
+                      disabled={guestsAndRooms.adults === 30} // Assuming 30 is the max limit
                     >
                       <PlusOutlined />
-                    </button>
+                    </MyButton>
                   </div>
                 </div>
                 <div className="flex flex-row items-center justify-between mb-4">
-                  <label htmlFor="children-input" className="text-base">Trẻ em:</label>
+                  <label htmlFor="children-input" className="text-base inline-flex items-center">
+                    <img src={children_icon} alt="Children Icon" className="size-5 mr-1" />
+                    Trẻ em:
+                  </label>
                   <div className="flex flex-row items-center">
-                    <button
-                      className="px-2 py-1 bg-blue-50 text-blue-600 rounded hover:bg-blue-100"
+                    <MyButton
                       onClick={() => setGuestsAndRooms(prev =>
                         ({ ...prev, children: Math.max(0, prev.children - 1) }))}
+                      disabled={guestsAndRooms.children === 0}
                     >
                       <MinusOutlined />
-                    </button>
+                    </MyButton>
                     <span className="w-12 p-1 text-center text-base border-b border-gray-300" id="children-input">{guestsAndRooms.children}</span>
-                    <button
-                      className="px-2 py-1 bg-blue-50 text-blue-600 rounded hover:bg-blue-100"
+                    <MyButton
                       onClick={() => setGuestsAndRooms(prev => ({ ...prev, children: prev.children + 1 }))}
+                      disabled={guestsAndRooms.children === 6} // Assuming 6 is the max limit
                     >
                       <PlusOutlined />
-                    </button>
+                    </MyButton>
                   </div>
                 </div>
                 <div className="flex flex-row items-center justify-between mb-4">
-                  <label htmlFor="rooms-input" className="text-base">Số phòng:</label>
+                  <label htmlFor="rooms-input" className="text-base inline-flex items-center">
+                    <img src={room_icon} alt="Room Icon" className="size-5 mr-1" />
+                    Số phòng:
+                  </label>
                   <div className="flex flex-row items-center">
-                    <button
-                      className="px-2 py-1 bg-blue-50 text-blue-600 rounded hover:bg-blue-100"
+                    <MyButton
                       onClick={() => setGuestsAndRooms(prev => ({ ...prev, rooms: Math.max(1, prev.rooms - 1) }))}
+                      disabled={guestsAndRooms.rooms === 1}
                     >
                       <MinusOutlined />
-                    </button>
+                    </MyButton>
                     <span className="w-12 p-1 text-center text-base border-b border-gray-300" id="rooms-input">{guestsAndRooms.rooms}</span>
-                    <button
-                      className="px-2 py-1 bg-blue-50 text-blue-600 rounded hover:bg-blue-100"
+                    <MyButton
                       onClick={() => {
                         if (guestsAndRooms.adults > guestsAndRooms.rooms) {
                           setGuestsAndRooms(prev => ({ ...prev, rooms: prev.rooms + 1 }));
@@ -191,7 +213,7 @@ const SearchBar = () => {
                       }}
                     >
                       <PlusOutlined />
-                    </button>
+                    </MyButton>
                   </div>
                 </div>
                 <button
@@ -206,11 +228,12 @@ const SearchBar = () => {
             <Tooltip
               open={warningAdultRoom}
               title={<span>Số phòng không thể nhiều hơn số khách người lớn</span>}
+              placement="left"
             >
               <Input
                 placeholder="Khách và Phòng"
                 readOnly
-                prefix={<UserOutlined style={{ marginRight: "4px", color: "#1677ff" }} />}
+                prefix={<img src={guest_and_room_icon} alt="Guest and Room Icon" className="size-5 mr-1" />}
                 value={`${guestsAndRooms.adults} người lớn, ${guestsAndRooms.children} trẻ em, ${guestsAndRooms.rooms} phòng`}
                 size="large"
               />
@@ -222,7 +245,7 @@ const SearchBar = () => {
           <Button
             type="primary"
             htmlType="submit"
-            icon={<SearchOutlined style={{ fontSize: "16px" }} />}
+            icon={<SearchOutlined style={{ fontSize: "20px" }} />}
             size="large"
           >
             Tìm kiếm

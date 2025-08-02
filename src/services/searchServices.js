@@ -2,16 +2,16 @@ import axiosInstance from "./axios_instance";
 
 import { fake_locations, fake_hotels } from "../mock_data";
 
-const searchBySpec_Filter_Sort_Page = async (
-  location,
-  checkInDate,
-  checkOutDate,
-  adults,
-  children,
-  rooms,
-  filter,
-  sortBy,
-  currentPage
+export const search = async (
+  // location,
+  // checkInDate,
+  // checkOutDate,
+  // adults,
+  // children,
+  // rooms,
+  // filter,
+  // sortBy,
+  // currentPage
 ) => {
   // try {
   //   const response = await axiosInstance.get('/search', {
@@ -29,6 +29,9 @@ const searchBySpec_Filter_Sort_Page = async (
   //   console.error("Error searching:", error);
   //   throw error.response?.data || error.message;
   // }
+  // Simulate latency before returning data
+  await new Promise(resolve => setTimeout(resolve, 1000));
+  console.log('Mock searchBySpec_Filter_Sort_Page called');
   return { data: fake_hotels, total: fake_hotels.length };
 }
 
@@ -82,7 +85,6 @@ const getFavoriteHotelsAtLocation = async (location) => {
 };
 
 export default {
-  searchBySpec_Filter_Sort_Page,
   searchBySearchList,
   searchByMapBounds,
   getLocationsContaining,

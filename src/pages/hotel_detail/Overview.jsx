@@ -4,7 +4,7 @@ import { Button, Rate, Tag, Carousel } from 'antd';
 const HotelInfo = ({ hotel }) => {
   const { name, type, rating, minPrice, address, amenities, description } = hotel;
   return (
-    <div className="w-full flex flex-col p-4 bg-white shadow-md rounded-lg">
+    <div id='overview' className="w-full flex flex-col p-4 bg-white shadow-md rounded-lg">
       <div className="flex flex-row justify-between items-center mb-4">
         <div className="flex flex-col">
           <h1 className="text-2xl font-bold">{name}</h1>

@@ -14,6 +14,15 @@ const luggage_icon = "https://ik.imagekit.io/tvlk/image/imageResource/2023/06/14
 const checklist_icon = "https://ik.imagekit.io/tvlk/image/imageResource/2023/06/14/1686718238370-9ef6b6e0701e9074614951c0bd49930c.webp?tr=h-64,q-75,w-64";
 const shield_icon = "https://ik.imagekit.io/tvlk/image/imageResource/2023/06/14/1686718240417-96131eb957c39a098a12d2d7926e3342.webp?tr=h-64,q-75,w-64";
 
+const millenium_icon = "https://ik.imagekit.io/tvlk/image/imageResource/2025/04/16/1744771258326-8f47af9c13b8a081c855be6a34e7e2d6.png?tr=dpr-2,h-25,q-75";
+const all_icon = "https://ik.imagekit.io/tvlk/image/imageResource/2023/06/13/1686628936876-6861fc84efcc76f490daf447f960e4c1.png?tr=dpr-2,h-25,q-75";
+const archipelago_icon = "https://ik.imagekit.io/tvlk/image/imageResource/2023/06/21/1687341566832-ec761b0bc75b8baf1ee23a7d51c6fc8c.png?tr=dpr-2,h-25,q-75";
+const bw_icon = "https://ik.imagekit.io/tvlk/image/imageResource/2023/06/21/1687341574955-2177992f49c83eadf71865314ebd54e6.png?tr=dpr-2,h-25,q-75";
+const ihg_icon = "https://ik.imagekit.io/tvlk/image/imageResource/2023/06/21/1687341577044-3fdac49e17f09c5d7a9d988226163c6e.png?tr=dpr-2,h-25,q-75";
+const marriott_icon = "https://ik.imagekit.io/tvlk/image/imageResource/2023/06/13/1686628946358-afb0ebf35c0314e0b06884396063d816.png?tr=dpr-2,h-25,q-75";
+const swissbelhotel_icon = "https://ik.imagekit.io/tvlk/image/imageResource/2023/06/13/1686628949783-23867e076bb26884c6b6221defb78388.png?tr=dpr-2,h-25,q-75";
+const ascott_icon = "https://ik.imagekit.io/tvlk/image/imageResource/2023/06/21/1687341584167-36b555aa0f39da738d351dacd0bf4222.png?tr=dpr-2,h-25,q-75";
+
 const FavoriteDestination = ({ title, locations }) => {
   const [selectedLocation, setSelectedLocation] = useState(locations[0]);
   const [hotels, setHotels] = useState({});
@@ -106,7 +115,7 @@ const HomePage = () => {
   return (
     <div className="flex flex-col items-center justify-start space-y-4">
       <div
-        className="flex w-full h-96 items-center justify-center bg-gray-300"
+        className="flex flex-col w-full h-96 items-center justify-center space-y-8"
         style={{
           backgroundImage: `url(${home_page_bg})`,
           backgroundSize: 'cover',
@@ -114,6 +123,17 @@ const HomePage = () => {
         }}
       >
         <SearchBar />
+        <div className="flex items-center bg-white rounded-lg space-x-4 p-2 h-12">
+          <i className="text-xs">Trusted by</i>
+          <img src={millenium_icon} alt="Millenium" className="h-8"/>
+          <img src={all_icon} alt="All" className="h-8"/>
+          <img src={archipelago_icon} alt="Archipelago" className="h-8"/>
+          <img src={bw_icon} alt="BW" className="h-8"/>
+          <img src={ihg_icon} alt="IHG" className="h-8"/>
+          <img src={marriott_icon} alt="Marriott" className="h-8"/>
+          <img src={swissbelhotel_icon} alt="Swiss-Belhotel" className="h-8"/>
+          <img src={ascott_icon} alt="Ascott" className="h-8"/>
+        </div>
       </div>
 
       <div className="flex flex-col w-full max-w-7xl space-y-4">

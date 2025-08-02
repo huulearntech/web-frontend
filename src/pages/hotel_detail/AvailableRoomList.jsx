@@ -29,7 +29,7 @@ const RoomCard = ({ room }) => {
 							]}
 							dataSource={[
 								{ key: '1', property: 'Diện tích', value: `${area} m²` },
-								{ key: '2', property: 'Khách', value: `${adults} người lớn, ${children} trẻ em` },
+								{ key: '2', property: 'Sức chứa', value: `${adults} người lớn, ${children} trẻ em` },
 								{ key: '3', property: 'Tiện nghi', value: amenities.slice(0, 5).join(', ') },
 							]}
 						/>
@@ -48,7 +48,7 @@ const RoomCard = ({ room }) => {
 
 const AvailableRoomList = ({ rooms, hotelName }) => {
 	return (
-		<div className="w-full rounded-lg shadow-lg bg-white p-4">
+		<div id='available-rooms' className="w-full rounded-lg shadow-lg bg-white p-4">
 			<h1 className="text-xl font-bold mb-4">Những phòng còn trống tại {hotelName}</h1>
 			<List
 				grid={{ gutter: 16, column: 1 }}
