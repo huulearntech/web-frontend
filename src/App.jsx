@@ -19,6 +19,7 @@ import { ForgotPasswordProvider } from "./contexts/ForgotPasswordContext"
 import { SearchBarContextProvider } from "./contexts/SearchBarContext"
 
 import { fake_hotels } from "./mock_data"
+import Checkout from './pages/Checkout'
 
 function App() {
   return (
@@ -47,6 +48,7 @@ function App() {
             } />
             <Route path="/hotels" element={<HotelCard hotel={fake_hotels[2]} />} />
             <Route path="/hotel-detail/:hotelId" element={<HotelDetail />} />
+            <Route path="/checkout" element={<Checkout />} />
             {/* Add other routes here as needed */}
           </Routes>
         </Router>

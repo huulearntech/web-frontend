@@ -8,9 +8,8 @@ import {
 } from "@ant-design/icons";
 
 import paths from "../const/paths";
+import { hotel_icon } from "../assets/icons/iconUrl";
 
-
-const hotel_icon = "https://ik.imagekit.io/tvlk/image/imageResource/2023/03/28/1679986877455-c9fba4a49268f20248a89a0b68c86973.png?tr=h-12,q-75,w-12";
 
 const HotelCard = ({ hotel }) => {
   const [isFavorite, setIsFavorite] = useState(false);

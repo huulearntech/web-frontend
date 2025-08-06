@@ -1,36 +1,11 @@
-const tvlk_logo = "https://d1785e74lyxkqq.cloudfront.net/_next/static/v4.6.0/a/ad89f39fe62c8b500e6f9a25fa4427d8.svg";
-const iata_logo = "https://ik.imagekit.io/tvlk/image/imageResource/2017/12/13/1513150321127-5096be77d2a19401b476853e54ba2cc6.svg?tr=h-35,q-75";
-const bst_logo = "https://ik.imagekit.io/tvlk/image/imageResource/2021/05/10/1620638808154-e6c02ed786235ab59252628a9aa9b715.png?tr=h-35,q-75";
-const bct_logo = "https://ik.imagekit.io/tvlk/image/imageResource/2019/09/23/1569229181629-eeb038ad844874f951326d0a8534bf48.png?tr=q-75,w-100";
-
-const mastercard_logo = "https://ik.imagekit.io/tvlk/image/imageResource/2019/05/20/1558339548088-c536c896b175cb38f99a31f5dd2a989a.png?tr=h-19,q-75,w-57";
-const visa_logo = "https://ik.imagekit.io/tvlk/image/imageResource/2019/05/20/1558339578215-99466ea3d377ada2939bf2117df21b11.png?tr=h-19,q-75,w-57";
-const jcb_logo = "https://ik.imagekit.io/tvlk/image/imageResource/2025/01/10/1736478807774-cdbb79122765aebcf7d24eb57556413e.webp?tr=h-19,q-75,w-57";
-const amex_logo = "https://ik.imagekit.io/tvlk/image/imageResource/2025/01/10/1736478703439-b54413d6267a4f10ab1e47ab37f99c7f.webp?tr=h-19,q-75,w-57";
-const vietqr_logo = "https://ik.imagekit.io/tvlk/image/imageResource/2025/01/09/1736407489503-73395581e922112a270b9a923438d404.png?tr=h-19,q-75,w-57";
-const momo_logo = "https://ik.imagekit.io/tvlk/image/imageResource/2025/01/10/1736479136374-812410948d351fd86936adcb7fbb3b3f.png?tr=h-19,q-75,w-57";
-const techcombank_logo = "https://ik.imagekit.io/tvlk/image/imageResource/2025/01/10/1736490350569-aa858f77723a5e65ad006a06d91dac83.png?tr=h-19,q-75,w-57";
-const vp_logo = "https://ik.imagekit.io/tvlk/image/imageResource/2025/01/09/1736407562642-1767114a08ea40b3ef52dcdcb0358492.png?tr=h-19,q-75,w-57";
-const vib_logo = "https://ik.imagekit.io/tvlk/image/imageResource/2025/01/09/1736407613272-e32d24a555a5029908b720993c87fa2e.png?tr=h-19,q-75,w-57";
-const vietcombank_logo = "https://ik.imagekit.io/tvlk/image/imageResource/2025/01/09/1736407622371-291315073f0e649f2e24519277b8f182.png?tr=h-19,q-75,w-57";
-const onepay_logo = "https://ik.imagekit.io/tvlk/image/imageResource/2025/01/09/1736407629268-d27076303abf84ab0da2f58864022f43.png?tr=h-19,q-75,w-57";
-const mb_logo = "https://ik.imagekit.io/tvlk/image/imageResource/2025/01/09/1736407672024-f9e1112960f69a08824273672eeaccc2.png?tr=h-19,q-75,w-57";
-const hsbc_logo = "https://ik.imagekit.io/tvlk/image/imageResource/2025/01/09/1736407693601-2156e3df924fbf685cf6af0073763b94.png?tr=h-19,q-75,w-57";
-const sacombank_logo = "https://ik.imagekit.io/tvlk/image/imageResource/2025/01/09/1736407698432-309405f720b1d92d67072bfaedcd5f75.png?tr=h-19,q-75,w-57";
-const acb_logo = "https://ik.imagekit.io/tvlk/image/imageResource/2025/01/09/1736407704604-779d86d8202d1be33758ec0b9944e269.png?tr=h-19,q-75,w-57";
-const tpbank_logo = "https://ik.imagekit.io/tvlk/image/imageResource/2025/01/09/1736408367987-6b7c9eccbfb7683104f4e66ab0327dab.png?tr=h-19,q-75,w-57";
-const vietinbank_logo = "https://ik.imagekit.io/tvlk/image/imageResource/2025/01/10/1736490355901-8daa12990ad492cc0c29f6a1c0fc351c.png?tr=h-19,q-75,w-57";
-const bidv_logo = "https://ik.imagekit.io/tvlk/image/imageResource/2025/01/09/1736408552357-4d6650882134f3e9ca27950f481dae68.png?tr=h-19,q-75,w-57";
-const citibank_logo = "https://ik.imagekit.io/tvlk/image/imageResource/2025/01/09/1736408606545-f76fc22054f17df71e270d4c6eecd488.jpeg?tr=h-19,q-75,w-57";
-const alepay_logo = "https://ik.imagekit.io/tvlk/image/imageResource/2025/01/10/1736483115847-7c6a9f9a9532db58007269382bc9d4bb.png?tr=h-19,q-75,w-57";
-
-const facebook_icon = "https://d1785e74lyxkqq.cloudfront.net/_next/static/v4.6.0/6/6904cd2e74ef73120833cff12185a320.svg";
-const instagram_icon = "https://d1785e74lyxkqq.cloudfront.net/_next/static/v4.6.0/6/62a2fc240d7e00b05d0d6f6b4e785110.svg";
-const tiktok_icon = "https://d1785e74lyxkqq.cloudfront.net/_next/static/v4.6.0/4/471f17c1510d49a98bec08a48b84c607.svg";
-const youtube_icon = "https://d1785e74lyxkqq.cloudfront.net/_next/static/v4.6.0/b/b593add66303beb2a0cae9e96963e68b.svg";
-const telegram_icon = "https://d1785e74lyxkqq.cloudfront.net/_next/static/v4.6.0/b/b71b3d4a793c24ce189336b1540cf5ed.svg";
-
-
+import {
+  tvlk_footer_logo, iata_logo, bst_logo, bct_logo, mastercard_logo,
+  visa_logo, jcb_logo, amex_logo, vietqr_logo, momo_logo,
+  techcombank_logo, vp_logo, vib_logo, vietcombank_logo, onepay_logo,
+  mb_logo, hsbc_logo, sacombank_logo, acb_logo, tpbank_logo,
+  vietinbank_logo, bidv_logo, citibank_logo, alepay_logo, facebook_icon,
+  instagram_icon, tiktok_icon, youtube_icon, telegram_icon
+} from '../assets/icons/iconUrl';
 const Footer = () => {
   return (
     <footer className="w-full bg-gray-800 flex flex-col items-center justify-center text-white">
@@ -38,7 +13,7 @@ const Footer = () => {
         <div className="flex flex-col space-y-4">
           {/* Website Logo */}
           <div>
-            <img src={tvlk_logo} alt="Traveloka Logo" />
+            <img src={tvlk_footer_logo} alt="Traveloka Logo" />
             <ul className="inline-flex space-x-4">
               <li><img src={iata_logo} alt="IATA Logo" /></li>
               <li><img src={bst_logo} alt="BST Logo" /></li>

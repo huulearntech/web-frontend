@@ -1,10 +1,12 @@
 import { Link } from 'react-router-dom';
+
 import { Badge, Avatar, Dropdown } from 'antd';
 import { HeartOutlined, LogoutOutlined, UserOutlined } from '@ant-design/icons';
-import paths from '../const/paths'
+
 import { useSignOutModal } from '../contexts/SignOutModalContext';
 
-const tvlk_header_logo = "https://d1785e74lyxkqq.cloudfront.net/_next/static/v4.6.0/9/97f3e7a54e9c6987283b78e016664776.svg";
+import paths from '../const/paths'
+import { tvlk_header_logo } from '../assets/icons/iconUrl';
 
 const Header = () => {
   const { openSignOutModal } = useSignOutModal();

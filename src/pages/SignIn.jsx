@@ -1,6 +1,7 @@
 import { Button, Form, Input } from "antd";
 import { Link } from "react-router-dom";
 import paths from "../const/paths";
+import { tvlk_header_logo } from "../assets/icons/iconUrl";
 
 const SignIn = () => {
   const onFinish = (values) => {
@@ -18,7 +19,7 @@ const SignIn = () => {
       <div className="flex items-center justify-between bg-white shadow-md rounded-lg p-8 gap-16 w-[800px]">
         <div className="flex items-center justify-center w-1/2">
           <img
-            src="src/assets/icons/logo_header.svg"
+            src={tvlk_header_logo}
             alt="Logo"
             className="w-64"
           />
