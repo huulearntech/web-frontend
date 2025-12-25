@@ -27,7 +27,7 @@ export default /*async*/ function Filter () {
   const [filterHasChanged, setFilterHasChanged] = useState(false);
 
   return (
-    <div className="w-full max-w-xs flex flex-col space-y-4">
+    <div className="flex flex-col space-y-3">
       <div className="flex gap-2">
         <Button
           variant='outline'
@@ -56,18 +56,20 @@ export default /*async*/ function Filter () {
 
       <Accordion
         type="multiple"
-        className="border rounded-md"
+        className="flex-col space-y-3"
         defaultValue={filterCategories.map(category => category.id)}
       >
         { filterCategories.map((category, category_index) => (
-          <AccordionItem key={category_index} value={category.id}>
-            <AccordionTrigger className="flex px-2 justify-between items-center bg-blue-50">
+          <AccordionItem key={category_index} value={category.id}
+            className="border rounded-md last:border"
+          >
+            <AccordionTrigger className="flex px-4 py-3 justify-between items-center text-sm font-bold">
               { category.label }
             </AccordionTrigger>
 
-            <AccordionContent className="flex flex-col">
+            <AccordionContent className="flex flex-col px-4">
               {category.options.map((option, option_index) => (
-                <div key={option_index} className="inline-flex px-2 py-2">
+                <div key={option_index} className="inline-flex py-2">
                   <Checkbox id={option} checked={checkedBox.includes(option)}
                     onCheckedChange={() => setCheckedBox((checkedBox) => {
                       if(!filterHasChanged) setFilterHasChanged(true);
@@ -77,7 +79,7 @@ export default /*async*/ function Filter () {
                       return [...checkedBox, option];
                     })}
                   />
-                  <Label htmlFor={option} className="ml-2"> {option} </Label>
+                  <Label htmlFor={option} className="ml-2 text-sm"> {option} </Label>
                 </div>
               ))}
             </AccordionContent>
@@ -96,9 +98,11 @@ function PriceRangeSelector () {
   const [priceRange, setPriceRange] = useState<number[]>([100_000, 2_000_000]);
 
   return (
-    <div className="w-full bg-white border border-gray-300 rounded-lg p-4">
-      <h4 className="text-sm font-semibold">Khoảng giá</h4>
-      <p className="text-sm text-gray-500 mb-2">1 phòng, 1 đêm (VND)</p>
+    <div className="w-full bg-white border border-gray-300 rounded-lg p-4 flex flex-col space-y-3">
+      <div>
+        <h4 className="text-sm font-bold">Khoảng giá</h4>
+        <p className="text-xs text-gray-500 mb-2">1 phòng, 1 đêm</p>
+      </div>
       <Slider
         min={100_000}
         max={2_000_000}
@@ -106,27 +110,31 @@ function PriceRangeSelector () {
         value={priceRange}
         onValueChange={setPriceRange}
       />
-      <div className="flex space-x-2 items-center mt-2">
-        <Input
-          type="text"
-          inputMode="numeric"
-          name="minPrice"
-          placeholder="Min Price"
+      <div className="flex items-center mt-2 space-x-2">
+        <div className="relative flex space-x-2">
+          <Input
+            type="text"
+            inputMode="numeric"
+            name="minPrice"
+            placeholder="Min Price"
+            className="text-xs md:text-xs px-2 py-1 rounded-full h-auto"
           // value={priceRange[0].toLocaleString('vi-vn')} // should be dynamic
           // onChange={() => {}} // set values
           // onBlur={() => {}} // swap input fields if necessary
-        />
-        <span className="text-center">-</span>
-        <Input
-          type="text"
-          inputMode="numeric"
-          name="maxPrice"
-          placeholder="Max Price"
+          />
+          <div className="h-[1px] w-2 bg-(--color-border) top-1/2 left-1/2 -translate-x-1 absolute" />
+          <Input
+            type="text"
+            inputMode="numeric"
+            name="maxPrice"
+            placeholder="Max Price"
+            className="text-xs md:text-xs px-2 py-1 rounded-full h-auto"
           // value={priceRange[1].toLocaleString('vi-vn')}
           // onChange={() => {}} // set values
           // onBlur={() => {}}
-        />
-        <span className="text-right">VND</span> {/** should be dynamic */}
+          />
+        </div>
+        <span className="text-right text-xs">VND</span> {/** should be dynamic */}
       </div>
     </div>
   );

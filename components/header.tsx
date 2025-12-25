@@ -13,13 +13,14 @@ import { Button } from '@/components/ui/button';
 import { paths } from '@/constants/paths'
 import { tvlk_logo_text_dark } from "@/public/logos"
 import { HeartIcon, CircleUserRoundIcon } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 
-export default function Header () {
+export default function Header({ className }: { className?: string }) {
   const user = {};
 
   return (
-    <header className="w-full flex items-center bg-white shadow-md sticky top-0 z-10 h-20">
+    <header className={cn("w-full flex items-center bg-white shadow-md sticky top-0 z-10 h-20", className)}>
       <div className="flex justify-between items-center content">
         <Link href='/'>
           <Image src={tvlk_logo_text_dark} alt="Traveloka Header Logo" />
