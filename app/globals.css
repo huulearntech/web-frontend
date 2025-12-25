@@ -119,4 +119,7 @@
   body {
     @apply bg-background text-foreground;
   }
+  .content {
+    @apply w-full max-w-[90%] lg:max-w-6xl mx-auto;
+  }
 }

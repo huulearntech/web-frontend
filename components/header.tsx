@@ -1,4 +1,3 @@
-// Separate the user-related components to other file(s) and use Suspense for better UX
 import Link from 'next/link';
 import Image from 'next/image';
 
@@ -13,14 +12,15 @@ import { Button } from '@/components/ui/button';
 
 import { paths } from '@/constants/paths'
 import { tvlk_logo_text_dark } from "@/public/logos"
+import { HeartIcon, CircleUserRoundIcon } from 'lucide-react';
 
 
 export default function Header () {
   const user = {};
 
   return (
-    <header className="flex justify-between items-center p-4 bg-white shadow-md">
-      <div className="flex w-full max-w-md sm:max-w-lg md:max-w-2xl lg:max-w-4xl xl:max-w-7xl mx-auto justify-between items-center">
+    <header className="w-full flex items-center bg-white shadow-md sticky top-0 z-10 h-20">
+      <div className="flex justify-between items-center content">
         <Link href='/'>
           <Image src={tvlk_logo_text_dark} alt="Traveloka Header Logo" />
         </Link>
@@ -29,16 +29,13 @@ export default function Header () {
           {user ? (
             <>
               <Link href={paths.favorites}>
-                {/* <Badge count={itemCount} overflowCount={99} offset={[10, 0]}>
-                    <HeartOutlined style={{ fontSize: '24px' }} />
-                  </Badge> */}
-                link content
+                <HeartIcon className="size-6" strokeWidth={2}/>
               </Link>
               <DropdownMenu modal={false}>
                 <DropdownMenuTrigger asChild>
                   <Avatar className="hover:cursor-pointer">
                     <AvatarImage src="" alt="" />
-                    <AvatarFallback> avatar-fallback </AvatarFallback>
+                    <AvatarFallback> <CircleUserRoundIcon className="size-6" strokeWidth={2}/> </AvatarFallback>
                   </Avatar>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">

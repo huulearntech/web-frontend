@@ -48,7 +48,7 @@ export default /*async*/ function Filter () {
             setFilterHasChanged(false);
           }}
         >
-          ap dung
+          Áp dụng
         </Button>
       </div>
 
@@ -57,6 +57,7 @@ export default /*async*/ function Filter () {
       <Accordion
         type="multiple"
         className="border rounded-md"
+        defaultValue={filterCategories.map(category => category.id)}
       >
         { filterCategories.map((category, category_index) => (
           <AccordionItem key={category_index} value={category.id}>

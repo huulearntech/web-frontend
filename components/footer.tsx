@@ -4,9 +4,9 @@ import * as logos from '@/public/logos';
 
 export default function Footer () {
   return (
-    <footer className="w-full bg-gray-800 flex flex-col items-center justify-center text-white">
-      <div className="flex flex-col max-w-xl lg:flex-row w-full lg:max-w-7xl justify-between pt-14 pb-4 px-20">
-        <div className="flex flex-col space-y-4">
+    <footer className="w-full bg-gray-800 flex flex-col justify-center items-center text-white">
+      <div className="flex flex-col lg:flex-row content justify-between pt-14 pb-4">
+        <div className="flex flex-col space-y-4 lg:w-[35%]">
           {/* Website Logo */}
           <div>
             <Image src={logos.tvlk_logo_text_light} alt="Traveloka Logo" loading="lazy" />
@@ -20,7 +20,7 @@ export default function Footer () {
           {/* Payment Partners */}
           <div>
             <h3 className="font-semibold mb-2">Đối tác thanh toán</h3>
-            <ul className="grid grid-cols-4 gap-2">
+            <ul className="grid grid-cols-5 md:grid-cols-7 lg:grid-cols-4 gap-2">
               <LiPaymentPartner logoSrc={logos.mastercard}/>
               <LiPaymentPartner logoSrc={logos.visa}/>
               <LiPaymentPartner logoSrc={logos.jcb}/>
@@ -48,7 +48,7 @@ export default function Footer () {
         {/* About Us Section */}
         <div className="mt-8">
           <h3 className="font-semibold mb-2 justify-between">Về Traveloka</h3>
-          <ul className="grid grid-cols-4 gap-2 lg:flex lg:flex-col lg:space-y-3 text-sm text-gray-300">
+          <ul className="grid grid-cols-5 gap-2 lg:flex lg:flex-col lg:space-y-3 text-sm text-gray-300">
             <LiLink text={"Cách đặt chỗ"} />
             <LiLink text={"Liên hệ chúng tôi"} />
             <LiLink text={"Trợ giúp"} />
@@ -60,7 +60,7 @@ export default function Footer () {
         {/* Our productions */}
         <div className="mt-8">
           <h3 className="font-semibold mb-2 justify-between">Sản phẩm</h3>
-          <ul className="grid grid-cols-4 gap-2 lg:flex lg:flex-col lg:space-y-3 text-sm text-gray-300">
+          <ul className="grid grid-cols-5 gap-2 lg:flex lg:flex-col lg:space-y-3 text-sm text-gray-300">
             <LiLink text={"Khách sạn"}/>
             <LiLink text={"Vé máy bay"}/>
             <LiLink text={"Vé xe khách"}/>
@@ -77,7 +77,7 @@ export default function Footer () {
         {/* Social Media Links */}
         <div className="mt-8">
           <h3 className="font-semibold mb-2 justify-between">Theo dõi chúng tôi trên</h3>
-            <ul className="grid grid-cols-4 gap-2 lg:flex lg:flex-col lg:space-y-3 text-sm text-gray-300">
+            <ul className="grid grid-cols-5 gap-2 lg:flex lg:flex-col lg:space-y-3 text-sm text-gray-300">
               <LiLink text='Facebook' logoSrc={logos.facebook} />
               <LiLink text='Instagram' logoSrc={logos.instagram} />
               <LiLink text='Tiktok' logoSrc={logos.tiktok} />

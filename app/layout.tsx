@@ -39,6 +39,7 @@ export default function RootLayout({
         className={cn(
           `${geistSans.variable} ${geistMono.variable} antialiased`,
           // "min-w-md"
+          // "dark"
         )}
       >
         {children}

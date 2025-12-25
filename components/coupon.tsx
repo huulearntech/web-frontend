@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Image from "next/image";
 import type { CouponProps } from "@/lib/definitions";
 
@@ -7,11 +8,17 @@ import { Dialog, DialogTrigger, DialogContent, DialogTitle, DialogHeader, Dialog
 import { toast } from "sonner";
 
 import { hotel } from "@/public/icons"
-import { Info, Copy } from "lucide-react"
+import { Info, Copy, Check } from "lucide-react"
 
 export default function Coupon ({ coupon } : {
   coupon: CouponProps
 }) {
+  const [justClicked, setJustClicked] = useState(false);
+  const handleClickTimeout = () => {
+    if (justClicked) return;
+    setJustClicked(true);
+    setTimeout(() => setJustClicked(false), 5000);
+  }
   return (
     <div className="w-80 h-40 rounded-sm shadow-md overflow-hidden flex flex-col">
       <div className="w-full pt-5 px-4 flex flex-1 items-start">
@@ -60,21 +67,32 @@ export default function Coupon ({ coupon } : {
           onClick={async (event) => {
             const copyButton = event.currentTarget as HTMLElement;
             const couponText = copyButton.previousElementSibling?.textContent.trim();
-            if (!couponText) {
-              throw new Error("Something went wrong with the coupon component. Expected the coupon text to be the previous element sibling of this copying button.")
-            }
             try {
+              if (!couponText) {
+                throw new Error("Something went wrong with the coupon component. Expected the coupon text to be the previous element sibling of this copying button.")
+              }
               await navigator.clipboard.writeText(couponText);
               toast.success("Copied to clipboard!", { position: "top-right" })
             } catch (error) {
               console.error("error: ", error)
               toast.error("Failed to copy!", { position: "top-right" })
             }
+            handleClickTimeout();
           }}
-          className="h-8 inline-flex items-center text-xs font-semibold text-blue-500 bg-blue-200 rounded-full px-3"
+          data-justclicked={justClicked ? "true" : "false"}
+          className="w-20 h-8 inline-flex items-center justify-center text-xs font-semibold text-primary bg-secondary rounded-full px-3 data-[justclicked=true]:bg-primary data-[justclicked=true]:text-secondary transition-all duration-300"
         >
-          <Copy className="size-4 mr-1" aria-hidden />
-          Copy
+          {justClicked ? 
+            <>
+              <Check className="size-4 mr-1" aria-hidden />
+              Copied
+            </>
+            :
+            <>
+              <Copy className="size-4 mr-1" aria-hidden />
+              Copy
+            </>
+          }
         </button>
       </div>
     </div>

@@ -3,18 +3,8 @@
 import Link from "next/link";
 import Image from "next/image";
 
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger
-} from '@/components/ui/tooltip';
-import { Button } from "@/components/ui/button";
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
-
-import { HeartIcon } from "@heroicons/react/24/outline";
 import { Star, MapPin, StarHalf, Heart } from "lucide-react";
 
-import { hotel as hotel_icon } from "@/public/icons";
 import { HotelCardProps } from "@/old/mock_data";
 
 // function HotelCard({
@@ -141,7 +131,7 @@ import { HotelCardProps } from "@/old/mock_data";
 //   );
 // };
 
-function HotelCardSimple({
+function HotelCard({
   hotel
 }: {
   hotel: HotelCardProps
@@ -151,30 +141,22 @@ function HotelCardSimple({
 
   return (
     <div className="relative w-full max-w-60 rounded-lg shadow-md overflow-hidden">
-      <div className="absolute top-0 left-0 bg-primary text-primary-foreground inline-flex rounded-br-lg items-center px-2 py-1 text-sm">
+      <div className="absolute top-0 left-0 bg-black/40 text-primary-foreground inline-flex rounded-br-lg items-center px-2 py-1 text-sm font-semibold">
         <MapPin className="size-4 mr-1"/>
         { location }
       </div>
-      <button className="absolute top-0 right-0 px-2 py-1 rounded-bl-lg bg-secondary">
-        <Heart className="size-4 text-primary"/>
+      <button className="absolute top-0 right-0 px-2 py-1 rounded-bl-lg bg-black/40">
+        <Heart className="size-4 text-primary-foreground"/>
       </button>
       <Link href={`/hotels/${id}`} target="_blank" >
-        <Carousel>
-          <CarouselContent>
-            {imageSrcs.map((src, index) => (
-              <CarouselItem key={index}>
-                <Image
-                  src={src}
-                  alt={name}
-                  className="object-cover" width={240} height={100}
-                  unoptimized
-                />
-              </CarouselItem>
-            ))}
-          </CarouselContent>
-          <CarouselPrevious />
-          <CarouselNext />
-        </Carousel>
+        <Image
+          src={imageSrcs[0]}
+          alt={name}
+          className="object-cover"
+          width={400}
+          height={300}
+          unoptimized
+        />
         <div className="flex flex-col space-y-1 mt-3 mb-1 px-2">
           <h4 className="font-bold line-clamp-2 text-sm text-gray-700">{name}</h4>
           <RatingStars rating={rating} />
@@ -210,6 +192,6 @@ function RatingStars({ rating }: { rating: number }) {
 
 export {
   // HotelCard,
-  HotelCardSimple,
+  HotelCard,
   RatingStars,
 }

@@ -1,16 +1,19 @@
+// If handle infinit scroll -> client component. If pagination -> server component
 import { notFound } from "next/navigation";
 
-import { HotelCardSimple } from "@/components/hotel-card";
+import { HotelCard } from "@/components/hotel-card";
 import type { HotelCardProps } from "@/old/mock_data";
 import type { SearchPageProps } from "@/lib/definitions"
 
-export default async function Results({ searchParams } : {
-  searchParams: SearchPageProps
+export default async function Results( props: { 
+  searchParams?: Promise<SearchPageProps>
 }) {
-  const { spec, childSpec } = await searchParams;
+  if (!props.searchParams) notFound();
+  const { spec, childSpec } = await props.searchParams;
   if (!spec) notFound();
+
   const [location, inOutDate, numAdults, numRooms] = spec.split('.');
-  const childAges = childSpec?.split('.'); // age of every child
+  const childAges = childSpec?.split('.'); // age of each child
 
   /**
    * Server-side data fetching
@@ -21,7 +24,7 @@ export default async function Results({ searchParams } : {
     <ul>
       {results.map((hotel, index) => (
         <li key={index}>
-          <HotelCardSimple hotel={hotel} />
+          <HotelCard hotel={hotel} />
         </li>
       ))}
     </ul>
