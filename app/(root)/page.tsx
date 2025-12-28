@@ -98,7 +98,7 @@ function PartnersSection() {
   return (
     <section className="flex flex-col content">
       <h2 className="text-2xl font-bold">{title}</h2>
-      <Tabs defaultValue={locations[0].name} className="max-w-md sm:max-w-lg md:max-w-2xl lg:max-w-5xl xl:max-w-7xl">
+      <Tabs defaultValue={locations[0].name} className="content">
         <div className="overflow-x-auto justify-start">
           <TabsList>
             {locations.map((location) => (
@@ -114,13 +114,16 @@ function PartnersSection() {
           <TabsContent value={location.name} key={location.name}>
             <Carousel
               opts={{
-                align: "center"
+                align: "start"
               }}
             >
               <CarouselContent className="p-2">
-                {hotels.map((hotel, index) => (
-                  <CarouselItem key={index} className="basis-1/2 md:basis-1/3 lg:basis-1/4 flex justify-center">
-                    <HotelCard hotel={hotel}/>
+                {hotels.concat(hotels).map((hotel, index) => (
+                  <CarouselItem
+                    key={hotel.id + index}
+                    className="basis-1/2 md:basis-1/3 xl:basis-1/4"
+                  >
+                    <HotelCard hotel={hotel} />
                   </CarouselItem>
                 ))}
               </CarouselContent>
@@ -233,7 +236,7 @@ function CouponSection () {
       <h2 className="text-[26px] font-bold"> Mã giảm cho bạn </h2>
       <p> Chỉ áp dụng trên App! </p>
       <div>
-        <Tabs defaultValue={Object.keys(coupons)[0]} className="max-w-2xl sm:max-w-5xl lg:max-w-7xl">
+        <Tabs defaultValue={Object.keys(coupons)[0]} className="content">
           <div className="overflow-x-auto justify-start">
             <TabsList>
               {Object.keys(coupons).map((coupon_type) => (
@@ -248,12 +251,12 @@ function CouponSection () {
             <TabsContent value={coupon_type} key={coupon_type}>
               <Carousel
                 opts={{
-                  align: "center"
+                  align: "start"
                 }}
               >
                 <CarouselContent className="p-2">
                   {coupons_of_type.map((coupon, index) => (
-                    <CarouselItem key={index} className="sm:basis-1/2 lg:basis-1/3 flex justify-center">
+                    <CarouselItem key={index} className="basis-1/2 md:basis-1/3 xl:basis-1/4">
                       <Coupon coupon={coupon} />
                     </CarouselItem>
                   ))}

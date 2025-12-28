@@ -1,3 +1,6 @@
+import AvailableRoomsSection from "./section-available-rooms";
+import OverviewSection from "./section-overview";
+
 export default async function Page({
   params
 }: {
@@ -6,8 +9,9 @@ export default async function Page({
   // const hotel = getHotelFromId(id);
 
   return (
-    <main>
-      Blablabla
-    </main>
+    <>
+      <OverviewSection />
+      <AvailableRoomsSection />
+    </>
   );
 }

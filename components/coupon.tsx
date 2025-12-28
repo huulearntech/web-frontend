@@ -20,7 +20,7 @@ export default function Coupon ({ coupon } : {
     setTimeout(() => setJustClicked(false), 5000);
   }
   return (
-    <div className="w-80 h-40 rounded-sm shadow-md overflow-hidden flex flex-col">
+    <div className="w-full max-w-80 h-40 rounded-sm shadow-md overflow-hidden flex flex-col">
       <div className="w-full pt-5 px-4 flex flex-1 items-start">
         <Image src={hotel} alt="" className="size-12 mr-3" />
         <div className="mr-1 flex-1">
@@ -61,7 +61,7 @@ export default function Coupon ({ coupon } : {
       </div>
 
       <div className="w-full h-14 pt-2 pb-4 px-4 flex items-center">
-        <div className="h-8 uppercase flex-1 mr-3 py-1 px-2 rounded-sm bg-gray-100 font-bold text-sm"> {coupon.code} </div>
+        <div className="h-8 uppercase flex-1 mr-3 py-1 px-2 rounded-sm bg-gray-100 font-bold text-sm line-clamp-1 truncate"> {coupon.code} </div>
         <button
           // value={coupon.code} // do I need this?
           onClick={async (event) => {

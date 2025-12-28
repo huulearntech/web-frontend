@@ -120,6 +120,21 @@
     @apply bg-background text-foreground;
   }
   .content {
-    @apply w-full max-w-[90%] lg:max-w-6xl mx-auto;
+    @apply w-full max-w-[90%] lg:max-w-[1280px] mx-auto;
+  }
+}
+
+
+/* Custom global styles can be added here */
+@theme {
+  --animate-slide-updown: slide-updown 15s infinite;
+
+  @keyframes slide-updown {
+    50%, 95% {
+      transform: translateY(0);
+    }
+    5%, 45% {
+      transform: translateY(-100%);
+    }
   }
 }

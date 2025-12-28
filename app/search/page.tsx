@@ -15,18 +15,19 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectVa
 import SearchBar from "@/components/search-bar";
 
 export default async function SearchPage( props: { 
-  searchParams?: Promise<SearchPageProps>
+  searchParams: Promise<SearchPageProps>
+  // searchParams?: Promise<SearchPageProps>
 }) {
   const searchParams = await props.searchParams;
-  // const { spec, childSpec } = searchParams;
+  const { spec, childSpec } = searchParams;
+  console.log(spec, childSpec);
   // if (!spec) notFound();
-  // const [location, inOutDate, numAdults, numRooms] = spec.split('.');
+  const [location, inOutDate, numAdults, numRooms] = spec.split('.');
   // const childAges = childSpec?.split('.'); // age of every child
 
   return (
     <>
-      {/* <SearchBar /> */}
-      <div className="w-[250px] flex flex-col space-y-3">
+      <aside className="w-[250px] flex flex-col space-y-3">
         <div className="w-[250px] h-[125px] relative rounded-[10px] overflow-hidden">
           <Image src={bgShowOnMap} alt="" aria-hidden
             fill
@@ -44,23 +45,24 @@ export default async function SearchPage( props: {
           </div>
         </div>
         <Filter />
-      </div>
+      </aside>
       <div className="w-full flex flex-col space-y-3">
         <div className="flex justify-between sticky top-[82px] border-b p-3 -mt-3 z-10 bg-background shadow-md">
           <div className="flex flex-col text-sm">
-            {/* <span className="font-bold"> {location} </span> */}
-            <span className="font-bold"> Bla bla location </span>
+            <span className="font-bold"> {location} </span>
             <span> {/**  number of results found*/} 10000 noi luu tru duoc tim thay </span>
           </div>
           <div className="flex space-x-2">
+
           <Label htmlFor="sort-by-select"
           className="text-xs font-semibold"
           >
             Sort by:</Label>
-            <Select>
+            <Select defaultValue="price-desc">
               <SelectTrigger id="sort-by-select" className="text-xs font-semibold py-2 px-3 rounded-full">
                 <SelectValue placeholder="Sắp xếp theo"/>
               </SelectTrigger>
+
               <SelectContent position="popper">
                 <SelectGroup>
                   <SelectItem value="price-desc">Giá cao nhất</SelectItem>
@@ -68,17 +70,13 @@ export default async function SearchPage( props: {
                   <SelectItem value="rating">Điểm đánh giá</SelectItem>
                   <SelectItem value="popularity">Độ phổ biến</SelectItem>
                 </SelectGroup>
-
               </SelectContent>
-
             </Select>
           </div>
         </div>
         <Suspense fallback={<div>loading</div>}>
           <Results /**searchParams={searchParams}*/ />
-
         </Suspense>
-        {/** search results */}
       </div>
     </>
   )

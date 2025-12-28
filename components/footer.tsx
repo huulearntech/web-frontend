@@ -19,7 +19,7 @@ export default function Footer () {
 
           {/* Payment Partners */}
           <div>
-            <h3 className="font-semibold mb-2">Đối tác thanh toán</h3>
+            <h3 className="font-bold mb-2">Đối tác thanh toán</h3>
             <ul className="grid grid-cols-5 md:grid-cols-7 lg:grid-cols-4 gap-2">
               <LiPaymentPartner logoSrc={logos.mastercard}/>
               <LiPaymentPartner logoSrc={logos.visa}/>
@@ -47,7 +47,7 @@ export default function Footer () {
 
         {/* About Us Section */}
         <div className="mt-8">
-          <h3 className="font-semibold mb-2 justify-between">Về Traveloka</h3>
+          <h3 className="font-bold mb-2 justify-between">Về Traveloka</h3>
           <ul className="grid grid-cols-5 gap-2 lg:flex lg:flex-col lg:space-y-3 text-sm text-gray-300">
             <LiLink text={"Cách đặt chỗ"} />
             <LiLink text={"Liên hệ chúng tôi"} />
@@ -59,7 +59,7 @@ export default function Footer () {
 
         {/* Our productions */}
         <div className="mt-8">
-          <h3 className="font-semibold mb-2 justify-between">Sản phẩm</h3>
+          <h3 className="font-bold mb-2 justify-between">Sản phẩm</h3>
           <ul className="grid grid-cols-5 gap-2 lg:flex lg:flex-col lg:space-y-3 text-sm text-gray-300">
             <LiLink text={"Khách sạn"}/>
             <LiLink text={"Vé máy bay"}/>
@@ -76,7 +76,7 @@ export default function Footer () {
         {/* This section should be under the About Us section in the original site */}
         {/* Social Media Links */}
         <div className="mt-8">
-          <h3 className="font-semibold mb-2 justify-between">Theo dõi chúng tôi trên</h3>
+          <h3 className="font-bold mb-2 justify-between">Theo dõi chúng tôi trên</h3>
             <ul className="grid grid-cols-5 gap-2 lg:flex lg:flex-col lg:space-y-3 text-sm text-gray-300">
               <LiLink text='Facebook' logoSrc={logos.facebook} />
               <LiLink text='Instagram' logoSrc={logos.instagram} />

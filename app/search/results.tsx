@@ -11,9 +11,9 @@ import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, Pagi
 export default async function Results( props: { 
   searchParams?: Promise<SearchPageProps>
 }) {
-  // if (!props.searchParams) notFound();
-  // const { spec, childSpec } = await props.searchParams;
-  // if (!spec) notFound();
+  // const searchParams = await props.searchParams;
+  // if (!searchParams || !searchParams.spec) notFound();
+  // const { spec, childSpec } = searchParams;
 
   // const [location, inOutDate, numAdults, numRooms] = spec.split('.');
   // const childAges = childSpec?.split('.'); // age of each child
@@ -30,21 +30,21 @@ export default async function Results( props: {
       <ul className="w-full grid grid-cols-3 gap-4">
         {results.map((hotel, index) => (
           <li key={index}>
-            <HotelCard hotel={hotel} />
+            <HotelCard hotel={hotel} className="h-[400px]"/>
           </li>
         ))}
       </ul>
       <Pagination>
         <PaginationContent>
           <PaginationItem>
-            <PaginationPrevious />
+            <PaginationPrevious href="#"/>
           </PaginationItem>
           {
             totalPages <= 5 ?
               (
                 Array.from({ length: totalPages }).map((_, index) => (
                   <PaginationItem key={index}>
-                    <PaginationLink>{index + 1}</PaginationLink>
+                    <PaginationLink href="#">{index + 1}</PaginationLink>
                   </PaginationItem>
                 ))
               ) : (
@@ -52,7 +52,7 @@ export default async function Results( props: {
                   {
                     currentPage > 1 &&
                     <PaginationItem>
-                      <PaginationLink>1</PaginationLink>
+                      <PaginationLink href="#">1</PaginationLink>
                     </PaginationItem>
                   }
                   {
@@ -64,18 +64,18 @@ export default async function Results( props: {
                   {
                     currentPage >= 3 &&
                     <PaginationItem>
-                      <PaginationLink>{currentPage - 1}</PaginationLink>
+                      <PaginationLink href="#">{currentPage - 1}</PaginationLink>
                     </PaginationItem>
                   }
                   {
                     <PaginationItem>
-                      <PaginationLink>{currentPage}</PaginationLink>
+                      <PaginationLink href="#">{currentPage}</PaginationLink>
                     </PaginationItem>
                   }
                   {
                     currentPage <= totalPages - 2 &&
                     <PaginationItem>
-                      <PaginationLink>{currentPage + 1}</PaginationLink>
+                      <PaginationLink href="#">{currentPage + 1}</PaginationLink>
                     </PaginationItem>
                   }
                   {
@@ -87,14 +87,14 @@ export default async function Results( props: {
                   {
                     currentPage < totalPages &&
                     <PaginationItem>
-                      <PaginationLink>{totalPages}</PaginationLink>
+                      <PaginationLink href="#">{totalPages}</PaginationLink>
                     </PaginationItem>
                   }
                 </>
               )
           }
           <PaginationItem>
-            <PaginationNext />
+            <PaginationNext href="#"/>
           </PaginationItem>
         </PaginationContent>
       </Pagination>

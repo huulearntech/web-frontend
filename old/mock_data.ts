@@ -17,10 +17,10 @@ export const fake_hotels : HotelCardProps[] = [
     id: '1',
     name: "Dummy hotel",
     imageSrcs: [
-      "https://placehold.co/400x300?text=Main+Image",
-      "https://placehold.co/400x300?text=Image+1",
-      "https://placehold.co/400x300?text=Image+2",
-      "https://placehold.co/400x300?text=Image+3"
+      "https://placehold.co/400x300.png?text=Main+Image",
+      "https://placehold.co/400x300.png?text=Image+1",
+      "https://placehold.co/400x300.png?text=Image+2",
+      "https://placehold.co/400x300.png?text=Image+3"
     ],
     rating: 2.7,
     numberOfReviews: 100,
@@ -33,10 +33,10 @@ export const fake_hotels : HotelCardProps[] = [
     id: '2',
     name: "Another dummy hotel",
     imageSrcs: [
-      "https://placehold.co/400x300?text=Main+Image",
-      "https://placehold.co/400x300?text=Image+1",
-      "https://placehold.co/400x300?text=Image+2",
-      "https://placehold.co/400x300?text=Image+3"
+      "https://placehold.co/400x300.png?text=Main+Image",
+      "https://placehold.co/400x300.png?text=Image+1",
+      "https://placehold.co/400x300.png?text=Image+2",
+      "https://placehold.co/400x300.png?text=Image+3"
     ],
     rating: 2.8,
     numberOfReviews: 100,
@@ -47,12 +47,12 @@ export const fake_hotels : HotelCardProps[] = [
   },
   {
     id: '3',
-    name: "This is a very long name to test the overflow of the text",
+    name: "This is a very long name to test the overflow of the text afdp ouiiadso jhfdsak jnfdlsahju fhpsadhfwqhejrfjnvlksadbvlsdahuyufuiowqhfbldkjasdfhpqwr",
     imageSrcs: [
-      "https://placehold.co/400x300?text=Main+Image",
-      "https://placehold.co/400x300?text=Image+1",
-      "https://placehold.co/400x300?text=Image+2",
-      "https://placehold.co/400x300?text=Image+3"
+      "https://placehold.co/400x300.png?text=Main+Image",
+      "https://placehold.co/400x300.png?text=Image+1",
+      "https://placehold.co/400x300.png?text=Image+2",
+      "https://placehold.co/400x300.png?text=Image+3"
     ],
     rating: 4.9,
     numberOfReviews: 100,

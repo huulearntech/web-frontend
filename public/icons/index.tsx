@@ -14,6 +14,8 @@ import room from './room.svg'
 import shower from './shower.png'
 import waiting_area from './waiting_area.png'
 import wifi from './wifi.png'
+import percentage from './percentage.png'
+import receptionist_24h from './receptionist-24h.png'
 
 export {
   adult,
@@ -32,4 +34,6 @@ export {
   shower,
   waiting_area,
   wifi,
+  percentage,
+  receptionist_24h,
 }
