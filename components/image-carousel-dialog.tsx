@@ -6,7 +6,6 @@ import { Carousel, CarouselContent, CarouselNext, CarouselPrevious } from "./ui/
 import { DetailedHTMLProps, ImgHTMLAttributes } from "react";
 
 
-// TODO: this should solve the problem of online images with unknown width and height
 export default function ImageCarouselDialog ({
   src, // src for what?
   alt, // alt for what?
@@ -21,12 +20,14 @@ export default function ImageCarouselDialog ({
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Image
-          src={src} // FIXME: fix this as how to propagate the sources via props
-          alt={alt}
-          fill
-          className="object-cover"
-        />
+        <div className="relative">
+          <Image
+            src={src} // FIXME: fix this as how to propagate the sources via props
+            alt={alt}
+            fill
+            className="object-cover"
+          />
+        </div>
       </DialogTrigger>
 
       <DialogContent>

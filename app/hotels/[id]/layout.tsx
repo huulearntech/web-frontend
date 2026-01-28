@@ -14,12 +14,12 @@ export default function Layout ({
         <SearchBar className="content" />
         <nav className="content">
           <ul className="flex space-x-3 font-bold text-sm">
-            <li className="px-4 pt-4 data-[state=active]:ring-4 ring-primary" data-active ><a href="#">Tổng quan</a></li>
-            <li className="px-4 pt-4"><a href="#">Phòng</a> </li>
-            <li className="px-4 pt-4"><a href="#">Vị trí</a></li>
-            <li className="px-4 pt-4"><a href="#">Tiện ích</a></li>
-            <li className="px-4 pt-4"><a href="#">Chính sách</a></li>
-            <li className="px-4 pt-4"><a href="#">Đánh giá</a></li>
+            <li className="px-4 pt-4 data-[state=active]:ring-4 ring-primary" data-active ><a href="#overview">Tổng quan</a></li>
+            <li className="px-4 pt-4"><a href="#available-rooms">Phòng</a> </li>
+            <li className="px-4 pt-4"><a href="#location">Vị trí</a></li>
+            <li className="px-4 pt-4"><a href="#facilities">Tiện ích</a></li>
+            <li className="px-4 pt-4"><a href="#policy">Chính sách</a></li>
+            <li className="px-4 pt-4"><a href="#review">Đánh giá</a></li>
           </ul>
         </nav>
       </div>

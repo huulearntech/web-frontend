@@ -1,23 +1,81 @@
 "use client";
 
-import { usePathname } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { useMediaQuery } from 'usehooks-ts';
 
-import { useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { Slider } from '@/components/ui/slider';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Accordion, AccordionContent, AccordionTrigger, AccordionItem } from '@/components/ui/accordion';
+import { Sheet, SheetClose, SheetContent, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
+import { ListFilter, XIcon } from 'lucide-react';
 
-// Can make it a shadcn's Sheet when on mobile
 export default /*async*/ function Filter () {
   // const filterCategories = await getFilterCategories();
   // How to tell apart which checkbox has been selected?
   // Should this be a form?
+  const [mounted, setMounted] = useState(false);
+  const isDesktop = useMediaQuery('(min-width: 1024px)');
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
-  // TODO: Remove this useState hook if possible
-  const [filterCategories, setFilterCategories] = useState<IFilterCategory[]>([
+  if (!mounted) {
+    return <div className="h-12 w-full" />
+  }
+  if (isDesktop) return ( <FilterImpl /> );
+  return (
+    <Sheet>
+      <SheetTrigger asChild>
+        <Button variant='outline' className="w-full" asChild>
+          <ListFilter className="size-5" />
+        </Button>
+      </SheetTrigger>
+
+      <SheetContent
+        side='left'
+        className="w-full max-w-md px-4 overflow-y-auto"
+        showCloseButton={false}
+        // what is aria-describedby?
+        // aria-describedby=''
+      >
+        <SheetHeader className='sticky top-0 left-0 right-0 flex-row px-0 items-center justify-between backdrop-blur-md bg-white/20 z-10'>
+          <SheetTitle className='flex gap-2 items-center'>
+            <ListFilter className="size-5" />
+            <span className="text-lg font-bold">Bộ lọc</span>
+          </SheetTitle>
+          <SheetClose className="ring-offset-background focus:ring-ring data-[state=open]:bg-secondary rounded-xs opacity-70 transition-opacity hover:opacity-100 focus:ring-2 focus:ring-offset-2 focus:outline-hidden disabled:pointer-events-none">
+            <XIcon className="size-4" />
+            <span className="sr-only">Close</span>
+          </SheetClose>
+        </SheetHeader>
+        <FilterImpl />
+        <SheetFooter className='sticky bottom-0 left-0 right-0 flex-row gap-2 backdrop-blur-md bg-white/20 z-10'>
+          <Button
+            variant='outline'
+            className="flex-1"
+          >
+            Đặt lại
+          </Button>
+
+          <Button
+            variant={'default'}
+            className="flex-1"
+          >
+            Áp dụng
+          </Button>
+        </SheetFooter>
+      </SheetContent>
+    </Sheet>
+  );
+};
+
+// TODO: bring two buttons to footer when in form of sheet
+// and remove accordion then use overflow-x-auto as normal list
+function FilterImpl () {
+  const [filterCategories, setFilterCategories] = useState<FilterCategoryProps[]>([
       { id: 'amenities', label: 'Tiện nghi', options: ['WiFi', 'Parking', 'Pool', 'Gym'] },
       { id: 'propertyTypes', label: 'Loại hình lưu trú', options: ['Apartment', 'House', 'Villa'] },
       { id: 'bla', label: 'blabla', options: ['Apartment', 'House', 'Villa'] },
@@ -25,7 +83,6 @@ export default /*async*/ function Filter () {
 
   const [checkedBox, setCheckedBox] = useState<string[]>([]);
   const [filterHasChanged, setFilterHasChanged] = useState(false);
-
   return (
     <div className="flex flex-col space-y-3">
       <div className="flex gap-2">
@@ -122,7 +179,7 @@ function PriceRangeSelector () {
           // onChange={() => {}} // set values
           // onBlur={() => {}} // swap input fields if necessary
           />
-          <div className="h-[1px] w-2 bg-(--color-border) top-1/2 left-1/2 -translate-x-1 absolute" />
+          <div className="h-px w-2 bg-(--color-border) top-1/2 left-1/2 -translate-x-1 absolute" />
           <Input
             type="text"
             inputMode="numeric"
@@ -140,7 +197,7 @@ function PriceRangeSelector () {
   );
 };
 
-interface IFilterCategory {
+type FilterCategoryProps = {
   id: string,
   label: string,
   options: string[],

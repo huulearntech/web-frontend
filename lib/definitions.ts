@@ -1,3 +1,4 @@
+// TODO: Use the types from prisma
 import type { StaticImageData } from "next/image";
 
 export type User = {

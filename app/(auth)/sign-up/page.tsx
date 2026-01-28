@@ -1,10 +1,8 @@
 "use client";
 
-import * as React from "react";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 import { Form, FormControl, FormField, FormItem, FormLabel } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
@@ -12,29 +10,19 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 
 import { paths } from "@/constants/paths";
+import { schemaSignUp, SignUpData, defaultSignUpValues } from "@/lib/zod_schemas/auth";
+import { onSubmitSignUpForm } from "@/lib/actions";
 
-const formSchema = z.object({
-  email: z.email(),
-  password: z.string().min(1, { error: "Password is required!"}),
-});
-
-export default function SignUp () {
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      email: undefined,
-      password: "",
-    }
+export default function SignUp() {
+  // TODO: Cleanup
+  const form = useForm<SignUpData>({
+    resolver: zodResolver(schemaSignUp),
+    defaultValues: defaultSignUpValues,
   })
-
-  function onSubmit (values: z.infer<typeof formSchema>) {
-    console.log('Received values:', values);
-    // Handle sign-in logic here, e.g., API call
-  };
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)}
+      <form onSubmit={form.handleSubmit(onSubmitSignUpForm)}
         className="flex flex-col space-y-4"
       >
         <FormField
@@ -44,7 +32,19 @@ export default function SignUp () {
             <FormItem>
               <FormLabel>Email</FormLabel>
               <FormControl>
-                <Input {...field}/>
+                <Input {...field} />
+              </FormControl>
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="name"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Name</FormLabel>
+              <FormControl>
+                <Input {...field} />
               </FormControl>
             </FormItem>
           )}
@@ -56,17 +56,13 @@ export default function SignUp () {
             <FormItem>
               <FormLabel>Password</FormLabel>
               <FormControl>
-                <Input {...field}/>
+                <Input {...field} />
               </FormControl>
             </FormItem>
           )}
         />
-        <Button
-          type="submit"
-          className="mt-2"
-        >
-          Sign Up
-          <ArrowRight />
+        <Button type="submit" className="mt-2">
+          Sign Up <ArrowRight />
         </Button>
         <div className="flex flex-col gap-4 mt-4 text-sm">
           <Link href={paths.signIn} replace>

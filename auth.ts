@@ -1,47 +1,56 @@
-import NextAuth from "next-auth";
-import { authConfig } from './auth.config'
-import Credentials from "next-auth/providers/credentials";
-import { email, z } from "zod";
-
-import type { User } from './lib/definitions';
-
 import bcrypt from 'bcrypt';
-import postgres from "postgres";
+import prisma from "@/lib/prisma"
+import { schemaSignIn } from "@/lib/zod_schemas/auth";
+import { PrismaAdapter } from "@auth/prisma-adapter";
 
-const sql = postgres(process.env.POSTGRES_URL!, {ssl: 'require'});
+/* These bullshit javashit frameworks change their API every fucking month
+ * because the new one sounds cooler
+ */
+import NextAuth, { type NextAuthConfig } from "next-auth";
+import Credentials from "next-auth/providers/credentials";
 
-async function getUser(email: string): Promise<User | undefined> {
-  try {
-    const user = await sql<User[]>`
-    SELECT * FROM users
-    WHERE email=${email}
-    `;
-    return user[0];
-  } catch (error) {
-    console.error('Failed to fetch user:', error);
-    throw new Error('Faild to fetch user.;')
-  }
-}
-
-export const { auth, signIn, signOut } = NextAuth ({
-  ...authConfig,
+export const nextAuthConfig = {
+  adapter: PrismaAdapter(prisma),
   providers: [
     Credentials({
-      async authorize (credentials) {
-        const parsedCredentials = z
-          .object({ email: z.email(), password: z.string().min(6) })
-          .safeParse(credentials);
-
-          if (parsedCredentials.success) {
-            const { email, password } = parsedCredentials.data;
-            const user = await getUser(email);
-            if (!user) return null;
-            const passwordMatch = await bcrypt.compare(password, user.password);
-            if (passwordMatch) return user;
-          }
-          console.log('Invalid credentials');
-          return null
+      credentials: {
+        email: { label: "Email", type: "email", placeholder: "example@example.com" },
+        password: { label: "Password", type: "password", placeholder: "Your password" },
+      },
+      async authorize(credentials) {
+        const parsedCredentials = await schemaSignIn.safeParseAsync(credentials);
+        if (!parsedCredentials.success) {
+          console.log("Invalid credentials");
+          return null;
+        }
+        const { email, password } = parsedCredentials.data;
+        const user = await prisma.user.findUnique({
+          where: { email: email as string },
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            password: true,
+          },
+        });
+        if (!user) return null;
+        const passwordMatch = await bcrypt.compare(
+          password,
+          user.password as string
+        );
+        if (!passwordMatch) return null;
+        const { password: _, ...userWithoutPassword } = user;
+        return userWithoutPassword;
       },
     }),
   ],
-});
+  session: {
+    strategy: "jwt",
+  },
+  pages: {
+    signIn: "/sign-in",
+    newUser: "/sign-up",
+  }
+} satisfies NextAuthConfig;
+
+export const { handlers, signIn, signOut, auth } = NextAuth(nextAuthConfig);

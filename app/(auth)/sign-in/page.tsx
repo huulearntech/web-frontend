@@ -1,10 +1,9 @@
 "use client";
 
-import * as React from "react";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
+// It's all ugly of js frameworks, no LoB
 import Link from "next/link";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
@@ -12,29 +11,20 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 
 import { paths } from "@/constants/paths";
+import { schemaSignIn, SignInData, defaultSignInValues } from "@/lib/zod_schemas/auth";
+import { onSubmitSignInForm } from "@/lib/actions";
 
-const formSchema = z.object({
-  email: z.email({ error: "Email is required"}),
-  password: z.string().min(1, { error: "Password is required!"}),
-});
 
+// TODO: Handle server sending error
 export default function SignIn () {
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      email: "",
-      password: "",
-    }
+  const form = useForm<SignInData>({
+    resolver: zodResolver(schemaSignIn),
+    defaultValues: defaultSignInValues
   })
-
-  function onSubmit (values: z.infer<typeof formSchema>) {
-    console.log('Received values:', values);
-    // Handle sign-in logic here, e.g., API call
-  };
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)}
+      <form onSubmit={form.handleSubmit(onSubmitSignInForm)}
         className="flex flex-col space-y-4"
       >
         <FormField

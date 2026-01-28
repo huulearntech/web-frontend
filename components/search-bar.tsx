@@ -1,67 +1,119 @@
 "use client";
 
-import * as React from "react";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { vi } from "react-day-picker/locale";
+import { vi } from "react-day-picker/locale"; // Add more locales
+import { cn } from "@/lib/utils";
 
-import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
+import { Form, FormField, FormItem, FormLabel, FormControl } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
-import { AutoComplete, AutoCompleteContent, AutoCompleteItem, AutoCompleteTrigger } from "./ui/auto-complete";
-import { cn } from "@/lib/utils";
+import { ArrowRight, Minus, Plus, Search } from "lucide-react";
+import {
+  Combobox,
+  ComboboxContent,
+  ComboboxEmpty,
+  ComboboxInput,
+  ComboboxItem,
+  ComboboxList
+} from "@/components/ui/combobox";
+import { useMediaQuery } from "usehooks-ts";
+import { Dialog, DialogContent, DialogHeader, DialogOverlay, DialogPortal, DialogTitle, DialogTrigger } from "./ui/dialog";
+import { useEffect, useState } from "react";
 
+// TODO: Move formSchema to a separate file if it's used in multiple places
 const formSchema = z.object({
-  location: z.string().min(1, { message: "Location is required" }),
+  location: z.string() /*.min(1, { message: "Location is required" })*/,
   inoutDates: z.object({
     from: z.date(),
     to: z.date(),
   }),
-  numAdults: z.number().min(1).max(30),
-  numChildren: z.number().min(0).max(6),
-  numRooms: z.number().min(1).max(30),
+  guestsAndRooms: z.object({
+    numAdults: z.number().min(1).max(30),
+    numChildren: z.number().min(0).max(6),
+    numRooms: z.number().min(1).max(30),
+  }),
 });
-
-function getDefaultInoutDates () {
-  const fromDate = new Date();
-  const toDate = new Date();
-  toDate.setDate(fromDate.getDate() + 1);
-  return {
-    from: fromDate,
-    to: toDate,
-  }
-}
 
 export default function SearchBar({
   className,
 }: {
   className?: string,
 }) {
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      location: "",
-      inoutDates: getDefaultInoutDates(),
-      numAdults: 2,
-      numChildren: 0,
-      numRooms: 1,
-    },
-  });
+  const [mounted, setMounted] = useState(false);
+  const isDesktop = useMediaQuery("(min-width: 768px)");
 
+  useEffect(() => {
+    // Prevent hydration mismatch
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return <div className={cn("h-12", className)} />
+  }
+
+  if (isDesktop) return (<SearchBarImpl className={className} />);
+  return (
+    <Dialog>
+      <DialogTrigger asChild>
+        <Button className={cn("w-full justify-start rounded-full text-base", className)} variant={"outline"} aria-label="Open search dialog">
+          <Search />
+          <span className="ml-2 text-gray-600"> {/** form location */} Tìm kiếm </span>
+        </Button>
+      </DialogTrigger>
+      <DialogPortal>
+        <DialogOverlay className="fixed inset-0 backdrop-blur-xs bg-white/20" />
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle className="text-lg font-medium"> Search </DialogTitle>
+          </DialogHeader>
+          <SearchBarImpl className="p-4 w-screen max-w-md" />
+        </DialogContent>
+      </DialogPortal>
+    </Dialog>
+  );
+}
+
+function SearchBarImpl({ className }: { className?: string }) {
+  const locations = ["New York", "Los Angeles", "Chicago", "Houston", "Miami", "San Francisco", "Seattle", "Boston", "Denver", "Atlanta"];
   function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(values);
   }
 
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      location: "",
+      inoutDates: {
+        from: undefined,
+        to: undefined,
+      },
+      guestsAndRooms: {
+        numAdults: 2,
+        numChildren: 0,
+        numRooms: 1,
+      }
+    },
+  });
+
+  useEffect(() => {
+    // What the fuck, NextJS? What the fuck are you complaining about?
+    // The web is just a big pile of bullshit
+    const today = new Date();
+    const tomorrow = new Date();
+    tomorrow.setDate(today.getDate() + 1);
+    form.setValue("inoutDates", { from: today, to: tomorrow});
+  }, []);
+
   return (
     <Form {...form}>
       <form
-       onSubmit={form.handleSubmit(onSubmit)}
+        onSubmit={form.handleSubmit(onSubmit)}
         className={cn(
-          "flex flex-col lg:flex-row gap-2 items-start",
+          "flex flex-col md:flex-row gap-2 items-start",
           className
         )}>
         <FormField
@@ -70,18 +122,31 @@ export default function SearchBar({
           render={({ field }) => (
             <FormItem className="relative w-full" >
               <FormLabel htmlFor="location-input">Location</FormLabel>
-              <AutoComplete modal={false}>
-                <FormControl>
-                  <AutoCompleteTrigger {...field} id="location-input" placeholder="Nhap dia chi ban muon den" />
-                </FormControl>
-                <AutoCompleteContent className="w-60" align="center">
-                  {/* <AutoCompleteEmpty>No result found</AutoCompleteEmpty> */}
-                  {/* <AutoCompleteLoading>Loading...</AutoCompleteLoading> */}
-                  {Array.from({ length: 5 }).map((_, index) => (
-                    <AutoCompleteItem key={index}>Here is the result {index}</AutoCompleteItem>
-                  ))}
-                </AutoCompleteContent>
-              </AutoComplete>
+              <Combobox
+                // FIXME: value and inputValue conflict issue
+                items={locations}
+                value={field.value}
+                onValueChange={field.onChange}
+              >
+                <ComboboxInput
+                  id="location-input"
+                  placeholder="Where are you going?"
+                  showTrigger={false}
+                  showClear
+                  // FIXME: font size not working properly
+                  className={"text-base!"}
+                />
+                <ComboboxContent>
+                  <ComboboxEmpty>No locations found.</ComboboxEmpty>
+                  <ComboboxList>
+                    {(item) => (
+                      <ComboboxItem key={item} value={item}>
+                        {item}
+                      </ComboboxItem>
+                    )}
+                  </ComboboxList>
+                </ComboboxContent>
+              </Combobox>
             </FormItem>
           )}
         />
@@ -93,14 +158,33 @@ export default function SearchBar({
               <FormLabel htmlFor="date-range-picker"> Check-in / Check-out </FormLabel>
               <Popover>
                 <PopoverTrigger asChild>
-                  <Button variant="outline" id="date-range-picker">bla</Button>
+                  <Button variant="outline" id="date-range-picker" className="text-base">
+                    {/* { // TODO: Clean up and support localization
+                      field.value.from
+                        ? field.value.from.toLocaleDateString("vi-VN", {
+                          month: "short",
+                          day: "numeric",
+                          year: "numeric",
+                        })
+                        : "Check-in"
+                    }
+                    <ArrowRight />
+                    {field.value.to
+                      ? field.value.to.toLocaleDateString("vi-VN", {
+                        month: "short",
+                        day: "numeric",
+                        year: "numeric",
+                      })
+                      : "Check-out"
+                    } */}
+                  </Button>
                 </PopoverTrigger>
 
                 <PopoverContent className="w-auto overflow-hidden p-0" >
                   <FormControl>
                     <Calendar
                       mode="range"
-                      // numberOfMonths={2} // TODO: Handle when the screen width is too small
+                      numberOfMonths={2} // TODO: useMediaQuery to make it responsive
                       locale={vi}
                       selected={field.value}
                       onSelect={field.onChange}
@@ -112,70 +196,102 @@ export default function SearchBar({
           )}
         />
 
-        <FormItem className="w-full">
-          <FormLabel htmlFor="guests-and-rooms">Khach va phong</FormLabel>
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button id="guests-and-rooms" variant="outline"> bla bla </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-xs overflow-hidden" >
-              <FormField
-                control={form.control}
-                name="numAdults"
-                render={({ field }) => (
+        <FormField
+          control={form.control}
+          name="guestsAndRooms"
+          render={({ field }) => (
+            <FormItem className="w-full">
+              <FormLabel htmlFor="guests-and-rooms">Guests and rooms</FormLabel>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button id="guests-and-rooms" variant="outline" className="text-base">
+                    {field.value.numAdults} adults, {field.value.numChildren} children, {field.value.numRooms} rooms
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-xs overflow-hidden" >
                   <FormItem className="flex justify-between">
                     <FormLabel> Adults </FormLabel>
                     <div className="flex space-x-2">
-                      <Button onClick={() => form.setValue("numAdults", form.getValues("numAdults") - 1)}>-</Button>
+                      <Button
+                        onClick={() => form.setValue("guestsAndRooms", {
+                          ...form.getValues("guestsAndRooms"),
+                          numAdults: form.getValues("guestsAndRooms").numAdults - 1,
+                        })}
+                        disabled={field.value.numAdults <= 1}
+                      >
+                        <Minus className="size-4" />
+                      </Button>
                       <FormControl>
-                        <Input {...field} readOnly className="w-10 text-center" />
+                        <Input value={field.value.numAdults} readOnly className="w-10 text-center" />
                       </FormControl>
-                      <Button onClick={() => form.setValue("numAdults", form.getValues("numAdults") + 1)}>+</Button>
+                      <Button onClick={
+                        // TODO: Handle min/max properly
+                        () => form.setValue("guestsAndRooms", {
+                          ...form.getValues("guestsAndRooms"),
+                          numAdults: form.getValues("guestsAndRooms").numAdults + 1,
+                        })}
+                        disabled={field.value.numAdults >= 30}>
+                        <Plus className="size-4" />
+                      </Button>
                     </div>
                   </FormItem>
-                )}
-              />
 
-              <FormField
-                control={form.control}
-                name="numChildren"
-                render={({ field }) => (
                   <FormItem className="flex justify-between mt-2">
                     <FormLabel> Children </FormLabel>
                     <div className="flex space-x-2">
-                      <Button onClick={() => form.setValue("numChildren", form.getValues("numChildren") - 1)}>-</Button>
+                      <Button onClick={() => form.setValue("guestsAndRooms", {
+                        ...form.getValues("guestsAndRooms"),
+                        numChildren: form.getValues("guestsAndRooms").numChildren - 1,
+                      })}
+                        disabled={field.value.numChildren <= 0}
+                      >
+                        <Minus className="size-4" />
+                      </Button>
                       <FormControl>
-                        <Input {...field} readOnly className="w-10 text-center" />
+                        <Input value={field.value.numChildren} readOnly className="w-10 text-center" />
                       </FormControl>
-                      <Button onClick={() => form.setValue("numChildren", form.getValues("numChildren") + 1)}>+</Button>
+                      <Button onClick={() => form.setValue("guestsAndRooms", {
+                        ...form.getValues("guestsAndRooms"),
+                        numChildren: form.getValues("guestsAndRooms").numChildren + 1,
+                      })}
+                        disabled={field.value.numChildren >= 6}
+                      >
+                        <Plus className="size-4" />
+                      </Button>
                     </div>
                   </FormItem>
-                )}
-              />
 
-              <FormField
-                control={form.control}
-                name="numRooms"
-                render={({ field }) => (
                   <FormItem className="flex justify-between mt-2">
                     <FormLabel> Rooms </FormLabel>
                     <div className="flex space-x-2">
-                      <Button onClick={() => form.setValue("numRooms", form.getValues("numRooms") - 1)}>-</Button>
+                      <Button onClick={() => form.setValue("guestsAndRooms", {
+                        ...form.getValues("guestsAndRooms"),
+                        numRooms: form.getValues("guestsAndRooms").numRooms - 1,
+                      })}
+                        disabled={field.value.numRooms <= 1}>
+                        <Minus className="size-4" />
+                      </Button>
                       <FormControl>
-                        <Input {...field} readOnly className="w-10 text-center" />
+                        <Input value={field.value.numRooms} readOnly className="w-10 text-center" />
                       </FormControl>
-                      <Button onClick={() => form.setValue("numRooms", form.getValues("numRooms") + 1)}>+</Button>
+                      <Button onClick={() => form.setValue("guestsAndRooms", {
+                        ...form.getValues("guestsAndRooms"),
+                        numRooms: form.getValues("guestsAndRooms").numRooms + 1,
+                      })}
+                        disabled={field.value.numRooms >= field.value.numAdults}>
+                        <Plus className="size-4" />
+                      </Button>
                     </div>
                   </FormItem>
-                )}
-              />
-            </PopoverContent>
-          </Popover>
-        </FormItem>
+                </PopoverContent>
+              </Popover>
+            </FormItem>
+          )}
+        />
 
-        <Button type="submit" className="w-full mt-[22px] lg:w-fit">
-          <MagnifyingGlassIcon />
-          Search
+        <Button type="submit" className="w-full mt-5.5 md:w-fit">
+          <Search />
+          <span className="md:max-lg:hidden"> Search </span>
         </Button>
       </form>
     </Form>

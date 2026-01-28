@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import { FaceFrownIcon } from '@heroicons/react/24/outline';
+import { Frown } from "lucide-react";
 import { ArrowLeft } from "lucide-react";
 import { tvlk_logo_text_dark } from "@/public/logos";
 
@@ -16,7 +16,7 @@ export default function NotFound () {
           />
         </div>
         <div className="w-full flex flex-col items-center justify-center space-y-4">
-          <FaceFrownIcon className="w-10 text-gray-400" />
+          <Frown className="w-10 text-gray-400" />
           <h2 className="text-xl font-semibold">404 Not Found</h2>
           <p>Could not find the requested resource.</p>
           <Link

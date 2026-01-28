@@ -1,23 +1,20 @@
+"use server";
 import Link from 'next/link';
 import Image from 'next/image';
 
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 
 import { paths } from '@/constants/paths'
 import { tvlk_logo_text_dark } from "@/public/logos"
-import { HeartIcon, CircleUserRoundIcon } from 'lucide-react';
+import { HeartIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { auth } from '@/auth';
+
+import HeaderAvatar from './header-avatar';
 
 
-export default function Header({ className }: { className?: string }) {
-  const user = {};
+export default async function Header({ className }: { className?: string }) {
+  const session = await auth();
 
   return (
     <header className={cn("w-full flex items-center bg-white shadow-md sticky top-0 z-10 h-20", className)}>
@@ -25,26 +22,13 @@ export default function Header({ className }: { className?: string }) {
         <Link href='/'>
           <Image src={tvlk_logo_text_dark} alt="Traveloka Header Logo" />
         </Link>
-
         <div className="flex items-center gap-16">
-          {user ? (
+          {session?.user ? (
             <>
               <Link href={paths.favorites}>
-                <HeartIcon className="size-6" strokeWidth={2}/>
+                <HeartIcon className="size-6" strokeWidth={2} />
               </Link>
-              <DropdownMenu modal={false}>
-                <DropdownMenuTrigger asChild>
-                  <Avatar className="hover:cursor-pointer">
-                    <AvatarImage src="" alt="" />
-                    <AvatarFallback> <CircleUserRoundIcon className="size-6" strokeWidth={2}/> </AvatarFallback>
-                  </Avatar>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuItem> Profile </DropdownMenuItem>
-                  <DropdownMenuItem> Settings </DropdownMenuItem>
-                  <DropdownMenuItem> Log out </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+              <HeaderAvatar />
             </>
           ) : (
             <div className="flex items-center gap-2">

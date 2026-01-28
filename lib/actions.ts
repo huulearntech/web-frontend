@@ -1,27 +1,48 @@
-'use server';
+"use server";
 
-import { z } from 'zod';
-import { revalidatePath } from 'next/cache';
-import { redirect } from 'next/navigation';
-import postgres from 'postgres';
-import { AuthError } from 'next-auth';
-import { signIn } from '@/auth';
+import { redirect } from "next/navigation";
+import { paths } from "@/constants/paths";
+import { SignUpData, SignInData } from "./zod_schemas/auth";
 
-export async function authenticate (
-  prevState: string | undefined,
-  formData: FormData,
-) {
+import { signIn } from "@/auth";
+import { AuthError, CredentialsSignin } from "next-auth";
+
+export async function onSubmitSignUpForm(values: SignUpData) {
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
   try {
-    await signIn('credentials', formData);
+    const response = await fetch(`${appUrl}/api/v1/sign-up`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        ...values,
+        action: "signUp",
+      }),
+    });
+    if (!response.ok) {
+      console.error("Sign up failed:", response.statusText);
+      return;
+    }
+    console.log("signup is ok");
+  } catch (error) {
+    console.error("Error during sign up:", error);
+    throw error;
+  }
+  redirect(paths.signIn);
+};
+
+export async function onSubmitSignInForm(values: SignInData) {
+  try {
+    await signIn("credentials", { ...values, redirectTo: paths.home });
   } catch (error) {
     if (error instanceof AuthError) {
-      switch (error.type) {
-        case 'CredentialsSignin':
-          return 'Invalid credentials.';
-        default:
-          return 'Something went wrong.';
-      }
+      console.error("Authentication error:", error.message);
+    } else if (error instanceof CredentialsSignin ) {
+      console.error("CredentialsSignin: ", error.message)
+    } else {
+      console.error("Unexpected error:", error);
+      throw error;
     }
-    throw error;
   }
 }

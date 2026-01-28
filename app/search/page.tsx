@@ -1,18 +1,25 @@
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
+import Link from "next/link";
+import Image from "next/image";
+
 import Filter from "./filter";
 import Results from "./results";
 
 import type { SearchPageProps } from "@/lib/definitions";
-import { Suspense } from "react";
 
 import bgShowOnMap from "@/public/images/bg-show-on-map.svg";
 import mapPinShowOnMap from "@/public/images/map-pin-show-on-map.png"
-import Link from "next/link";
-import Image from "next/image";
 
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import SearchBar from "@/components/search-bar";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from "@/components/ui/select";
 
 export default async function SearchPage( props: { 
   searchParams: Promise<SearchPageProps>
@@ -21,7 +28,8 @@ export default async function SearchPage( props: {
   const searchParams = await props.searchParams;
   const { spec, childSpec } = searchParams;
   console.log(spec, childSpec);
-  // if (!spec) notFound();
+  // TODO: Handle invalid spec
+  if (!spec) notFound();
   const [location, inOutDate, numAdults, numRooms] = spec.split('.');
   // const childAges = childSpec?.split('.'); // age of every child
 
@@ -46,18 +54,16 @@ export default async function SearchPage( props: {
         </div>
         <Filter />
       </aside>
+
       <div className="w-full flex flex-col space-y-3">
-        <div className="flex justify-between sticky top-[82px] border-b p-3 -mt-3 z-10 bg-background shadow-md">
+        <div className="flex justify-between sticky top-15 md:top-20.5 border-b p-3 -mt-3 z-10 bg-background shadow-md">
           <div className="flex flex-col text-sm">
             <span className="font-bold"> {location} </span>
             <span> {/**  number of results found*/} 10000 noi luu tru duoc tim thay </span>
           </div>
           <div className="flex space-x-2">
 
-          <Label htmlFor="sort-by-select"
-          className="text-xs font-semibold"
-          >
-            Sort by:</Label>
+          <Label htmlFor="sort-by-select" className="text-xs font-semibold" >Sort by:</Label>
             <Select defaultValue="price-desc">
               <SelectTrigger id="sort-by-select" className="text-xs font-semibold py-2 px-3 rounded-full">
                 <SelectValue placeholder="Sắp xếp theo"/>

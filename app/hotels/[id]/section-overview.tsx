@@ -12,7 +12,7 @@ import * as icons from "@/public/icons";
 export default async function OverviewSection () {
   // const hotel = await getHotelById();
   return (
-    <section id="overview" className="w-full flex flex-col">
+    <section id="overview" className="w-full flex flex-col scroll-mt-30">
       <Breadcrumb className="py-1 mb-3">
         <BreadcrumbList className="text-xs font-semibold">
           <BreadcrumbItem>
@@ -80,7 +80,7 @@ export default async function OverviewSection () {
                 </div>
               </div>
 
-              <div className="flex flex-col font-semibold">
+              <div className="flex flex-col font-bold">
                 <span>Rất tốt</span>
                 <a href="#feedbacks" className="text-sm text-blue-500 flex gap-x-1">
                   {10} đánh giá
