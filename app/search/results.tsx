@@ -1,12 +1,18 @@
-// If handle infinit scroll -> client component. If pagination -> server component
-import { notFound } from "next/navigation";
-
 import { HotelCard } from "@/components/hotel-card";
 import type { HotelCardProps } from "@/old/mock_data";
 import type { SearchPageProps } from "@/lib/definitions"
 
 import { fake_hotels } from "@/old/mock_data";
-import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious
+} from "@/components/ui/pagination";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default async function Results( props: { 
   searchParams?: Promise<SearchPageProps>
@@ -21,7 +27,12 @@ export default async function Results( props: {
   /**
    * Server-side data fetching
    */
-  const results : HotelCardProps[] = fake_hotels.concat(fake_hotels).concat(fake_hotels);
+  // simulate server delay and fetch the fake hotels
+  const results: HotelCardProps[] = await new Promise<HotelCardProps[]>(resolve => {
+    setTimeout(() => {
+      resolve(fake_hotels.concat(fake_hotels).concat(fake_hotels));
+    }, 5000);
+  });
   const currentPage = 9;
   const totalPages = 10;
 
@@ -30,7 +41,7 @@ export default async function Results( props: {
       <ul className="w-full grid grid-cols-3 gap-4">
         {results.map((hotel, index) => (
           <li key={index}>
-            <HotelCard hotel={hotel} className="h-[400px]"/>
+            <HotelCard hotel={hotel} className="h-100"/>
           </li>
         ))}
       </ul>
@@ -69,7 +80,7 @@ export default async function Results( props: {
                   }
                   {
                     <PaginationItem>
-                      <PaginationLink href="#">{currentPage}</PaginationLink>
+                      <PaginationLink href="#" isActive>{currentPage}</PaginationLink>
                     </PaginationItem>
                   }
                   {
@@ -101,3 +112,33 @@ export default async function Results( props: {
     </>
   )
 };
+
+export function ResultFallback() {
+  return (
+    <ul className="w-full grid grid-cols-3 gap-4">
+      {Array.from({length: 12}).map((_, index) => (
+        <li key={index}>
+          <div className="w-full h-100 rounded-lg overflow-hidden flex flex-col justify-between gap-y-2">
+            <Skeleton className="w-full h-50" />
+            <div className="flex justify-between px-3 py-2 flex-1 gap-x-2">
+              <div className="w-full flex flex-col gap-y-2">
+                <Skeleton className="w-full h-4 rounded-lg" />
+                <Skeleton className="w-full h-4 rounded-lg" />
+                <Skeleton className="w-3/5 h-3 rounded-lg" />
+              </div>
+              <Skeleton className="size-10 rounded-sm" />
+            </div>
+
+            <div className="flex justify-between items-end px-3 py-2 flex-1 gap-x-2">
+              <div className="w-full flex flex-col gap-y-2">
+                <Skeleton className="w-4/5 h-5 rounded-lg" />
+                <Skeleton className="w-4/5 h-5 rounded-lg" />
+              </div>
+              <Skeleton className="w-20 h-10 rounded-sm" />
+            </div>
+          </div>
+        </li>
+      ))}
+    </ul>
+  )
+}

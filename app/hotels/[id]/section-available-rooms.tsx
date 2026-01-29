@@ -112,13 +112,16 @@ function RoomCard () {
                     x1
                   </div>
                 </TableCell>
-                <TableCell className="flex justify-center">
-                  <Link
-                    href={"#"}
-                    className="bg-primary text-white text-sm font-bold px-3 py-2 rounded-[0.375rem]"
-                  >
-                    Chọn
-                  </Link>
+                <TableCell>
+                  <div className="flex justify-center items-center">
+                    <Link
+                      href={"/booking/1"} // Example booking id
+                      target="_blank"
+                      className="bg-primary text-white text-sm font-bold px-3 py-2 rounded-[0.375rem]"
+                    >
+                      Chọn
+                    </Link>
+                  </div>
                 </TableCell>
               </TableRow>
 
@@ -153,13 +156,16 @@ function RoomCard () {
                     x1
                   </div>
                 </TableCell>
-                <TableCell className="flex justify-center">
-                  <Link
-                    href={"#"}
-                    className="bg-primary text-white text-sm font-bold px-3 py-2 rounded-[0.375rem]"
-                  >
-                    Chọn
-                  </Link>
+                <TableCell>
+                  <div className="flex justify-center items-center">
+                    <Link
+                      href={"/booking/1"} // Example booking id
+                      target="_blank"
+                      className="bg-primary text-white text-sm font-bold px-3 py-2 rounded-[0.375rem]"
+                    >
+                      Chọn
+                    </Link>
+                  </div>
                 </TableCell>
               </TableRow>
             </TableBody>

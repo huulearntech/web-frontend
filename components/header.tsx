@@ -17,7 +17,7 @@ export default async function Header({ className }: { className?: string }) {
   const session = await auth();
 
   return (
-    <header className={cn("w-full flex items-center bg-white shadow-md sticky top-0 z-10 h-20", className)}>
+    <header className={cn("w-full flex items-center bg-white shadow-md sticky top-0 z-60 h-20", className)}>
       <div className="flex justify-between items-center content">
         <Link href='/'>
           <Image src={tvlk_logo_text_dark} alt="Traveloka Header Logo" />

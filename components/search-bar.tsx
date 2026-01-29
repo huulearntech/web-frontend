@@ -124,7 +124,8 @@ function SearchBarImpl({ className }: { className?: string }) {
               <FormLabel htmlFor="location-input">Location</FormLabel>
               <Combobox
                 // FIXME: value and inputValue conflict issue
-                items={locations}
+                modal={false}
+                items={locations.slice(0,5)}
                 value={field.value}
                 onValueChange={field.onChange}
               >

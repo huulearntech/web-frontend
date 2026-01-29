@@ -128,8 +128,9 @@ function PartnersSection() {
                 ))}
               </CarouselContent>
 
-              <CarouselNext />
-              <CarouselPrevious />
+              {/** Not sure if this is ok */}
+              <CarouselNext className="max-lg:hidden"/>
+              <CarouselPrevious className="max-lg:hidden"/>
             </Carousel>
           </TabsContent>
         ))}

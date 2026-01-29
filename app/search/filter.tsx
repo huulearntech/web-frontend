@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from 'react';
 import { useMediaQuery } from 'usehooks-ts';
+import { z } from 'zod';
+import { useForm } from 'react-hook-form';
 
 import { Input } from '@/components/ui/input';
 import { Slider } from '@/components/ui/slider';
@@ -36,7 +38,7 @@ export default /*async*/ function Filter () {
 
       <SheetContent
         side='left'
-        className="w-full max-w-md px-4 overflow-y-auto"
+        className="w-full max-w-sm px-4 overflow-y-auto"
         showCloseButton={false}
         // what is aria-describedby?
         // aria-describedby=''
@@ -72,8 +74,6 @@ export default /*async*/ function Filter () {
   );
 };
 
-// TODO: bring two buttons to footer when in form of sheet
-// and remove accordion then use overflow-x-auto as normal list
 function FilterImpl () {
   const [filterCategories, setFilterCategories] = useState<FilterCategoryProps[]>([
       { id: 'amenities', label: 'Tiện nghi', options: ['WiFi', 'Parking', 'Pool', 'Gym'] },
@@ -83,8 +83,21 @@ function FilterImpl () {
 
   const [checkedBox, setCheckedBox] = useState<string[]>([]);
   const [filterHasChanged, setFilterHasChanged] = useState(false);
+
+  const filterSchema = z.object({
+    amenities: z.array(z.string()),
+    propertyTypes: z.array(z.string()),
+  });
+
+  const form = useForm<z.infer<typeof filterSchema>>({
+    defaultValues: {
+      amenities: [],
+      propertyTypes: [],
+    },
+  });
+
   return (
-    <div className="flex flex-col space-y-3">
+    <div className="flex flex-col space-y-3 w-full max-w-sm">
       <div className="flex gap-2">
         <Button
           variant='outline'

@@ -82,7 +82,7 @@ export default async function OverviewSection () {
 
               <div className="flex flex-col font-bold">
                 <span>Rất tốt</span>
-                <a href="#feedbacks" className="text-sm text-blue-500 flex gap-x-1">
+                <a href="#review" className="text-sm text-blue-500 flex gap-x-1">
                   {10} đánh giá
                   <ChevronRight className="size-5" />
                 </a>
@@ -141,7 +141,7 @@ export default async function OverviewSection () {
             <div className="flex items-center justify-between mb-2 font-bold">
               {/* TODO(huutp): Add real amenities list */}
               <h2>Tiện ích chính</h2>
-              <a href="#amenities" className="text-sm text-blue-500 flex gap-x-1">
+              <a href="#facilities" className="text-sm text-blue-500 flex gap-x-1">
                 Xem thêm
                 <ChevronRight className="size-5" />
               </a>

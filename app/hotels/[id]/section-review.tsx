@@ -61,8 +61,8 @@ function ReviewCard() {
 
       <div className="flex flex-col flex-1 gap-y-3">
         <div className="flex space-x-4 items-center">
-          <div className="px-3 py-1 rounded-full bg-blue-50 flex items-center justify-center space-x-1">
-            <Image src={tvlk_favicon} alt="" aria-hidden className="size-[1.125rem]"/>
+          <div className="px-2.5 py-0.5 rounded-full bg-blue-50 flex items-center justify-center space-x-1">
+            <Image src={tvlk_favicon} alt="" aria-hidden className="size-4.5"/>
             <div className="flex items-end">
               <div className="text-primary font-bold">9.5</div>
               <div className="text-sm font-medium">/10</div>
