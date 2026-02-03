@@ -107,8 +107,8 @@ export default function LocationSection() {
 
 
         </div>
-        <div className="flex space-x-1 text-sm font-bold">
-          <Info className="size-4"/>
+        <div className="flex space-x-2 text-sm font-bold items-center">
+          <Info className="size-3.5"/>
           <div>
             Distances shown are based on straight line distances. Actual travel distances may vary.
           </div>

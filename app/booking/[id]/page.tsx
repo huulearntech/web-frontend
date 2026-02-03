@@ -20,7 +20,7 @@ export default function BookingPage() {
   return (
     <>
       <InformationForm />
-      <div className="flex flex-col">
+      <div className="flex flex-col gap-y-4">
         <div className="flex flex-col rounded-[20px] bg-white shadow-lg p-4 gap-y-2">
           <div className="flex flex-col gap-y-1">
             <h2 className="text-[1.25rem] font-semibold">(1x) Dragon's Nest - Super Saver</h2>
@@ -67,50 +67,26 @@ export default function BookingPage() {
           </div>
         </div>
 
-        <div className="flex flex-col rounded-[20px] bg-white shadow-lg p-4 gap-y-2">
-          <div className="flex gap-x-2">
+        <div className="flex flex-col rounded-[20px] bg-white shadow-lg">
+          <div className="flex px-4 py-2 gap-x-3 items-center">
             <TagIcon className="size-5" />
-            <h2 className="text-[1.25rem] font-semibold">(1x) Dragon's Nest - Super Saver</h2>
+            <h2 className="text-[1.25rem] font-semibold">Chi tiết giá</h2>
           </div>
 
-          <div className="flex bg-blue-50 rounded-[10px] p-1 gap-x-1">
-            <div className="flex flex-col p-2 gap-y-1 w-32.5">
-              <div className="text-xs">Nhan phong</div>
-              <div className="text-sm font-bold">Thứ Ba, 10 tháng 02 2026</div>
-              <div className="text-xs">Từ 14:00</div>
+          <div className="flex flex-col bg-blue-50 px-4 py-3 gap-y-4">
+            <div className="flex items-center justify-between">
+              <div className="text-xs">ten phong</div>
+              <div className="text-xs">price</div>
             </div>
-            
-            <div className="flex flex-col flex-1 justify-center items-center">
-              <div className="text-xs font-semibold">1 đêm</div>
-              <ArrowRight className="size-4" />
-            </div>
-
-            <div className="flex flex-col p-2 gap-y-1 w-32.5">
-              <div className="text-xs">Nhan phong</div>
-              <div className="text-sm font-bold">Thứ Ba, 10 tháng 02 2026</div>
-              <div className="text-xs">Từ 14:00</div>
-            </div>
+            <div className="text-xs">Thue va phi</div>
+          </div>
+          <div className="flex flex-col p-4 bg-[linear-gradient(313.11deg,rgb(247,252,222)18.59%,rgb(255,255,255)89.04%)]">
+            <div className="text-xs font-semibold">Tong cong</div>
+            <div className="text-xs font-semibold">1 phong, 1 đêm</div>
           </div>
 
-          <div className="flex gap-x-2 items-center">
-            <DoorOpen className="size-4" />
-            <div className="text-sm font-semibold">2 khach</div>
-            <div className="w-px bg-gray-500 h-3 mx-1"></div>
-            <BedDouble className="size-4" />
-            <ForkKnife className="size-4" />
-          </div>
-          <div className="flex gap-x-2 items-center">
-            <ScrollText className="size-4" />
-            <div className="text-sm text-green-700">Miễn phí hủy phòng trước 09 thg 2 2026</div>
-          </div>
-          <div className="flex gap-x-2 items-center">
-            <CalendarCheck className="size-4" />
-            <div className="text-sm text-green-700">Có thể đổi lịch</div>
-          </div>
-          <div className="flex gap-x-2">
-            <Wifi className="size-4" />
-            <CigaretteOff className="size-4" />
-          </div>
+          <Button className="m-4 rounded-full">Tiep tuc</Button>
+
         </div>
       </div>
     </>
@@ -119,7 +95,7 @@ export default function BookingPage() {
 
 function InformationForm () {
   return (
-    <div className="w-full flex flex-col rounded-[20px] bg-white shadow-lg p-4 gap-y-4">
+    <div className="w-full h-fit flex flex-col rounded-[20px] bg-white shadow-lg p-4 gap-y-4">
       <div className="flex flex-col gap-y-2">
         <div className="flex gap-x-2 items-center">
           <MailIcon className="size-5" />
@@ -149,11 +125,11 @@ function InformationForm () {
                   </Button>
                 </PopoverTrigger>
 
-                <PopoverContent>
+                <PopoverContent align="start">
                   <Command>
                     <CommandInput>
                     </CommandInput>
-                    <CommandList>
+                    <CommandList className="max-h-60 overflow-y-auto text-sm">
                       <CommandEmpty>No results found</CommandEmpty>
                       {Array.from({ length: 5 }).map((_, index) => (
                         <CommandItem key={index}>

@@ -13,13 +13,13 @@ import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { ArrowRight, Minus, Plus, Search } from "lucide-react";
 import {
-  Combobox,
-  ComboboxContent,
-  ComboboxEmpty,
-  ComboboxInput,
-  ComboboxItem,
-  ComboboxList
-} from "@/components/ui/combobox";
+  Autocomplete,
+  AutocompleteContent,
+  AutocompleteEmpty,
+  AutocompleteInput,
+  AutocompleteItem,
+  AutocompleteList
+} from "@/components/autocomplete";
 import { useMediaQuery } from "usehooks-ts";
 import { Dialog, DialogContent, DialogHeader, DialogOverlay, DialogPortal, DialogTitle, DialogTrigger } from "./ui/dialog";
 import { useEffect, useState } from "react";
@@ -45,12 +45,7 @@ export default function SearchBar({
 }) {
   const [mounted, setMounted] = useState(false);
   const isDesktop = useMediaQuery("(min-width: 768px)");
-
-  useEffect(() => {
-    // Prevent hydration mismatch
-    setMounted(true);
-  }, []);
-
+  useEffect(() => setMounted(true), []); // Prevent hydration mismatch
   if (!mounted) {
     return <div className={cn("h-12", className)} />
   }
@@ -100,8 +95,6 @@ function SearchBarImpl({ className }: { className?: string }) {
   });
 
   useEffect(() => {
-    // What the fuck, NextJS? What the fuck are you complaining about?
-    // The web is just a big pile of bullshit
     const today = new Date();
     const tomorrow = new Date();
     tomorrow.setDate(today.getDate() + 1);
@@ -122,14 +115,13 @@ function SearchBarImpl({ className }: { className?: string }) {
           render={({ field }) => (
             <FormItem className="relative w-full" >
               <FormLabel htmlFor="location-input">Location</FormLabel>
-              <Combobox
-                // FIXME: value and inputValue conflict issue
+              <Autocomplete
                 modal={false}
                 items={locations.slice(0,5)}
                 value={field.value}
                 onValueChange={field.onChange}
               >
-                <ComboboxInput
+                <AutocompleteInput
                   id="location-input"
                   placeholder="Where are you going?"
                   showTrigger={false}
@@ -137,17 +129,17 @@ function SearchBarImpl({ className }: { className?: string }) {
                   // FIXME: font size not working properly
                   className={"text-base!"}
                 />
-                <ComboboxContent>
-                  <ComboboxEmpty>No locations found.</ComboboxEmpty>
-                  <ComboboxList>
+                <AutocompleteContent>
+                  <AutocompleteEmpty>No locations found.</AutocompleteEmpty>
+                  <AutocompleteList>
                     {(item) => (
-                      <ComboboxItem key={item} value={item}>
+                      <AutocompleteItem key={item} value={item}>
                         {item}
-                      </ComboboxItem>
+                      </AutocompleteItem>
                     )}
-                  </ComboboxList>
-                </ComboboxContent>
-              </Combobox>
+                  </AutocompleteList>
+                </AutocompleteContent>
+              </Autocomplete>
             </FormItem>
           )}
         />
@@ -160,7 +152,7 @@ function SearchBarImpl({ className }: { className?: string }) {
               <Popover>
                 <PopoverTrigger asChild>
                   <Button variant="outline" id="date-range-picker" className="text-base">
-                    {/* { // TODO: Clean up and support localization
+                    { // TODO: Clean up and support localization
                       field.value.from
                         ? field.value.from.toLocaleDateString("vi-VN", {
                           month: "short",
@@ -177,7 +169,7 @@ function SearchBarImpl({ className }: { className?: string }) {
                         year: "numeric",
                       })
                       : "Check-out"
-                    } */}
+                    }
                   </Button>
                 </PopoverTrigger>
 

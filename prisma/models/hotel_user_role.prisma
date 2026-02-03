@@ -1,0 +1,19 @@
+// Maybe only needed manager role for simplicity
+enum UserRole {
+  ADMIN
+  MANAGER
+  STAFF
+}
+
+model HotelUserRole {
+  id        String   @id @default(cuid())
+  hotelId   String   @map("hotel_id")
+  userId    String   @map("user_id")
+  role      UserRole
+  hotel     Hotel    @relation(fields: [hotelId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([hotelId])
+  @@index([userId])
+  @@map("hotel_user_roles")
+}

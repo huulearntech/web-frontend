@@ -2,15 +2,12 @@
 
 import { redirect } from "next/navigation";
 import { paths } from "@/constants/paths";
-import { SignUpData, SignInData } from "./zod_schemas/auth";
-
-import { signIn } from "@/auth";
-import { AuthError, CredentialsSignin } from "next-auth";
+import { SignUpData } from "./zod_schemas/auth";
 
 export async function onSubmitSignUpForm(values: SignUpData) {
   const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
   try {
-    const response = await fetch(`${appUrl}/api/v1/sign-up`, {
+    const response = await fetch(`${appUrl}/api/auth/sign-up`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -31,18 +28,3 @@ export async function onSubmitSignUpForm(values: SignUpData) {
   }
   redirect(paths.signIn);
 };
-
-export async function onSubmitSignInForm(values: SignInData) {
-  try {
-    await signIn("credentials", { ...values, redirectTo: paths.home });
-  } catch (error) {
-    if (error instanceof AuthError) {
-      console.error("Authentication error:", error.message);
-    } else if (error instanceof CredentialsSignin ) {
-      console.error("CredentialsSignin: ", error.message)
-    } else {
-      console.error("Unexpected error:", error);
-      throw error;
-    }
-  }
-}

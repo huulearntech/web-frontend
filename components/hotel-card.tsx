@@ -168,7 +168,7 @@ function HotelCard({
       </div>
 
       <div className="flex flex-col justify-between px-3 py-2 flex-1">
-        <div className="flex flex-col">
+        <div className="flex flex-col gap-y-1">
           <div className="flex gap-x-1">
             <h3 role="heading" className="grow font-bold line-clamp-2 overflow-hidden overflow-ellipsis">{name}</h3>
             <div className="flex flex-col items-end">
@@ -185,9 +185,9 @@ function HotelCard({
             </div>
             <RatingStars rating={rating} />
           </div>
-          <div className='flex items-center space-x-2'>
+          <div className='flex items-center space-x-1 ml-1'>
             <MapPin className="size-3" strokeWidth={3} />
-            <span className="text-sm whitespace-nowrap overflow-hidden overflow-ellipsis flex-1">{location}</span>
+            <span className="text-xs font-semibold whitespace-nowrap overflow-hidden overflow-ellipsis flex-1">{location}</span>
           </div>
 
           <div className='flex items-center space-x-2'>

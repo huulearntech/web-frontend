@@ -4,6 +4,7 @@ export default function FacilitiesSection() {
   return (
     <section id="facilities" className="w-full flex flex-col scroll-mt-30">
       <div className="rounded-[1.25rem] px-4 py-5 flex flex-col gap-y-5 shadow-xl">
+        <h2 className="font-bold text-[1.25rem]"> Tất cả những tiện ích tại Nature Hotel - Le Hong Phong </h2>
         <div className="flex flex-wrap gap-y-4">
           <div className="w-1/3 flex flex-col space-y-2">
           <div className="flex space-x-2 items-center font-bold">

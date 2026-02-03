@@ -1,0 +1,23 @@
+model Hotel {
+  id          String   @id @default(cuid())
+  name        String
+  address     String
+  geolocation String
+  rating      Float
+  rooms       Room[]
+  
+  @@map("hotels")
+}
+
+model Room {
+  id               String   @id @default(cuid())
+  hotelId          String   @map("hotel_id")
+  type             String
+  adultCapacity    Int      @map("adult_capacity")
+  childrenCapacity Int      @map("children_capacity")
+  price            Int
+  hotel            Hotel    @relation(fields: [hotelId], references: [id], onDelete: Cascade)
+  
+  @@index([hotelId])
+  @@map("rooms")
+}

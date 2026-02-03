@@ -61,9 +61,8 @@ export default function Coupon ({ coupon } : {
       </div>
 
       <div className="w-full h-14 pt-2 pb-4 px-4 flex items-center">
-        <div className="h-8 uppercase flex-1 mr-3 py-1 px-2 rounded-sm bg-gray-100 font-bold text-sm line-clamp-1 truncate"> {coupon.code} </div>
+        <div className="flex items-center h-8 uppercase flex-1 mr-3 py-1 px-2 rounded-sm bg-gray-100 font-bold text-sm line-clamp-1 truncate"> {coupon.code} </div>
         <button
-          // value={coupon.code} // do I need this?
           onClick={async (event) => {
             const copyButton = event.currentTarget as HTMLElement;
             const couponText = copyButton.previousElementSibling?.textContent.trim();
@@ -83,15 +82,9 @@ export default function Coupon ({ coupon } : {
           className="w-20 h-8 inline-flex items-center justify-center text-xs font-semibold text-primary bg-secondary rounded-full px-3 data-[justclicked=true]:bg-primary data-[justclicked=true]:text-secondary transition-all duration-300"
         >
           {justClicked ? 
-            <>
-              <Check className="size-4 mr-1" aria-hidden />
-              Copied
-            </>
+            <> <Check className="size-4 mr-1" aria-hidden /> Copied </>
             :
-            <>
-              <Copy className="size-4 mr-1" aria-hidden />
-              Copy
-            </>
+            <> <Copy className="size-4 mr-1" aria-hidden /> Copy </>
           }
         </button>
       </div>

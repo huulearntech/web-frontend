@@ -1,0 +1,88 @@
+model User {
+  id        Int       @id @default(autoincrement())
+  email     String    @unique
+  name      String?
+  bookings  Booking[] // bookings created by this user
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Hotel {
+  id        Int       @id @default(autoincrement())
+  name      String
+  address   String?
+  rooms     Room[]    // rooms that belong to this hotel
+  bookings  Booking[] // bookings made for this hotel
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Room {
+  id        Int       @id @default(autoincrement())
+  hotel     Hotel     @relation(fields: [hotelId], references: [id])
+  hotelId   Int
+  number    String    // e.g. "101" or "12A"
+  type      String?   // e.g. "single", "double", "suite"
+  price     Float     // base price per night
+
+  bookingItems BookingRoom[]
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@index([hotelId])
+}
+
+model Booking {
+  id          Int           @id @default(autoincrement())
+  user        User          @relation(fields: [userId], references: [id])
+  userId      Int
+  hotel       Hotel         @relation(fields: [hotelId], references: [id])
+  hotelId     Int
+
+  // single date range for the whole booking (all rooms)
+  startDate   DateTime
+  endDate     DateTime
+
+  status      BookingStatus @default(PENDING)
+  totalPrice  Float         // computed total for the booking (store snapshot)
+  notes       String?
+
+  rooms       BookingRoom[] // join records for each room included in this booking
+
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  @@index([userId])
+  @@index([hotelId])
+  @@index([startDate, endDate])
+}
+
+model BookingRoom {
+  id            Int     @id @default(autoincrement())
+  booking       Booking @relation(fields: [bookingId], references: [id])
+  bookingId     Int
+  room          Room    @relation(fields: [roomId], references: [id])
+  roomId        Int
+
+  // snapshot prices / quantities at booking time
+  pricePerNight Float
+  nights        Int
+  totalPrice    Float   // pricePerNight * nights
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@unique([bookingId, roomId]) // don't add the same room twice to one booking
+  @@index([roomId])
+  @@index([bookingId])
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+  COMPLETED
+}
