@@ -1,7 +1,3 @@
-// "use client"; // TODO: move the autoplay out so this should be rendered on the server
-
-// TODO: there should be suspense to wait for the hotel cards
-
 import Image from "next/image";
 import type { PopularDestination } from "@/lib/definitions";
 import { coupons } from "@/old/mock_data";
@@ -112,10 +108,7 @@ function PartnersSection() {
 
         {locations.map((location) => (
           <TabsContent value={location.name} key={location.name}>
-            <Carousel
-              opts={{
-                align: "start"
-              }}
+            <Carousel opts={{ align: "start" }}
             >
               <CarouselContent className="p-2">
                 {hotels.concat(hotels).map((hotel, index) => (
@@ -146,12 +139,12 @@ function PopularDestinationsSection () {
       <div className="flex justify-center">
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
           {most_popular_destinations.map((dest, index) => (
-            <div key={index} className="group relative max-w-80 aspect-[8/5] rounded-[10px] overflow-hidden transition-all flex flex-col hover:cursor-pointer">
+            <div key={index} className="group relative max-w-80 aspect-8/5 rounded-[10px] overflow-hidden transition-all flex flex-col hover:cursor-pointer">
               <Image
                 key={index}
                 src={dest.backgroundImage}
                 alt=""
-                className="rounded-md aspect-[8/5] object-cover -z-10"
+                className="rounded-md aspect-8/5 object-cover -z-10"
               />
               <div className="absolute inset-0 bg-black/40 group-hover:bg-black/70 duration-300"></div>
               <div className="absolute top-0 left-0 right-0 p-4 text-white">

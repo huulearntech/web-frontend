@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import { auth } from "@/auth";
-import { paths } from "@/constants/paths";
+import { paths } from "@/lib/constants/paths";
 import SignUpForm from "./sign-up-form";
 
 export default async function SignUpPage() {

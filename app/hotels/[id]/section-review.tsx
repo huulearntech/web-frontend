@@ -63,9 +63,10 @@ function ReviewCard() {
         <div className="flex space-x-4 items-center">
           <div className="px-2.5 py-0.5 rounded-full bg-blue-50 flex items-center justify-center space-x-1">
             <Image src={tvlk_favicon} alt="" aria-hidden className="size-4.5"/>
-            <div className="flex items-end">
+            <div className="flex items-end gap-x-0.5">
               <div className="text-primary font-bold">9.5</div>
-              <div className="text-sm font-medium">/10</div>
+              <div className="text-sm font-medium">/</div>
+              <div className="text-sm font-medium">10</div>
             </div>
           </div>
 
@@ -85,12 +86,13 @@ function ReviewCard() {
 };
 
 function ProgressBar({ percentage }: { percentage: number }) {
+  const pct = Math.min(Math.max(0, percentage), 100);
+
   return (
-    <div className="bg-blue-50 rounded-full h-3 w-[100px] overflow-hidden flex">
-      <div className={cn(
-        "bg-primary h-full",
-        `w-[${Math.min(Math.max(0, percentage), 100)}%]`,
-      )}
+    <div className="bg-blue-50 rounded-full h-3 w-50 overflow-hidden relative">
+      <div
+        className={"absolute left-0 top-0 h-full bg-primary"}
+        style={{ width: `${pct}%` }}
       />
     </div>
   )

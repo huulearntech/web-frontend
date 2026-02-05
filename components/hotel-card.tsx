@@ -77,7 +77,7 @@ import percentage from "@/public/icons/percentage.png";
 //               <RatingStars rating={rating} />
 //               <span className="ml-2 text-sm text-gray-700">{"(" + numberOfReviews + " đánh giá)"}</span>
 //             </div>
-//             <div className="text-blue-500 bg-blue-50 inline-flex items-center w-fit p-1 rounded">
+//             <div className="text-primary bg-blue-50 inline-flex items-center w-fit p-1 rounded">
 //               <Image src={hotel_icon} alt="Hotel Icon" className="mr-2" />
 //               <span className="text-xs font-semibold">{type}</span>
 //             </div>

@@ -3,6 +3,7 @@ import Image from "next/image";
 import { Frown } from "lucide-react";
 import { ArrowLeft } from "lucide-react";
 import { tvlk_logo_text_dark } from "@/public/logos";
+import { Button } from "@/components/ui/button";
 
 export default function NotFound () {
   return (
@@ -19,13 +20,11 @@ export default function NotFound () {
           <Frown className="w-10 text-gray-400" />
           <h2 className="text-xl font-semibold">404 Not Found</h2>
           <p>Could not find the requested resource.</p>
-          <Link
-            href="/"
-            className="flex items-center mt-4 rounded-md bg-blue-500 px-4 py-2 text-sm text-white transition-colors hover:bg-blue-400"
-          >
-            <ArrowLeft className="mr-2"/>
-            Go Back
-          </Link>
+          <Button asChild>
+            <Link href="/" >
+              <ArrowLeft className="mr-2"/> Go back
+            </Link>
+          </Button>
         </div>
       </div>
     </main>

@@ -113,7 +113,7 @@ export default async function Results( props: {
   )
 };
 
-export function ResultFallback() {
+export function ResultsFallback() {
   return (
     <ul className="w-full grid grid-cols-3 gap-4">
       {Array.from({length: 12}).map((_, index) => (

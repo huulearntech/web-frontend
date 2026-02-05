@@ -1,15 +1,11 @@
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import Link from "next/link";
-import Image from "next/image";
 
 import Filter from "./filter";
-import Results, { ResultFallback } from "./results";
+import Results, { ResultsFallback } from "./results";
 
 import type { SearchPageProps } from "@/lib/definitions";
-
-import bgShowOnMap from "@/public/images/bg-show-on-map.svg";
-import mapPinShowOnMap from "@/public/images/map-pin-show-on-map.png"
 
 import { Label } from "@/components/ui/label";
 import {
@@ -91,7 +87,7 @@ export default async function SearchPage( props: {
             </Link>
           </div>
         </div>
-        <Suspense fallback={<ResultFallback />}>
+        <Suspense fallback={<ResultsFallback />}>
           <Results />
         </Suspense>
       </div>

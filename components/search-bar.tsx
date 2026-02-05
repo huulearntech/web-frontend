@@ -72,6 +72,7 @@ export default function SearchBar({
   );
 }
 
+// TODO: Clean up
 function SearchBarImpl({ className }: { className?: string }) {
   const locations = ["New York", "Los Angeles", "Chicago", "Houston", "Miami", "San Francisco", "Seattle", "Boston", "Denver", "Atlanta"];
   function onSubmit(values: z.infer<typeof formSchema>) {
@@ -204,15 +205,16 @@ function SearchBarImpl({ className }: { className?: string }) {
                 <PopoverContent className="w-xs overflow-hidden" >
                   <FormItem className="flex justify-between">
                     <FormLabel> Adults </FormLabel>
-                    <div className="flex space-x-2">
+                    <div className="flex space-x-2 items-center">
                       <Button
                         onClick={() => form.setValue("guestsAndRooms", {
                           ...form.getValues("guestsAndRooms"),
                           numAdults: form.getValues("guestsAndRooms").numAdults - 1,
                         })}
                         disabled={field.value.numAdults <= 1}
+                        className="flex size-6 items-center justify-center rounded-full"
                       >
-                        <Minus className="size-4" />
+                        <Minus className="size-4"/>
                       </Button>
                       <FormControl>
                         <Input value={field.value.numAdults} readOnly className="w-10 text-center" />
@@ -223,20 +225,23 @@ function SearchBarImpl({ className }: { className?: string }) {
                           ...form.getValues("guestsAndRooms"),
                           numAdults: form.getValues("guestsAndRooms").numAdults + 1,
                         })}
-                        disabled={field.value.numAdults >= 30}>
-                        <Plus className="size-4" />
+                        disabled={field.value.numAdults >= 30}
+                        className="flex size-6 items-center justify-center rounded-full"
+                        >
+                        <Plus className="size-4"/>
                       </Button>
                     </div>
                   </FormItem>
 
                   <FormItem className="flex justify-between mt-2">
                     <FormLabel> Children </FormLabel>
-                    <div className="flex space-x-2">
+                    <div className="flex space-x-2 items-center">
                       <Button onClick={() => form.setValue("guestsAndRooms", {
                         ...form.getValues("guestsAndRooms"),
                         numChildren: form.getValues("guestsAndRooms").numChildren - 1,
                       })}
                         disabled={field.value.numChildren <= 0}
+                        className="flex size-6 items-center justify-center rounded-full"
                       >
                         <Minus className="size-4" />
                       </Button>
@@ -248,6 +253,7 @@ function SearchBarImpl({ className }: { className?: string }) {
                         numChildren: form.getValues("guestsAndRooms").numChildren + 1,
                       })}
                         disabled={field.value.numChildren >= 6}
+                        className="flex size-6 items-center justify-center rounded-full"
                       >
                         <Plus className="size-4" />
                       </Button>
@@ -256,12 +262,14 @@ function SearchBarImpl({ className }: { className?: string }) {
 
                   <FormItem className="flex justify-between mt-2">
                     <FormLabel> Rooms </FormLabel>
-                    <div className="flex space-x-2">
+                    <div className="flex space-x-2 items-center">
                       <Button onClick={() => form.setValue("guestsAndRooms", {
                         ...form.getValues("guestsAndRooms"),
                         numRooms: form.getValues("guestsAndRooms").numRooms - 1,
                       })}
-                        disabled={field.value.numRooms <= 1}>
+                        disabled={field.value.numRooms <= 1}
+                        className="flex size-6 items-center justify-center rounded-full"
+                      >
                         <Minus className="size-4" />
                       </Button>
                       <FormControl>
@@ -271,8 +279,10 @@ function SearchBarImpl({ className }: { className?: string }) {
                         ...form.getValues("guestsAndRooms"),
                         numRooms: form.getValues("guestsAndRooms").numRooms + 1,
                       })}
-                        disabled={field.value.numRooms >= field.value.numAdults}>
-                        <Plus className="size-4" />
+                        disabled={field.value.numRooms >= field.value.numAdults}
+                        className="flex size-6 items-center justify-center rounded-full"
+                      >
+                        <Plus className="size-4"/>
                       </Button>
                     </div>
                   </FormItem>

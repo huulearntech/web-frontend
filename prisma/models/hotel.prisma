@@ -1,11 +1,26 @@
 model Hotel {
   id          String   @id @default(cuid())
   name        String
-  address     String
-  geolocation String
-  rating      Float
+  // TODO: Cleanup
+  ward        String
+  district    String
+  province    String
+  country     String
+  geolocation Unsupported("geography(Point, 4326)")
+  rating      Float?    // average rating snapshot, optional
+
   rooms       Room[]
-  
+  favorites   Favorite[]
+  recentlyViewed RecentlyViewed[]
+  bookings    Booking[]
+  reviews     Review[]
+  // TODO: add amenities
+  // TODO: may have videos
+  imageUrls   String[]  // list of image URLs for the hotel
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
   @@map("hotels")
 }
 
@@ -15,9 +30,40 @@ model Room {
   type             String
   adultCapacity    Int      @map("adult_capacity")
   childrenCapacity Int      @map("children_capacity")
-  price            Int
+  price            Decimal
   hotel            Hotel    @relation(fields: [hotelId], references: [id], onDelete: Cascade)
-  
+
+  bookingRooms     BookingRoom[]
+  imageUrls        String[] // list of image URLs for the room
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
   @@index([hotelId])
   @@map("rooms")
+}
+
+// model Amenity {
+//   id        String   @id @default(cuid())
+//   name      String   @unique
+//   iconUrl   String?  @map("icon_url") // optional icon URL for the amenity
+// 
+//   hotelAmenities HotelAmenity[]
+// 
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+// 
+//   @@map("amenities")
+// }
+
+model HotelManager {
+  id        String   @id @default(cuid())
+  hotelId   String   @map("hotel_id")
+  userId    String   @map("user_id")
+
+  hotel     Hotel    @relation(fields: [hotelId], references: [id], onDelete: Restrict)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Restrict)
+
+  @@index([hotelId])
+  @@index([userId])
+  @@map("hotel_manager")
 }

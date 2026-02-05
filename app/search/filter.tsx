@@ -74,6 +74,8 @@ export default /*async*/ function Filter () {
   );
 };
 
+// TODO: Make this a controlled form with validation using Shadcn Form when available
+// and the categories should be groups
 function FilterImpl () {
   const [filterCategories, setFilterCategories] = useState<FilterCategoryProps[]>([
       { id: 'amenities', label: 'Tiện nghi', options: ['WiFi', 'Parking', 'Pool', 'Gym'] },

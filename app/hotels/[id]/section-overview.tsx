@@ -74,7 +74,7 @@ export default async function OverviewSection () {
             <div className="flex gap-x-2">
               <div className="flex items-center p-1">
                 <Image src={tvlk_favicon} alt="" className="mr-2" />
-                <div className="flex items-end text-blue-500">
+                <div className="flex items-end text-primary">
                   <div className="text-[1.625rem] font-bold">{9.5}</div>
                   <div className="text-sm font-semibold"> /10 </div>
                 </div>
@@ -82,7 +82,7 @@ export default async function OverviewSection () {
 
               <div className="flex flex-col font-bold">
                 <span>Rất tốt</span>
-                <a href="#review" className="text-sm text-blue-500 flex gap-x-1">
+                <a href="#review" className="text-sm text-primary flex gap-x-1">
                   {10} đánh giá
                   <ChevronRight className="size-5" />
                 </a>
@@ -102,7 +102,7 @@ export default async function OverviewSection () {
                 <div key={index} className="border border-gray-200 rounded-[0.625rem] p-2 flex flex-col space-y-2">
                   <div className="flex justify-between items-center gap-y-2 font-bold">
                     <span className="text-sm">bla bla {index}</span>
-                    <div className="bg-blue-50 px-1 py-0.5 rounded-[0.375rem] inline-flex gap-x-0.5 items-center text-blue-500 text-xs">
+                    <div className="bg-blue-50 px-1 py-0.5 rounded-[0.375rem] inline-flex gap-x-0.5 items-center text-primary text-xs">
                       <Image src={tvlk_favicon} alt="" className="size-3" />
                       10 / 10
                     </div>
@@ -116,7 +116,7 @@ export default async function OverviewSection () {
           <div className="bg-white border border-gray-300 rounded-lg p-4 flex-1" >
             <div className="flex items-center justify-between mb-2 font-bold" >
               <h2>Trong khu vực</h2>
-              <a href="#location" className="text-sm text-blue-500 flex gap-x-1">
+              <a href="#location" className="text-sm text-primary flex gap-x-1">
                 Xem bản đồ
                 <ChevronRight className="size-5" />
               </a>
@@ -141,7 +141,7 @@ export default async function OverviewSection () {
             <div className="flex items-center justify-between mb-2 font-bold">
               {/* TODO(huutp): Add real amenities list */}
               <h2>Tiện ích chính</h2>
-              <a href="#facilities" className="text-sm text-blue-500 flex gap-x-1">
+              <a href="#facilities" className="text-sm text-primary flex gap-x-1">
                 Xem thêm
                 <ChevronRight className="size-5" />
               </a>
@@ -182,7 +182,7 @@ export default async function OverviewSection () {
 
         <div className="bg-white border border-gray-200 rounded-[0.625rem] p-3 flex-1 flex-col space-y-3">
           <p className="text-sm max-h-[80px] overflow-hidden overflow-ellipsis">Diamond Beach Hotel toạ lạc tại khu vực / thành phố An Hải Bắc. Quầy tiếp tân 24 giờ luôn sẵn sàng phục vụ quý khách từ thủ tục nhận phòng đến trả phòng hay bất kỳ yêu cầu nào. Nếu cần giúp đỡ xin hãy liên hệ đội ngũ tiếp tân, chúng tôi luôn sẵn sàng hỗ trợ quý khách. Sóng WiFi phủ khắp các khu vực chung của khách sạn cho phép quý khách luôn kết nối với gia đình và bè bạn.</p>
-          <div className="flex space-x-1 text-sm font-bold text-blue-500">
+          <div className="flex space-x-1 text-sm font-bold text-primary">
             Xem thêm
             <ChevronRight className="size-5" />
           </div>

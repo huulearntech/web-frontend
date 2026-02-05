@@ -31,9 +31,11 @@ export default function Layout({
           </div>
         </div>
       </header>
-      <main className="content flex flex-col lg:flex-row lg:gap-x-6">
-        {children}
-      </main>
+      <div className="min-h-screen bg-[url('/images/bg-booking-page.webp')] bg-no-repeat bg-bottom">
+        <main className="content flex flex-col lg:flex-row lg:gap-x-6 py-10">
+          {children}
+        </main>
+      </div>
     </>
   )
 }

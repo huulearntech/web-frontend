@@ -4,7 +4,7 @@ import Image from 'next/image';
 
 import { Button } from '@/components/ui/button';
 
-import { paths } from '@/constants/paths'
+import { paths } from '@/lib/constants/paths'
 import { tvlk_logo_text_dark } from "@/public/logos"
 import { HeartIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';

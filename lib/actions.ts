@@ -1,7 +1,7 @@
 "use server";
 
 import { redirect } from "next/navigation";
-import { paths } from "@/constants/paths";
+import { paths } from "@/lib/constants/paths";
 import { SignUpData } from "./zod_schemas/auth";
 
 export async function onSubmitSignUpForm(values: SignUpData) {
