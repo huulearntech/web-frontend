@@ -129,7 +129,7 @@
   }
 
   .content {
-    @apply w-full max-w-[90%] lg:max-w-7xl mx-auto;
+    @apply w-full max-w-[min(90%,var(--container-7xl))] mx-auto;
   }
 }
 

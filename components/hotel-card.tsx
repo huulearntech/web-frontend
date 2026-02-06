@@ -149,9 +149,9 @@ function HotelCard({
     <Link
       href={`/hotels/${id}`}
       target="_blank"
-      className={cn("w-full h-[400px] flex flex-col rounded-lg shadow-md overflow-hidden hover:shadow-primary/50 hover:shadow-md", className)}
+      className={cn("w-full h-102 flex flex-col rounded-lg shadow-md overflow-hidden hover:shadow-primary/50 hover:shadow-md", className)}
     >
-      <div className="relative h-40 flex-shrink-0">
+      <div className="relative h-40 shrink-0">
         <Image
           src={imageSrcs[0]}
           alt={name}
@@ -191,9 +191,9 @@ function HotelCard({
           </div>
 
           <div className='flex items-center space-x-2'>
-            <span className="text-[10px] font-semibold px-1 py-0.75 rounded-[0.25rem] bg-gray-50 whitespace-nowrap overflow-hidden overflow-ellipsis wrap-break-word">Recreation room</span>
-            <span className="text-[10px] font-semibold px-1 py-0.75 rounded-[0.25rem] bg-gray-50 whitespace-nowrap overflow-hidden overflow-ellipsis wrap-break-word">Pub</span>
-            <span className="text-[10px] font-semibold px-1 py-0.75 rounded-[0.25rem] bg-gray-50 whitespace-nowrap overflow-hidden overflow-ellipsis wrap-break-word">Night club</span>
+            <span className="text-[10px] font-semibold px-1 py-0.75 rounded-lg bg-gray-50 whitespace-nowrap overflow-hidden overflow-ellipsis wrap-break-word">Recreation room</span>
+            <span className="text-[10px] font-semibold px-1 py-0.75 rounded-lg bg-gray-50 whitespace-nowrap overflow-hidden overflow-ellipsis wrap-break-word">Pub</span>
+            <span className="text-[10px] font-semibold px-1 py-0.75 rounded-lg bg-gray-50 whitespace-nowrap overflow-hidden overflow-ellipsis wrap-break-word">Night club</span>
           </div>
 
         </div>

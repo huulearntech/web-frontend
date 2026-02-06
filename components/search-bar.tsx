@@ -43,6 +43,7 @@ export default function SearchBar({
 }: {
   className?: string,
 }) {
+  // FIXME: useMediaQuery is fucking up the className
   const [mounted, setMounted] = useState(false);
   const isDesktop = useMediaQuery("(min-width: 768px)");
   useEffect(() => setMounted(true), []); // Prevent hydration mismatch
@@ -54,9 +55,13 @@ export default function SearchBar({
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button className={cn("w-full justify-start rounded-full text-base", className)} variant={"outline"} aria-label="Open search dialog">
-          <Search />
-          <span className="ml-2 text-gray-600"> {/** form location */} Tìm kiếm </span>
+        <Button
+          aria-label="Open search dialog"
+          variant={"outline"}
+          className={cn("w-full justify-start rounded-full text-base", className)}
+        >
+          <Search className="size-5 ml-1"/>
+          <span className="ml-1 text-gray-600"> Tìm kiếm </span>
         </Button>
       </DialogTrigger>
       <DialogPortal>
@@ -73,7 +78,7 @@ export default function SearchBar({
 }
 
 // TODO: Clean up
-function SearchBarImpl({ className }: { className?: string }) {
+export function SearchBarImpl({ className }: { className?: string }) {
   const locations = ["New York", "Los Angeles", "Chicago", "Houston", "Miami", "San Francisco", "Seattle", "Boston", "Denver", "Atlanta"];
   function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(values);
@@ -292,9 +297,9 @@ function SearchBarImpl({ className }: { className?: string }) {
           )}
         />
 
-        <Button type="submit" className="w-full mt-5.5 md:w-fit">
+        <Button type="submit" className="w-full mt-5.5 md:w-fit flex items-center">
           <Search />
-          <span className="md:max-lg:hidden"> Search </span>
+          <span className="md:max-lg:hidden text-base"> Search </span>
         </Button>
       </form>
     </Form>

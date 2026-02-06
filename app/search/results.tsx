@@ -41,7 +41,7 @@ export default async function Results( props: {
       <ul className="w-full grid grid-cols-3 gap-4">
         {results.map((hotel, index) => (
           <li key={index}>
-            <HotelCard hotel={hotel} className="h-100"/>
+            <HotelCard hotel={hotel} />
           </li>
         ))}
       </ul>
@@ -113,7 +113,7 @@ export default async function Results( props: {
   )
 };
 
-export function ResultsFallback() {
+export function ResultsSkeleton() {
   return (
     <ul className="w-full grid grid-cols-3 gap-4">
       {Array.from({length: 12}).map((_, index) => (

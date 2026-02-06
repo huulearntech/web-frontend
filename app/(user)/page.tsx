@@ -9,9 +9,6 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { HotelCard } from "@/components/hotel-card";
 import Coupon from "@/components/coupon";
 
-import * as hotel_partner_logos from "@/public/logos/hotel-partners";
-import * as payment_partner_logos from "@/public/logos";
-
 import { Calendar, ClockFading, Star, UserCheck } from "lucide-react"
 import { app_store, play_store } from "@/public/logos"
 
@@ -31,6 +28,7 @@ import {
 } from "@/public/images";
 
 import HeroSection from "./section-hero";
+import PartnersSection2 from "./section-partner";
 
 export default function Home() {
   return (
@@ -39,52 +37,11 @@ export default function Home() {
       <WhyUsSection />
       <Feed />
       <CouponSection />
-      <PartnersSection />
+      <PartnersSection2 />
       <PopularDestinationsSection />
     </main>
   );
 };
-
-function PartnersSection() {
-  return (
-    <>
-      <section className="flex flex-col justify-center gap-y-4 content">
-        <h4 className="text-2xl font-bold">Đối tác khách sạn</h4>
-        <p className="text-sm">
-          Khách sạn trong nước và quốc tế
-        </p>
-        <p>
-          Chúng tôi hợp tác với các chuỗi khách sạn trên toàn thế giới để bảo đảm mang lại kỳ nghỉ tuyệt vời nhất tại mọi điểm đến trong mơ của bạn!
-        </p>
-        <div className="flex flex-wrap justify-center items-center gap-x-6 gap-y-4">
-          {Object.values(hotel_partner_logos).map((logo, index) => (
-            <Image
-              key={index}
-              src={logo} alt=""
-              className="w-20 h-10 object-contain"
-            />
-          ))}
-        </div>
-      </section>
-
-      <section className="flex flex-col justify-center gap-y-4 content">
-        <h4 className="text-2xl font-bold">Đối tác thanh toán</h4>
-        <p>
-          Những đối tác thanh toán đáng tin cậy của chúng tôi sẽ giúp cho bạn luôn an tâm thực hiện mọi giao dịch một cách thuận lợi nhất!
-        </p>
-        <div className="flex flex-wrap justify-center items-center gap-x-6 gap-y-4">
-          {Object.values(payment_partner_logos).map((logo, index) => (
-            <Image
-              key={index}
-              src={logo} alt=""
-              className="w-20 h-10 object-contain"
-            />
-          ))}
-        </div>
-      </section>
-    </>
-  );
-}
 
 /*async*/ function Feed () { // This should be modifiable by admin
   // const hotels = await fetchHotels(); // Placeholder
@@ -94,12 +51,20 @@ function PartnersSection() {
   return (
     <section className="flex flex-col content">
       <h2 className="text-2xl font-bold">{title}</h2>
-      <Tabs defaultValue={locations[0].name} className="content">
+      <Tabs defaultValue={locations[0].name}
+       className="content"
+       >
         <div className="overflow-x-auto justify-start">
-          <TabsList>
+          <TabsList
+          className="bg-inherit gap-x-2"
+          >
             {locations.map((location) => (
               <TabsTrigger value={location.name} key={location.name}
-              className="text-sm font-bold">
+              className={
+                // Check this on dark mode
+                "h-9 text-sm font-bold px-3 py-2 rounded-full data-[state=active]:bg-primary data-[state=active]:text-primary-foreground dark:data-[state=active]:text-primary-foreground dark:data-[state=active]:border-input dark:data-[state=active]:bg-input/30 bg-accent text-foreground dark:text-muted-foreground data-[state=active]:shadow-sm"
+              }
+              >
                 {location.name}
               </TabsTrigger>
             ))}
@@ -137,14 +102,14 @@ function PopularDestinationsSection () {
     <section className="flex flex-col gap-y-6 content">
       <h2 className="text-[26px] font-bold"> Ưu đãi khách sạn tốt nhất tại các điểm đến phổ biến </h2>
       <div className="flex justify-center">
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 w-full">
           {most_popular_destinations.map((dest, index) => (
-            <div key={index} className="group relative max-w-80 aspect-8/5 rounded-[10px] overflow-hidden transition-all flex flex-col hover:cursor-pointer">
+            <div key={index} className="group relative rounded-[10px] overflow-hidden transition-all flex flex-col hover:cursor-pointer">
               <Image
                 key={index}
                 src={dest.backgroundImage}
                 alt=""
-                className="rounded-md aspect-8/5 object-cover -z-10"
+                className="rounded-md object-cover -z-10 h-40 w-full"
               />
               <div className="absolute inset-0 bg-black/40 group-hover:bg-black/70 duration-300"></div>
               <div className="absolute top-0 left-0 right-0 p-4 text-white">
@@ -232,9 +197,16 @@ function CouponSection () {
       <div>
         <Tabs defaultValue={Object.keys(coupons)[0]} className="content">
           <div className="overflow-x-auto justify-start">
-            <TabsList>
+            <TabsList
+            className="bg-inherit gap-x-2"
+            >
               {Object.keys(coupons).map((coupon_type) => (
-                <TabsTrigger value={coupon_type} key={coupon_type}>
+                <TabsTrigger value={coupon_type} key={coupon_type}
+              className={
+                // Check this on dark mode
+                "h-9 text-sm font-bold px-3 py-2 rounded-full data-[state=active]:bg-primary data-[state=active]:text-primary-foreground dark:data-[state=active]:text-primary-foreground dark:data-[state=active]:border-input dark:data-[state=active]:bg-input/30 bg-accent text-foreground dark:text-muted-foreground data-[state=active]:shadow-sm"
+              }
+                >
                   {coupon_type}
                 </TabsTrigger>
               ))}
