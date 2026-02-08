@@ -2,8 +2,8 @@ import { CigaretteOff, Clock, ForkKnifeCrossed } from "lucide-react";
 
 export default function PolicySection() {
   return (
-    <section id="policy" className="w-full flex flex-col scroll-mt-30">
-      <div className="rounded-[1.25rem] px-4 py-5 flex flex-col gap-y-5 shadow-xl">
+    <section id="policy" className="w-full flex flex-col scroll-mt-24 md:scroll-mt-30">
+      <div className="rounded-4xl px-4 py-5 flex flex-col gap-y-5 shadow-xl">
         <h2 className="font-bold text-[1.25rem]">Accomodation policy bla bla bla</h2>
         <ul className="[&>li]:border-b [&>li]:last:border-b-0 [&>li]:flex [&>li]:space-x-3 [&>li]:py-4 text-sm">
           <li>
@@ -58,6 +58,6 @@ const generalInformation = {
   "Breakfast Availability": "Yes, hotel has room that provide breakfast",
   "Available rooms at Nature Hotel - Lac Long Quan": "60",
   "Number of floors in Nature Hotel - Lac Long Quan": "10",
-  "Another facilities in Nature Hotel - Lac Long Quan": "Bellhop, Welcoming drinks, Early Check-in, Express check-in, Express check-out",
+  "Other facilities in Nature Hotel - Lac Long Quan": "Bellhop, Welcoming drinks, Early Check-in, Express check-in, Express check-out",
   "Nearby point of interest": "Lac Long Quan Street Ha Noi, Hanoi Heart Hospital - Facility 2, Westlake's Twin Dragons",
 }

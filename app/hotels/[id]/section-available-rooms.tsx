@@ -9,8 +9,8 @@ import Link from "next/link";
 
 export default function AvailableRoomsSection() {
   return (
-    <section id="available-rooms" className="w-full flex flex-col scroll-mt-30">
-      <div className="rounded-[1.25rem] px-4 py-5 flex flex-col gap-y-5 shadow-xl">
+    <section id="available-rooms" className="w-full flex flex-col scroll-mt-24 md:scroll-mt-30">
+      <div className="rounded-4xl px-4 py-5 flex flex-col gap-y-5 shadow-xl">
         <h2 className="font-bold text-[1.25rem]">Những phòng còn trống tại bla bla</h2>
         <RoomCard />
         <RoomCard />
@@ -32,13 +32,13 @@ function RoomCard () {
 
       <h2 className="text-[1.25rem] font-bold line-clamp-2">Bla bla bla room name</h2>
       <div className="flex w-full space-x-4">
-        <div className="flex flex-col w-full max-w-[296px] space-y-2">
+        <div className="flex flex-col w-full max-w-74 space-y-2">
           <Image
             src={fake_hotels[0].imageSrcs[0]}
             alt=""
             width={296}
             height={222}
-            className="w-[296px] h-[222px] rounded-[1rem] object-cover"
+            className="w-full h-auto rounded-3xl object-cover"
           />
           <div className="flex flex-col space-y-3 p-2">
             <div className="flex items-center space-x-2">

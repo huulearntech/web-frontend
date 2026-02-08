@@ -1,5 +1,7 @@
 import { RatingStars } from "@/components/hotel-card";
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
+import { Skeleton } from "@/components/ui/skeleton";
+
 import Image from "next/image";
 
 import { fake_hotels } from "@/old/mock_data";
@@ -8,11 +10,14 @@ import { ChevronRight, MapPin } from 'lucide-react';
 import { tvlk_favicon } from "@/public/logos";
 import * as icons from "@/public/icons";
 
+import ImageCarouselDialog from "@/components/image-carousel-dialog";
+
 
 export default async function OverviewSection () {
   // const hotel = await getHotelById();
   return (
-    <section id="overview" className="w-full flex flex-col scroll-mt-30">
+    <section id="overview" className="w-full flex flex-col scroll-mt-24 md:scroll-mt-30">
+      <ImageCarouselDialog imageSources={fake_hotels[0].imageSrcs} />
       <Breadcrumb className="py-1 mb-3">
         <BreadcrumbList className="text-xs font-semibold">
           <BreadcrumbItem>
@@ -28,26 +33,32 @@ export default async function OverviewSection () {
           </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>
-
-      <figure className="rounded-t-[10px] overflow-hidden flex flex-col lg:flex-row gap-2 mx-3 h-auto lg:h-[332px]">
-        <Image src={fake_hotels[0].imageSrcs[0]} alt="" width={400} height={300} className="object-cover w-[480px]" />
-        <div className="grid grid-cols-2 lg:grid-cols-3 gap-2 h-[332px] w-full">
+      {/** Make this responsive */}
+      <figure className="rounded-t-[10px] overflow-hidden grid grid-cols-1 lg:grid-cols-3 lg:grid-rows-2 gap-2 mx-3 h-auto lg:h-83">
+        <Image
+          src={fake_hotels[0].imageSrcs[0]}
+          alt=""
+          width={480}
+          height={332}
+          className="object-cover w-full h-full lg:row-span-2 lg:col-span-1"
+        />
+        <div className="grid grid-cols-2 sm:grid-cols-3 grid-rows-2 gap-2 h-full w-full lg:col-span-2 lg:row-span-2">
           {
             fake_hotels[0].imageSrcs.concat(fake_hotels[0].imageSrcs).slice(1, 7).map((src, index) => (
-              <div key={index} className="relative ">
-                <Image
-                  src={src}
-                  alt=""
-                  fill
-                  className="object-cover"
-                />
-              </div>
+              <Image
+                key={index}
+                src={src}
+                alt=""
+                width={400}
+                height={300}
+                className="w-full h-full object-cover"
+              />
             ))
           }
         </div>
       </figure>
 
-      <div className="rounded-[1.25rem] px-4 py-5 flex flex-col gap-y-5 shadow-xl">
+      <div className="rounded-4xl px-4 py-5 flex flex-col gap-y-5 shadow-xl">
         <div className="flex space-x-10">
           <div className="flex-1 gap-y-2">
             <h1 className="text-[1.5rem] font-bold">Hotel name</h1>
@@ -66,10 +77,7 @@ export default async function OverviewSection () {
           </div>
         </div>
 
-
-        {/** */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
-
           <div className="bg-white border border-gray-200 rounded-[0.625rem] p-3 flex-1 flex-col space-y-3">
             <div className="flex gap-x-2">
               <div className="flex items-center p-1">
@@ -181,11 +189,59 @@ export default async function OverviewSection () {
 
 
         <div className="bg-white border border-gray-200 rounded-[0.625rem] p-3 flex-1 flex-col space-y-3">
-          <p className="text-sm max-h-[80px] overflow-hidden overflow-ellipsis">Diamond Beach Hotel toạ lạc tại khu vực / thành phố An Hải Bắc. Quầy tiếp tân 24 giờ luôn sẵn sàng phục vụ quý khách từ thủ tục nhận phòng đến trả phòng hay bất kỳ yêu cầu nào. Nếu cần giúp đỡ xin hãy liên hệ đội ngũ tiếp tân, chúng tôi luôn sẵn sàng hỗ trợ quý khách. Sóng WiFi phủ khắp các khu vực chung của khách sạn cho phép quý khách luôn kết nối với gia đình và bè bạn.</p>
+          <p className="text-sm max-h-20 overflow-hidden overflow-ellipsis">Diamond Beach Hotel toạ lạc tại khu vực / thành phố An Hải Bắc. Quầy tiếp tân 24 giờ luôn sẵn sàng phục vụ quý khách từ thủ tục nhận phòng đến trả phòng hay bất kỳ yêu cầu nào. Nếu cần giúp đỡ xin hãy liên hệ đội ngũ tiếp tân, chúng tôi luôn sẵn sàng hỗ trợ quý khách. Sóng WiFi phủ khắp các khu vực chung của khách sạn cho phép quý khách luôn kết nối với gia đình và bè bạn.</p>
           <div className="flex space-x-1 text-sm font-bold text-primary">
             Xem thêm
             <ChevronRight className="size-5" />
           </div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+export function OverviewSectionSkeleton () {
+  return (
+    <section id="overview" className="w-full flex flex-col scroll-mt-30">
+      <Skeleton className="w-1/3 h-4 mb-3" />
+
+      <figure className="rounded-t-[10px] overflow-hidden flex flex-col lg:flex-row gap-2 mx-3 h-auto lg:h-83">
+        <Skeleton className="object-cover w-120 h-full" />
+        <div className="grid grid-cols-2 lg:grid-cols-3 gap-2 h-83 w-full">
+          {
+            Array.from({ length: 6 }).map((_, index) => (
+              <div key={index} className="relative ">
+                <Skeleton
+                  className="object-cover w-full h-full"
+                />
+              </div>
+            ))
+          }
+        </div>
+      </figure>
+
+      <div className="rounded-4xl px-4 py-5 flex flex-col gap-y-5 shadow-xl">
+        <div className="flex space-x-10">
+          <div className="flex-1 gap-y-2">
+            <Skeleton className="w-2/3 h-6 mb-2" />
+            <div className="flex gap-x-2 items-center">
+              <Skeleton className="w-12 h-5 rounded-full" />
+              <Skeleton className="w-20 h-5" />
+            </div>
+          </div>
+
+          <div className="flex gap-x-2 py-2">
+            <div className="flex flex-col text-end">
+              <Skeleton className="w-16 h-4 mb-1" />
+              <Skeleton className="w-20 h-6" />
+            </div>
+            <Skeleton className="w-24 h-10 rounded-[0.375rem]" />
+          </div>
+        </div>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
+          <Skeleton className="rounded-lg p-4 flex-1 h-48" />
+          <Skeleton className="rounded-lg p-4 flex-1 h-48" />
+          <Skeleton className="rounded-lg p-4 flex-1 h-48" />
         </div>
       </div>
     </section>

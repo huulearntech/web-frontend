@@ -151,12 +151,14 @@ function HotelCard({
       target="_blank"
       className={cn("w-full h-102 flex flex-col rounded-lg shadow-md overflow-hidden hover:shadow-primary/50 hover:shadow-md", className)}
     >
-      <div className="relative h-40 shrink-0">
+      <div className="relative h-40 shrink-0 overflow-hidden">
         <Image
           src={imageSrcs[0]}
           alt={name}
-          className="absolute object-cover"
-          fill
+          className="absolute object-cover w-full h-full"
+          // fill
+          width={400}
+          height={300}
         />
         <div className="absolute top-0 left-0 bg-black/40 text-primary-foreground inline-flex rounded-br-lg items-center px-2 py-1 text-sm font-semibold">
           <MapPin className="size-4 mr-1" />

@@ -36,6 +36,11 @@ export default async function Results( props: {
   const currentPage = 9;
   const totalPages = 10;
 
+  // TODO: Handle no results found
+  if (results.length === 0) {
+    return <p>No hotels found matching your criteria.</p>;
+  }
+
   return (
     <>
       <ul className="w-full grid grid-cols-3 gap-4">

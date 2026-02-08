@@ -1,4 +1,3 @@
-"use server";
 import Link from 'next/link';
 import Image from 'next/image';
 
@@ -17,10 +16,14 @@ export default async function Header({ className }: { className?: string }) {
   const session = await auth();
 
   return (
-    <header className={cn("w-full flex items-center bg-white shadow-md sticky top-0 z-10 h-20", className)}>
+    <header className={cn("w-full flex items-center bg-white shadow-md z-10 h-20", className)}>
       <div className="flex justify-between items-center content">
         <Link href='/'>
-          <Image src={tvlk_logo_text_dark} alt="Traveloka Header Logo" />
+          <Image
+            src={tvlk_logo_text_dark}
+            alt="Traveloka Header Logo"
+            className="h-10 object-contain -ml-4"
+          />
         </Link>
         <div className="flex items-center gap-16">
           {session?.user ? (
@@ -33,7 +36,7 @@ export default async function Header({ className }: { className?: string }) {
           ) : (
             <div className="flex items-center gap-2">
               <Link href={paths.partnershipRegister}>
-                Trở thành đối tác của chúng tôi
+                Đăng ký cơ sở lưu trú của bạn
               </Link>
               <Button asChild>
                 <Link href={paths.signIn}> Đăng nhập </Link>

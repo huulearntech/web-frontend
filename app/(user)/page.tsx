@@ -49,8 +49,10 @@ export default function Home() {
   const locations = fake_locations;
   const title = "Di choi cuoi tuan gan nha"
   return (
-    <section className="flex flex-col content">
-      <h2 className="text-2xl font-bold">{title}</h2>
+    <section className="flex flex-col gap-y-4">
+      <div className="content">
+        <h2 className="text-2xl font-bold">{title}</h2>
+      </div>
       <Tabs defaultValue={locations[0].name}
        className="content"
        >
@@ -191,9 +193,11 @@ function WhyUsSection() {
 
 function CouponSection () {
   return (
-    <section className="content flex flex-col">
-      <h2 className="text-[26px] font-bold"> Mã giảm cho bạn </h2>
-      <p> Chỉ áp dụng trên App! </p>
+    <section className="flex flex-col gap-y-4">
+      <div className="content flex flex-col gap-y-1">
+        <h2 className="text-[26px] font-bold"> Mã giảm cho bạn </h2>
+        <p> Chỉ áp dụng trên App! </p>
+      </div>
       <div>
         <Tabs defaultValue={Object.keys(coupons)[0]} className="content">
           <div className="overflow-x-auto justify-start">
@@ -228,8 +232,8 @@ function CouponSection () {
                   ))}
                 </CarouselContent>
 
-                <CarouselNext />
-                <CarouselPrevious />
+                <CarouselNext className="max-lg:hidden" />
+                <CarouselPrevious className="max-lg:hidden" />
               </Carousel>
             </TabsContent>
           ))}

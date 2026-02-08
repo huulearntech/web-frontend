@@ -34,7 +34,7 @@ export default function PartnersSection() {
               <CarouselItem key={index} className="basis-1/8 w-fit flex justify-center items-center">
                 <Image
                   src={logo} alt=""
-                  className="h-10 object-contain"
+                  className="h-10 w-auto object-contain"
                 />
               </CarouselItem>
             ))}
@@ -63,7 +63,7 @@ export default function PartnersSection() {
               <CarouselItem key={index} className="basis-1/8 w-fit flex justify-center items-center">
                 <Image
                   src={logo} alt=""
-                  className="h-10 object-contain"
+                  className="h-10 w-auto object-contain"
                 />
               </CarouselItem>
             ))}

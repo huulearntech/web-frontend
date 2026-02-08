@@ -9,7 +9,7 @@ export default function Layout({
 }) {
   return (
     <main className="flex items-center justify-center h-screen bg-accent">
-      <div className="flex flex-col md:flex-row items-center justify-between bg-white shadow-md rounded-lg p-8 gap-8 w-full max-w-md md:max-w-3xl">
+      <div className="flex flex-col md:flex-row items-center justify-between bg-white shadow-md rounded-lg p-8 gap-8 w-full max-w-md md:max-w-2xl lg:max-w-3xl">
         <div className="w-full">
           <Image
             src={tvlk_logo_text_dark}

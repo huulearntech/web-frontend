@@ -5,13 +5,13 @@ import { cn } from "@/lib/utils"
 
 export default function ReviewSection() {
   return (
-    <section id="review" className="w-full flex flex-col scroll-mt-30">
-      <div className="rounded-[1.25rem] px-4 py-5 flex flex-col gap-y-5 shadow-xl">
+    <section id="review" className="w-full flex flex-col scroll-mt-24 md:scroll-mt-30">
+      <div className="rounded-4xl px-4 py-5 flex flex-col gap-y-5 shadow-xl">
         <h2 className="font-bold text-[1.25rem]">Những review của khách về bla bla bla</h2>
-        <div className="flex items-center">
+        <div className="flex flex-col lg:flex-row lg:items-center gap-y-6 lg:gap-y-0 lg:gap-x-12">
           <div className="flex space-x-12 flex-1">
-            <div className="flex items-center justify-center size-32 rounded-[1.25rem] bg-linear-[137deg] from-[rgb(245,251,255)] from-0% via-[rgb(209,240,255)] via-[46.1%] to-[rgb(245,251,255)] to-[96.84%]">
-              <div className="flex items-center justify-center size-24 border-4 border-white rounded-[1rem]">
+            <div className="flex shrink-0 items-center justify-center size-32 rounded-4xl bg-linear-[137deg] from-[rgb(245,251,255)] from-0% via-[rgb(209,240,255)] via-[46.1%] to-[rgb(245,251,255)] to-[96.84%]">
+              <div className="flex items-center justify-center size-24 border-4 border-white rounded-3xl">
                 <div className="text-center text-[3rem] font-bold text-primary">9.2</div>
               </div>
             </div>
@@ -20,7 +20,7 @@ export default function ReviewSection() {
               <div className="text-[1.25rem] font-bold">Từ 25 đánh giá</div>
               <div className="font-medium flex">
                 <div className="whitespace-pre">Bởi khách du lịch trong </div>
-                <Image src={tvlk_logo_text_dark} alt="traveloka" className="h-[25px] w-auto"/>
+                <Image src={tvlk_logo_text_dark} alt="traveloka" className="h-6.25 w-auto"/>
               </div>
             </div>
           </div>
@@ -53,8 +53,8 @@ export default function ReviewSection() {
 
 function ReviewCard() {
   return (
-    <div className="p-6 rounded-[0.375rem] border flex">
-      <div className="flex items-start space-x-4 w-1/4">
+    <div className="p-6 rounded-[0.375rem] border flex gap-x-12">
+      <div className="flex flex-col items-center gap-y-2">
         <div className="size-16 rounded-full bg-primary text-white flex items-center justify-center text-[2rem] font-bold">A</div>
         <div className="font-bold">Nguyen Van A</div>
       </div>

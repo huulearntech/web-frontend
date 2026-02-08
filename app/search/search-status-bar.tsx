@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { Label } from "@/components/ui/label";
 import {
   Select,
@@ -18,8 +19,9 @@ import { MapPinnedIcon, ListFilter } from "lucide-react";
 import { useFilterSheetContext } from "./filter-sheet-context";
 import { useMediaQuery } from "usehooks-ts";
 
-
+// TODO: Fetch the actual number of accommodations from the server
 export default function SearchStatusBar() {
+  const searchParams = useSearchParams();
   const { setOpen: setFilterSheetOpen } = useFilterSheetContext();
   const [mounted, setMounted] = useState(false);
   const isDesktop = useMediaQuery('(min-width: 1024px)');
@@ -71,7 +73,7 @@ export default function SearchStatusBar() {
           className="h-fit bg-primary text-primary-foreground text-xs font-bold px-3 py-2 rounded-full flex items-center gap-x-2"
         >
           <Link
-            href={"#"}
+            href={"/search/map?" + searchParams.toString()}
             target="_blank"
           >
             Xem trên bản đồ

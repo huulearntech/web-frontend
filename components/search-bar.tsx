@@ -1,9 +1,12 @@
 "use client";
 
+import { useEffect, useState } from "react";
+import { useMediaQuery } from "usehooks-ts";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { vi } from "react-day-picker/locale"; // Add more locales
+
+import { vi } from "react-day-picker/locale"; // Add more locales, maybe just vi and en for simplicity
 import { cn } from "@/lib/utils";
 
 import { Form, FormField, FormItem, FormLabel, FormControl } from "@/components/ui/form";
@@ -11,7 +14,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { ArrowRight, Minus, Plus, Search } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   Autocomplete,
   AutocompleteContent,
@@ -20,14 +23,23 @@ import {
   AutocompleteItem,
   AutocompleteList
 } from "@/components/autocomplete";
-import { useMediaQuery } from "usehooks-ts";
-import { Dialog, DialogContent, DialogHeader, DialogOverlay, DialogPortal, DialogTitle, DialogTrigger } from "./ui/dialog";
-import { useEffect, useState } from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogOverlay,
+  DialogPortal,
+  DialogTitle,
+  DialogTrigger
+} from "@/components/ui/dialog";
+
+import { ArrowRight, Minus, Plus, Search } from "lucide-react";
 
 // TODO: Move formSchema to a separate file if it's used in multiple places
 const formSchema = z.object({
   location: z.string() /*.min(1, { message: "Location is required" })*/,
-  inoutDates: z.object({
+  inOutDates: z.object({
     from: z.date(),
     to: z.date(),
   }),
@@ -43,7 +55,6 @@ export default function SearchBar({
 }: {
   className?: string,
 }) {
-  // FIXME: useMediaQuery is fucking up the className
   const [mounted, setMounted] = useState(false);
   const isDesktop = useMediaQuery("(min-width: 768px)");
   useEffect(() => setMounted(true), []); // Prevent hydration mismatch
@@ -69,6 +80,9 @@ export default function SearchBar({
         <DialogContent>
           <DialogHeader>
             <DialogTitle className="text-lg font-medium"> Search </DialogTitle>
+            <DialogDescription className="mb-2 text-sm text-gray-600">
+              Enter your search criteria below.
+            </DialogDescription>
           </DialogHeader>
           <SearchBarImpl className="p-4 w-screen max-w-md" />
         </DialogContent>
@@ -88,7 +102,7 @@ export function SearchBarImpl({ className }: { className?: string }) {
     resolver: zodResolver(formSchema),
     defaultValues: {
       location: "",
-      inoutDates: {
+      inOutDates: {
         from: undefined,
         to: undefined,
       },
@@ -104,8 +118,16 @@ export function SearchBarImpl({ className }: { className?: string }) {
     const today = new Date();
     const tomorrow = new Date();
     tomorrow.setDate(today.getDate() + 1);
-    form.setValue("inoutDates", { from: today, to: tomorrow});
+    form.setValue("inOutDates", { from: today, to: tomorrow});
   }, []);
+
+  const [mounted, setMounted] = useState(false);
+  const isDesktop = useMediaQuery("(min-width: 768px)");
+
+  useEffect(() => setMounted(true), []); // Prevent hydration mismatch
+  if (!mounted) {
+    return <SearchBarSkeleton className={className} />
+  }
 
   return (
     <Form {...form}>
@@ -126,14 +148,14 @@ export function SearchBarImpl({ className }: { className?: string }) {
                 items={locations.slice(0,5)}
                 value={field.value}
                 onValueChange={field.onChange}
+                // TODO: add debouncing then fetch from API -> which means move this autocomplete to a separate component
+                // to use "use client" and let it have its own items state
               >
                 <AutocompleteInput
                   id="location-input"
                   placeholder="Where are you going?"
                   showTrigger={false}
                   showClear
-                  // FIXME: font size not working properly
-                  className={"text-base!"}
                 />
                 <AutocompleteContent>
                   <AutocompleteEmpty>No locations found.</AutocompleteEmpty>
@@ -151,31 +173,16 @@ export function SearchBarImpl({ className }: { className?: string }) {
         />
         <FormField
           control={form.control}
-          name="inoutDates"
+          name="inOutDates"
           render={({ field }) => (
             <FormItem className="w-full">
               <FormLabel htmlFor="date-range-picker"> Check-in / Check-out </FormLabel>
               <Popover>
                 <PopoverTrigger asChild>
                   <Button variant="outline" id="date-range-picker" className="text-base">
-                    { // TODO: Clean up and support localization
-                      field.value.from
-                        ? field.value.from.toLocaleDateString("vi-VN", {
-                          month: "short",
-                          day: "numeric",
-                          year: "numeric",
-                        })
-                        : "Check-in"
-                    }
+                    { formatDate(field.value.from) ?? "Check-in" }
                     <ArrowRight />
-                    {field.value.to
-                      ? field.value.to.toLocaleDateString("vi-VN", {
-                        month: "short",
-                        day: "numeric",
-                        year: "numeric",
-                      })
-                      : "Check-out"
-                    }
+                    { formatDate(field.value.to) ?? "Check-out" }
                   </Button>
                 </PopoverTrigger>
 
@@ -183,7 +190,7 @@ export function SearchBarImpl({ className }: { className?: string }) {
                   <FormControl>
                     <Calendar
                       mode="range"
-                      numberOfMonths={2} // TODO: useMediaQuery to make it responsive
+                      numberOfMonths={isDesktop ? 2 : 1}
                       locale={vi}
                       selected={field.value}
                       onSelect={field.onChange}
@@ -304,4 +311,31 @@ export function SearchBarImpl({ className }: { className?: string }) {
       </form>
     </Form>
   );
+}
+
+export function SearchBarSkeleton({ className }: { className?: string }) {
+  return (
+    <div className={cn("flex flex-col md:flex-row gap-2 items-start", className)}>
+      <Skeleton className="h-10 w-full md:w-3/10 rounded-full" />
+      <Skeleton className="h-10 w-full md:w-3/10 rounded-full" />
+      <Skeleton className="h-10 w-full md:w-3/10 rounded-full" />
+      <Skeleton className="h-10 w-full md:w-1/10 rounded-full" />
+    </div>
+  );
+}
+
+
+// TODO: use nextjs built-in internationalization support then clean up
+export function formatDate(
+  value: Date | string | undefined | null,
+  locale: string = "en-US",
+  opts?: Intl.DateTimeFormatOptions
+) {
+  if (!value) return null;
+  const date = typeof value === "string" ? new Date(value) : value;
+  return new Intl.DateTimeFormat(locale, opts ?? {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  }).format(date);
 }
