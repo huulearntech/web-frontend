@@ -1,0 +1,61 @@
+"use client";
+
+import Link from "next/link";
+import { TagIcon } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { useInformationForm, InformationFormType } from "./information-form-context";
+
+
+export default function PriceDetail() {
+  const onSubmit = (data: InformationFormType) => {
+    // replace with real submit logic
+    console.log("form submit", data);
+  }
+  const form = useInformationForm();
+  return (
+    <div className="flex flex-col rounded-4xl bg-white shadow-lg">
+      <div className="flex px-4 py-2 gap-x-3 items-center">
+        <TagIcon className="size-5" />
+        <h2 className="text-[1.25rem] font-semibold">Chi tiết giá</h2>
+      </div>
+
+      <div className="flex flex-col text-xs text-gray-500 font-semibold bg-blue-50 px-4 py-3 gap-y-4">
+        <div className="flex justify-between">
+          <div className="flex flex-col gap-y-1">
+            <div>Giá phòng</div>
+            <div>(xSố lượng) Tên phòng</div>
+          </div>
+          <div>654321 VND</div>
+        </div>
+        <div className="flex justify-between">
+          <div>Thue va phi</div>
+          <div>123456 VND</div>
+        </div>
+      </div>
+      <div className="flex justify-between p-4 bg-[linear-gradient(313.11deg,rgb(247,252,222)18.59%,rgb(255,255,255)89.04%)]">
+        <div className="flex flex-col">
+          <div className="text-sm font-semibold">Tổng cộng</div>
+          <div className="text-sm text-gray-500">1 phòng, 1 đêm</div>
+        </div>
+        <div className="flex flex-col items-end">
+          <div className="text-sm font-semibold text-gray-500 line-through">2345678</div>
+          <div className="font-semibold text-orange-500">1234567</div>
+        </div>
+      </div>
+
+      <Button
+        className="m-4 rounded-full h-12 font-semibold"
+        onClick={() => form.handleSubmit(onSubmit)()}
+      >
+        Tiếp tục
+      </Button>
+      <div className="text-xs text-gray-500 px-4 pb-4">
+        {"Bằng cách tiến hành thanh toán, bạn đã đồng ý với "}
+        <Link href="#" className="underline">Điều khoản và Điều kiện</Link>,
+        <Link href="#" className="underline">Chính sách Bảo mật</Link>{", và "}
+        <Link href="#" className="underline">Quy trình Hoàn tiền Lưu trú</Link>
+        {" của Traveloka."}
+      </div>
+    </div>
+  )
+}

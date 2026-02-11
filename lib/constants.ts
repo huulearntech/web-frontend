@@ -1,3 +1,7 @@
+export const MAX_ADULTS = 30;
+export const MAX_CHILDREN = 6;
+export const MAX_ROOMS = 10;
+
 export const paths = {
   home: '/',
   signIn: '/sign-in',
@@ -10,7 +14,7 @@ export const paths = {
   search: '/search',
   forgotPassword: '/forgot-password',
   hotelManager: '/manager',
-  partnershipRegister: '/partnership',
+  hotelSignUp: '/sign-up/hotel',
   notAuthorized: '/unauthorized',
   notFound: '/notfound'
 };

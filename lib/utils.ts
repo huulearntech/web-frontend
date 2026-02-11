@@ -5,21 +5,43 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-export function debounce<T extends (...args: any[]) => any> (
-  func  : T,
-  delay : number,
-): (...args: Parameters<T>) => void {
-  let timeoutId: ReturnType<typeof setTimeout> | undefined; // Holds the timeout ID
-
-  return function (this: ThisParameterType<T>, ...args: Parameters<T>): void {
-    const context = this; // Preserve the context of `this`
-
-    // Clear the previous timer if the function is called again
-    clearTimeout(timeoutId);
-
-    // Set a new timer
-    timeoutId = setTimeout(() => {
-      func.apply(context, args); // Execute the function with the correct context and arguments
-    }, delay);
+export function debounce<T extends (...args: any[]) => void>(fn: T, wait = 300) {
+  let timer: ReturnType<typeof setTimeout> | null = null;
+  function debounced(...args: Parameters<T>) {
+    if (timer) clearTimeout(timer);
+    timer = setTimeout(() => {
+      fn(...args);
+      timer = null;
+    }, wait);
+  }
+  debounced.cancel = () => {
+    if (timer) {
+      clearTimeout(timer);
+      timer = null;
+    }
   };
+  return debounced as T & { cancel: () => void };
+}
+
+export function simulateFetchLocations(query: string, delay = 400): Promise<string[]> {
+  const all = [
+    "New York",
+    "Los Angeles",
+    "Chicago",
+    "Houston",
+    "Miami",
+    "San Francisco",
+    "Seattle",
+    "Boston",
+    "Denver",
+    "Atlanta",
+  ];
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      const filtered = all.filter((loc) =>
+        loc.toLowerCase().includes(query.toLowerCase())
+      );
+      resolve(filtered);
+    }, delay);
+  });
 }

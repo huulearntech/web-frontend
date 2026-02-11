@@ -17,7 +17,6 @@ export default async function OverviewSection () {
   // const hotel = await getHotelById();
   return (
     <section id="overview" className="w-full flex flex-col scroll-mt-24 md:scroll-mt-30">
-      <ImageCarouselDialog imageSources={fake_hotels[0].imageSrcs} />
       <Breadcrumb className="py-1 mb-3">
         <BreadcrumbList className="text-xs font-semibold">
           <BreadcrumbItem>
@@ -33,7 +32,9 @@ export default async function OverviewSection () {
           </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>
-      {/** Make this responsive */}
+      
+      <ImageCarouselDialog imageSources={fake_hotels[0].imageSrcs} />
+      {/** Change this to another layout on non-large screen */}
       <figure className="rounded-t-[10px] overflow-hidden grid grid-cols-1 lg:grid-cols-3 lg:grid-rows-2 gap-2 mx-3 h-auto lg:h-83">
         <Image
           src={fake_hotels[0].imageSrcs[0]}

@@ -10,7 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 
-import { paths } from "@/lib/constants/paths";
+import { paths } from "@/lib/constants";
 import { schemaSignIn, SignInData, defaultSignInValues } from "@/lib/zod_schemas/auth";
 import { signIn } from "next-auth/react";
 

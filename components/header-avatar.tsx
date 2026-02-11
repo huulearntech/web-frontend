@@ -24,7 +24,7 @@ import {
 } from '@/components/ui/dialog';
 
 import { useSession, signOut } from "next-auth/react";
-import { paths } from "@/lib/constants/paths";
+import { paths } from "@/lib/constants";
 import Link from "next/link";
 import { ChevronRightIcon } from "lucide-react";
 

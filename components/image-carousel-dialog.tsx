@@ -2,7 +2,15 @@
 
 import { useEffect, useState, useCallback } from "react";
 import Image from "next/image";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger
+} from "@/components/ui/dialog";
 import {
   Carousel,
   CarouselContent,
@@ -15,14 +23,24 @@ import { cn } from "@/lib/utils";
 import { Button } from "./ui/button";
 
 
+// TODO: fix padding of thumbs
+// TODO: When integrating, maybe dialog trigger is not needed but use external trigger
+// -> open, setOpen, openedFromIndex
+// So making a Context wrapping this is a good idea
 export default function ImageCarouselDialog ({
   imageSources,
   className,
   dialogClassName,
+  // open,
+  // setOpen,
+  // openedFromIndex,
 } : {
   imageSources: string[];
   className?: string;
   dialogClassName?: string;
+  // open: boolean;
+  // setOpen: (open: boolean) => void;
+  // openedFromIndex?: number;
 }) {
   if (imageSources.length === 0) {
     console.warn("ImageCarouselDialog: imageSources array is empty.");
@@ -37,7 +55,7 @@ export default function ImageCarouselDialog ({
     if (!mainApi || !thumbsApi) return;
     const idx = mainApi.selectedScrollSnap();
     setSelectedIndex(idx);
-    thumbsApi.scrollTo(idx); // keep thumbnail carousel in view
+    thumbsApi.scrollTo(idx, false); // keep thumbnail carousel in view
   }, [mainApi, thumbsApi, setSelectedIndex]);
 
   useEffect(() => {
@@ -77,7 +95,7 @@ export default function ImageCarouselDialog ({
       </DialogTrigger>
 
       <DialogContent className={cn(
-        "content max-h-screen p-6",
+        "sm:max-w-[min(90vw,var(--container-6xl))] p-4",
         dialogClassName
       )}
       >
@@ -87,26 +105,27 @@ export default function ImageCarouselDialog ({
             Browse through the images using the carousel below.
           </DialogDescription>
         </DialogHeader>
-        <Carousel setApi={setMainApi}>
+
+        <Carousel setApi={setMainApi} className="group/icd">
           <CarouselContent>
             {imageSources.map((src, index) => (
               <CarouselItem
                 key={index}
-                className="w-full h-full flex items-center justify-center"
+                className="flex items-center justify-center"
               >
                 <Image
                   src={src}
                   alt={`Image ${index + 1}`} // FIXME: improve alt text
                   width={800}
                   height={600}
-                  className="object-contain max-h-[80vh]"
+                  className="object-contain"
                 />
               </CarouselItem>
             ))}
           </CarouselContent>
 
-          <CarouselPrevious />
-          <CarouselNext />
+          <CarouselPrevious className="left-2 invisible md:group-hover/icd:visible disabled:hidden" />
+          <CarouselNext className="right-2 invisible md:group-hover/icd:visible disabled:hidden" />
         </Carousel>
 
         <Carousel
@@ -114,14 +133,15 @@ export default function ImageCarouselDialog ({
           setApi={setThumbsApi}
           opts={{ containScroll: "keepSnaps", dragFree: true, }}
         >
-          <CarouselContent className="p-2">
+          <CarouselContent className="py-1 h-16">
             {imageSources.map((src, index) => (
               <CarouselItem
                 key={index}
-                className="flex items-center justify-center basis-1/3"
+                className="flex items-center justify-center basis-1/5"
               >
                 <Button
                   asChild
+                  variant="ghost"
                   className={cn(
                     "p-0 overflow-hidden rounded-md",
                     selectedIndex === index ? "ring-2 ring-primary" : "border"
@@ -140,6 +160,9 @@ export default function ImageCarouselDialog ({
             ))}
           </CarouselContent>
         </Carousel>
+        <DialogFooter>
+          <p className="italic text-xs text-gray-500">*Lưu ý: Hoteloka không chịu trách nhiệm về tính xác thực của ảnh mà khách sạn đăng tải</p>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   )

@@ -1,30 +1,32 @@
 model Hotel {
   id          String   @id @default(cuid())
   name        String
-  // TODO: Cleanup
-  ward        String
-  district    String
-  province    String
-  country     String
-  geolocation Unsupported("geography(Point, 4326)")
-  rating      Float?    // average rating snapshot, optional
-  checkInTime  @db.Time   @map("check_in_time")
-  checkOutTime @db.Time   @map("check_out_time")
-  breakfastAvailability Boolean @map("breakfast_availability")
+  ownerId     String   @unique @map("owner_id")
+  owner       User     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
 
-  rooms       Room[]
-  popularFacilities  Facility[]
-  otherFacilities    Facility[]
-  favorites   Favorite[]
-  recentlyViewed RecentlyViewed[]
-  bookings    Booking[]
-  reviews     Review[]
-  // TODO: add amenities
+  wardId      String   @map("ward_id")
+  ward        Ward     @relation(fields: [wardId], references: [id], onDelete: Cascade)
+  
+  geolocation Unsupported("geography(Point, 4326)")
+  longitude   Float
+  latitude    Float
+
+  description String?
+  rating      Float?    // average rating snapshot, optional
+  checkInTime  DateTime @db.Time  @map("check_in_time")  // time within a day
+  checkOutTime DateTime @db.Time  @map("check_out_time")
+  breakfastAvailability Boolean @map("breakfast_availability")
   // TODO: may have videos
   imageUrls   String[]  // list of image URLs for the hotel
 
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+
+  rooms            Room[]
+  facilities       Facility[]
+  favoritedBy      Favorite[]
+  recentlyViewedBy RecentlyViewed[]
+  bookings         Booking[]
 
   @@map("hotels")
 }
@@ -34,8 +36,8 @@ model Facility {
   name      String   @unique
   iconUrl   String?  @map("icon_url") // optional icon URL for the facility
 
-  popularInHotels Hotel[]
-  otherInHotels   Hotel[]
+  hotels    Hotel[]
+  rooms     Room[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -46,30 +48,19 @@ model Facility {
 model Room {
   id               String   @id @default(cuid())
   hotelId          String   @map("hotel_id")
+  hotel            Hotel    @relation(fields: [hotelId], references: [id], onDelete: Cascade)
   type             String
   adultCapacity    Int      @map("adult_capacity")
   childrenCapacity Int      @map("children_capacity")
   price            Decimal
-  hotel            Hotel    @relation(fields: [hotelId], references: [id], onDelete: Cascade)
 
-  bookingRooms     BookingRoom[]
   imageUrls        String[] // list of image URLs for the room
+  bookingRooms     BookingRoom[]
+  facilities       Facility[]
+
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
 
   @@index([hotelId])
   @@map("rooms")
-}
-
-model HotelManager {
-  id        String   @id @default(cuid())
-  hotelId   String   @map("hotel_id")
-  userId    String   @map("user_id")
-
-  hotel     Hotel    @relation(fields: [hotelId], references: [id], onDelete: Restrict)
-  user      User     @relation(fields: [userId], references: [id], onDelete: Restrict)
-
-  @@index([hotelId])
-  @@index([userId])
-  @@map("hotel_manager")
 }

@@ -1,13 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useMediaQuery } from "usehooks-ts";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { vi } from "react-day-picker/locale"; // Add more locales, maybe just vi and en for simplicity
-import { cn } from "@/lib/utils";
+import { cn, debounce, simulateFetchLocations } from "@/lib/utils";
 
 import { Form, FormField, FormItem, FormLabel, FormControl } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
@@ -91,65 +91,97 @@ export default function SearchBar({
   );
 }
 
-// TODO: Clean up
 export function SearchBarImpl({ className }: { className?: string }) {
-  const locations = ["New York", "Los Angeles", "Chicago", "Houston", "Miami", "San Francisco", "Seattle", "Boston", "Denver", "Atlanta"];
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
-  }
+  const [locations, setLocations] = useState<string[]>([
+    "New York",
+    "Los Angeles",
+    "Chicago",
+    "Houston",
+    "Miami",
+    "San Francisco",
+    "Seattle",
+    "Boston",
+    "Denver",
+    "Atlanta",
+  ]);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       location: "",
       inOutDates: {
-        from: undefined,
-        to: undefined,
+        // FIXME: workaround to prevent render mismatch
+        from: undefined as unknown as Date,
+        to: undefined as unknown as Date,
       },
+      // TODO: Should ungroup this?
       guestsAndRooms: {
         numAdults: 2,
         numChildren: 0,
         numRooms: 1,
-      }
+      },
     },
   });
 
-  useEffect(() => {
-    const today = new Date();
-    const tomorrow = new Date();
-    tomorrow.setDate(today.getDate() + 1);
-    form.setValue("inOutDates", { from: today, to: tomorrow});
-  }, []);
+  const onSubmit = (values: z.infer<typeof formSchema>) => {
+    // Replace with real navigation / search handler
+    console.log("Search submitted:", values);
+  };
 
   const [mounted, setMounted] = useState(false);
   const isDesktop = useMediaQuery("(min-width: 768px)");
+  useEffect(() => {
+    setMounted(true);
 
-  useEffect(() => setMounted(true), []); // Prevent hydration mismatch
-  if (!mounted) {
-    return <SearchBarSkeleton className={className} />
-  }
+    // FIXME: properly handle default dates to prevent hydration mismatch
+    const today = new Date();
+    const tomorrow = new Date(today);
+    tomorrow.setDate(today.getDate() + 1);
+    form.setValue("inOutDates", { from: today, to: tomorrow });
+  }, []); // prevent hydration mismatch
+
+  if (!mounted) return <SearchBarSkeleton className={className} />;
 
   return (
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className={cn(
-          "flex flex-col md:flex-row gap-2 items-start",
-          className
-        )}>
+        className={cn("flex flex-col md:flex-row gap-2 items-start", className)}
+      >
         <FormField
           control={form.control}
           name="location"
-          render={({ field }) => (
-            <FormItem className="relative w-full" >
+          render={({ field }) => {
+            const debouncedFetchRef = useRef(
+              debounce(async (q: string) => {
+                const results = await simulateFetchLocations(q);
+                setLocations(results);
+              }, 500)
+            );
+
+            useEffect(() => {
+              return () => {
+                debouncedFetchRef.current?.cancel();
+              };
+            }, []);
+            return (
+            <FormItem className="relative w-full">
               <FormLabel htmlFor="location-input">Location</FormLabel>
               <Autocomplete
-                modal={false}
-                items={locations.slice(0,5)}
-                value={field.value}
-                onValueChange={field.onChange}
                 // TODO: add debouncing then fetch from API -> which means move this autocomplete to a separate component
                 // to use "use client" and let it have its own items state
+                modal={false}
+                items={locations.slice(0, 5)}
+                value={field.value}
+                onValueChange={(value) => {
+                  field.onChange(value);
+                  if (!value || value.trim() === "") {
+                    setLocations([]);
+                    debouncedFetchRef.current.cancel();
+                    return;
+                  }
+                  debouncedFetchRef.current(value);
+                }}
               >
                 <AutocompleteInput
                   id="location-input"
@@ -169,24 +201,25 @@ export function SearchBarImpl({ className }: { className?: string }) {
                 </AutocompleteContent>
               </Autocomplete>
             </FormItem>
-          )}
+          )}}
         />
+
         <FormField
           control={form.control}
           name="inOutDates"
           render={({ field }) => (
             <FormItem className="w-full">
-              <FormLabel htmlFor="date-range-picker"> Check-in / Check-out </FormLabel>
+              <FormLabel htmlFor="date-range-picker">Check-in / Check-out</FormLabel>
               <Popover>
                 <PopoverTrigger asChild>
                   <Button variant="outline" id="date-range-picker" className="text-base">
-                    { formatDate(field.value.from) ?? "Check-in" }
+                    {formatDate(field.value.from) ?? "Check-in"}
                     <ArrowRight />
-                    { formatDate(field.value.to) ?? "Check-out" }
+                    {formatDate(field.value.to) ?? "Check-out"}
                   </Button>
                 </PopoverTrigger>
 
-                <PopoverContent className="w-auto overflow-hidden p-0" >
+                <PopoverContent className="w-auto overflow-hidden p-0">
                   <FormControl>
                     <Calendar
                       mode="range"
@@ -205,108 +238,99 @@ export function SearchBarImpl({ className }: { className?: string }) {
         <FormField
           control={form.control}
           name="guestsAndRooms"
-          render={({ field }) => (
-            <FormItem className="w-full">
-              <FormLabel htmlFor="guests-and-rooms">Guests and rooms</FormLabel>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button id="guests-and-rooms" variant="outline" className="text-base">
-                    {field.value.numAdults} adults, {field.value.numChildren} children, {field.value.numRooms} rooms
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-xs overflow-hidden" >
-                  <FormItem className="flex justify-between">
-                    <FormLabel> Adults </FormLabel>
-                    <div className="flex space-x-2 items-center">
-                      <Button
-                        onClick={() => form.setValue("guestsAndRooms", {
-                          ...form.getValues("guestsAndRooms"),
-                          numAdults: form.getValues("guestsAndRooms").numAdults - 1,
-                        })}
-                        disabled={field.value.numAdults <= 1}
-                        className="flex size-6 items-center justify-center rounded-full"
-                      >
-                        <Minus className="size-4"/>
-                      </Button>
-                      <FormControl>
-                        <Input value={field.value.numAdults} readOnly className="w-10 text-center" />
-                      </FormControl>
-                      <Button onClick={
-                        // TODO: Handle min/max properly
-                        () => form.setValue("guestsAndRooms", {
-                          ...form.getValues("guestsAndRooms"),
-                          numAdults: form.getValues("guestsAndRooms").numAdults + 1,
-                        })}
-                        disabled={field.value.numAdults >= 30}
-                        className="flex size-6 items-center justify-center rounded-full"
+          render={({ field }) => {
+            const setGuests = (patch: Partial<typeof field.value>) =>
+              field.onChange({ ...field.value, ...patch });
+
+            return (
+              <FormItem className="w-full">
+                <FormLabel htmlFor="guests-and-rooms">Guests and rooms</FormLabel>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button id="guests-and-rooms" variant="outline" className="text-base">
+                      {field.value.numAdults} adults, {field.value.numChildren} children, {field.value.numRooms} rooms
+                    </Button>
+                  </PopoverTrigger>
+
+                  <PopoverContent className="w-xs overflow-hidden">
+                    <FormItem className="flex justify-between">
+                      <FormLabel>Adults</FormLabel>
+                      <div className="flex space-x-2 items-center">
+                        <Button
+                          onClick={() => setGuests({ numAdults: field.value.numAdults - 1 })}
+                          disabled={field.value.numAdults <= 1}
+                          className="flex size-6 items-center justify-center rounded-full"
                         >
-                        <Plus className="size-4"/>
-                      </Button>
-                    </div>
-                  </FormItem>
+                          <Minus className="size-4" />
+                        </Button>
+                        <FormControl>
+                          <Input value={field.value.numAdults} readOnly className="w-10 text-center" />
+                        </FormControl>
+                        <Button
+                          onClick={() => setGuests({ numAdults: field.value.numAdults + 1 })}
+                          disabled={field.value.numAdults >= 30}
+                          className="flex size-6 items-center justify-center rounded-full"
+                        >
+                          <Plus className="size-4" />
+                        </Button>
+                      </div>
+                    </FormItem>
 
-                  <FormItem className="flex justify-between mt-2">
-                    <FormLabel> Children </FormLabel>
-                    <div className="flex space-x-2 items-center">
-                      <Button onClick={() => form.setValue("guestsAndRooms", {
-                        ...form.getValues("guestsAndRooms"),
-                        numChildren: form.getValues("guestsAndRooms").numChildren - 1,
-                      })}
-                        disabled={field.value.numChildren <= 0}
-                        className="flex size-6 items-center justify-center rounded-full"
-                      >
-                        <Minus className="size-4" />
-                      </Button>
-                      <FormControl>
-                        <Input value={field.value.numChildren} readOnly className="w-10 text-center" />
-                      </FormControl>
-                      <Button onClick={() => form.setValue("guestsAndRooms", {
-                        ...form.getValues("guestsAndRooms"),
-                        numChildren: form.getValues("guestsAndRooms").numChildren + 1,
-                      })}
-                        disabled={field.value.numChildren >= 6}
-                        className="flex size-6 items-center justify-center rounded-full"
-                      >
-                        <Plus className="size-4" />
-                      </Button>
-                    </div>
-                  </FormItem>
+                    <FormItem className="flex justify-between mt-2">
+                      <FormLabel>Children</FormLabel>
+                      <div className="flex space-x-2 items-center">
+                        <Button
+                          onClick={() => setGuests({ numChildren: field.value.numChildren - 1 })}
+                          disabled={field.value.numChildren <= 0}
+                          className="flex size-6 items-center justify-center rounded-full"
+                        >
+                          <Minus className="size-4" />
+                        </Button>
+                        <FormControl>
+                          <Input value={field.value.numChildren} readOnly className="w-10 text-center" />
+                        </FormControl>
+                        <Button
+                          onClick={() => setGuests({ numChildren: field.value.numChildren + 1 })}
+                          disabled={field.value.numChildren >= 6}
+                          className="flex size-6 items-center justify-center rounded-full"
+                        >
+                          <Plus className="size-4" />
+                        </Button>
+                      </div>
+                    </FormItem>
 
-                  <FormItem className="flex justify-between mt-2">
-                    <FormLabel> Rooms </FormLabel>
-                    <div className="flex space-x-2 items-center">
-                      <Button onClick={() => form.setValue("guestsAndRooms", {
-                        ...form.getValues("guestsAndRooms"),
-                        numRooms: form.getValues("guestsAndRooms").numRooms - 1,
-                      })}
-                        disabled={field.value.numRooms <= 1}
-                        className="flex size-6 items-center justify-center rounded-full"
-                      >
-                        <Minus className="size-4" />
-                      </Button>
-                      <FormControl>
-                        <Input value={field.value.numRooms} readOnly className="w-10 text-center" />
-                      </FormControl>
-                      <Button onClick={() => form.setValue("guestsAndRooms", {
-                        ...form.getValues("guestsAndRooms"),
-                        numRooms: form.getValues("guestsAndRooms").numRooms + 1,
-                      })}
-                        disabled={field.value.numRooms >= field.value.numAdults}
-                        className="flex size-6 items-center justify-center rounded-full"
-                      >
-                        <Plus className="size-4"/>
-                      </Button>
-                    </div>
-                  </FormItem>
-                </PopoverContent>
-              </Popover>
-            </FormItem>
-          )}
+                    <FormItem className="flex justify-between mt-2">
+                      <FormLabel>Rooms</FormLabel>
+                      <div className="flex space-x-2 items-center">
+                        <Button
+                          onClick={() => setGuests({ numRooms: field.value.numRooms - 1 })}
+                          disabled={field.value.numRooms <= 1}
+                          className="flex size-6 items-center justify-center rounded-full"
+                        >
+                          <Minus className="size-4" />
+                        </Button>
+                        <FormControl>
+                          <Input value={field.value.numRooms} readOnly className="w-10 text-center" />
+                        </FormControl>
+                        <Button
+                          onClick={() => setGuests({ numRooms: field.value.numRooms + 1 })}
+                          disabled={field.value.numRooms >= field.value.numAdults}
+                          className="flex size-6 items-center justify-center rounded-full"
+                        >
+                          <Plus className="size-4" />
+                        </Button>
+                      </div>
+                    </FormItem>
+                  </PopoverContent>
+                </Popover>
+              </FormItem>
+            );
+          }}
         />
 
         <Button type="submit" className="w-full mt-5.5 md:w-fit flex items-center">
           <Search />
-          <span className="md:max-lg:hidden text-base"> Search </span>
+          <span className="md:max-lg:hidden text-base">Search</span>
         </Button>
       </form>
     </Form>
@@ -315,11 +339,11 @@ export function SearchBarImpl({ className }: { className?: string }) {
 
 export function SearchBarSkeleton({ className }: { className?: string }) {
   return (
-    <div className={cn("flex flex-col md:flex-row gap-2 items-start", className)}>
-      <Skeleton className="h-10 w-full md:w-3/10 rounded-full" />
-      <Skeleton className="h-10 w-full md:w-3/10 rounded-full" />
-      <Skeleton className="h-10 w-full md:w-3/10 rounded-full" />
-      <Skeleton className="h-10 w-full md:w-1/10 rounded-full" />
+    <div className={cn("h-10 flex flex-col md:flex-row gap-2 items-start", className)}>
+      <Skeleton className="h-full w-full md:w-3/10 rounded-full" />
+      <Skeleton className="h-full w-full md:w-3/10 rounded-full" />
+      <Skeleton className="h-full w-full md:w-3/10 rounded-full" />
+      <Skeleton className="h-full w-full md:w-1/10 rounded-full" />
     </div>
   );
 }

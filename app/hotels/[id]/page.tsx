@@ -6,6 +6,8 @@ import OverviewSection, { OverviewSectionSkeleton} from "./section-overview";
 import PolicySection from "./section-policy";
 import ReviewSection from "./section-review";
 
+import { fake_facility_categories } from "./section-facilities";
+
 // TODO: This page is not yet responsive
 export default async function Page({
   params
@@ -21,7 +23,7 @@ export default async function Page({
       </Suspense>
       <AvailableRoomsSection />
       <LocationSection />
-      <FacilitiesSection />
+      <FacilitiesSection facilities={fake_facility_categories} hotelName="bla bla bla hotel"/>
       <PolicySection />
       <ReviewSection />
     </>

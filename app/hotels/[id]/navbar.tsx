@@ -2,6 +2,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { cn } from "@/lib/utils";
 
 export default function Navbar() {
   const items = [
@@ -35,49 +36,48 @@ export default function Navbar() {
       return () => window.removeEventListener("hashchange", handleHash);
     }
 
-    // IntersectionObserver picks the most visible section; rootMargin biases selection toward center of viewport
+    // Use midpoint logic: mark the section whose top is above (<=) half the viewport height,
+    // choosing the one closest to the midpoint from above; if none, choose the closest to midpoint.
     const observer = new IntersectionObserver(
-      (entries) => {
-        const visible = entries.filter((e) => e.isIntersecting);
-        if (visible.length > 0) {
-          visible.sort((a, b) => b.intersectionRatio - a.intersectionRatio);
-          setActive(visible[0].target.id);
+      () => {
+        if (typeof window === "undefined") return;
+        const mid = window.innerHeight / 2;
+        const candidates = sections.map((s) => ({ el: s, top: s.getBoundingClientRect().top }));
+
+        // Pick sections whose top is above or equal to midpoint
+        const aboveMid = candidates.filter((c) => c.top <= mid);
+        if (aboveMid.length > 0) {
+          // choose the one closest to mid from above (largest top)
+          aboveMid.sort((a, b) => b.top - a.top);
+          setActive(aboveMid[0].el.id);
           return;
         }
 
-        // If nothing intersects (e.g., between sections), pick the section whose top is closest to viewport top
-        let closest = sections[0];
-        let min = Math.abs(sections[0].getBoundingClientRect().top);
-        for (let i = 1; i < sections.length; i++) {
-          const t = Math.abs(sections[i].getBoundingClientRect().top);
-          if (t < min) {
-            min = t;
-            closest = sections[i];
-          }
-        }
-        setActive(closest.id);
+        // If none are above mid, pick the section closest to mid (either below or above)
+        candidates.sort((a, b) => Math.abs(a.top - mid) - Math.abs(b.top - mid));
+        setActive(candidates[0].el.id);
       },
       {
         root: null,
-        rootMargin: "-40% 0px -40% 0px", // treats a section as "visible" when roughly centered
-        threshold: [0, 0.25, 0.5, 0.75, 1],
+        rootMargin: "0px",
+        threshold: [0, 0.1, 0.25, 0.5, 0.75, 1],
       }
     );
 
     sections.forEach((s) => observer.observe(s));
 
-    // initial selection based on current scroll position
+    // initial selection based on midpoint
     {
-      let closest = sections[0];
-      let min = Math.abs(sections[0].getBoundingClientRect().top);
-      for (let i = 1; i < sections.length; i++) {
-        const t = Math.abs(sections[i].getBoundingClientRect().top);
-        if (t < min) {
-          min = t;
-          closest = sections[i];
-        }
+      const mid = window.innerHeight / 2;
+      const candidates = sections.map((s) => ({ el: s, top: s.getBoundingClientRect().top }));
+      const aboveMid = candidates.filter((c) => c.top <= mid);
+      if (aboveMid.length > 0) {
+        aboveMid.sort((a, b) => b.top - a.top);
+        setActive(aboveMid[0].el.id);
+      } else {
+        candidates.sort((a, b) => Math.abs(a.top - mid) - Math.abs(b.top - mid));
+        setActive(candidates[0].el.id);
       }
-      setActive(closest.id);
     }
 
     return () => {
@@ -94,9 +94,12 @@ export default function Navbar() {
           <li key={it.id} className="px-4 pt-4">
             <a
               href={`#${it.id}`}
-              className={`transition-colors ${
-                active === it.id ? "underline decoration-blue-500 underline-offset-4" : ""
-              }`}
+              className={cn(
+                "pb-2 border-b-2 hover:text-primary hover:border-primary",
+                active === it.id
+                  ? "text-primary border-primary"
+                  : "text-gray-600 border-transparent"
+              )}
               aria-current={active === it.id ? "page" : undefined}
             >
               {it.label}

@@ -1,11 +1,21 @@
-import { UserRound, ExternalLink } from "lucide-react";
 import Image from "next/image";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-
-import { fake_hotels } from "@/old/mock_data";
-import { percentage } from "@/public/icons";
 import Link from "next/link";
 
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { UserRound, ExternalLink, RulerDimensionLineIcon, TicketPercentIcon } from "lucide-react";
+
+import { fake_hotels } from "@/old/mock_data";
+
+type RoomCardProps = {
+  id: string;
+  hotelId: string;
+  type: string;
+  adultCapacity: number;
+  childrenCapacity: number;
+  // price stored as Decimal in Prisma; expose as number|string for UI
+  price: number | string;
+  imageUrls: string[];
+}
 
 export default function AvailableRoomsSection() {
   return (
@@ -19,30 +29,41 @@ export default function AvailableRoomsSection() {
   )
 };
 
-function RoomCard () {
+function RoomCard(props: Partial<RoomCardProps> = {}) {
+  // Provide a lightweight default so component can still be used without props
+  const defaultRoom: RoomCardProps = {
+    id: "room-default",
+    hotelId: "hotel-default",
+    type: "Superior Double Room With City View - Room Only",
+    adultCapacity: 2,
+    childrenCapacity: 0,
+    price: 123456,
+    imageUrls: fake_hotels[0]?.imageSrcs ?? ["/images/default-room.jpg"],
+  };
+
+  const room: RoomCardProps = { ...defaultRoom, ...props };
+
   return (
     <div className="flex flex-col space-y-4 w-full max-w-7xl bg-white rounded-lg p-4 shadow-md overflow-hidden"
       style={{
-        backgroundImage: "url(https://ik.imagekit.io/tvlk/image/imageResource/2023/12/22/1703230740804-7c3d1c3e64557331e6f5f66d7a28e262.svg?tr=h-420,q-75,w-467)",
+        backgroundImage: "url('/images/bg-room-card.svg')",
         backgroundRepeat: "no-repeat",
         objectFit: "cover"
       }}
     >
-      {/* <Image src={"https://ik.imagekit.io/tvlk/image/imageResource/2023/12/22/1703230740804-7c3d1c3e64557331e6f5f66d7a28e262.svg?tr=h-420,q-75,w-467"} alt="" width={467} height={420} className="absolute object-cover -z-10"/> */}
-
-      <h2 className="text-[1.25rem] font-bold line-clamp-2">Bla bla bla room name</h2>
+      <h2 className="text-[1.25rem] font-bold line-clamp-2">{room.type}</h2>
       <div className="flex w-full space-x-4">
         <div className="flex flex-col w-full max-w-74 space-y-2">
           <Image
-            src={fake_hotels[0].imageSrcs[0]}
-            alt=""
+            src={room.imageUrls[0]}
+            alt={room.type}
             width={296}
             height={222}
             className="w-full h-auto rounded-3xl object-cover"
           />
           <div className="flex flex-col space-y-3 p-2">
             <div className="flex items-center space-x-2">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" data-id="IcHotelRoomMeasure"><path d="M12 21H7L21 7V21H18M12 21V20M12 21H15M15 21V20M15 21H18M18 21V20M15 17H17V15" stroke="#0194F3" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"></path><path d="M8 8L9 9M8 8L5 11M8 8L11 5M5 11L6 12M5 11L2 14L5 17L17 5L14 2L11 5M11 5L12 6" stroke="#03121A" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"></path></svg>
+              <RulerDimensionLineIcon className="size-4" />
               <span className="text-sm">100 m²</span>
             </div>
 
@@ -77,31 +98,31 @@ function RoomCard () {
             <TableBody>
               <TableRow className="hover:bg-inherit data-[state=selected]:bg-inherit [&>td]:border-r [&>td]:last:border-r-0 [&>td]:p-3">
                 <TableCell>
-                  <p>Superior Double Room With City View - Room Only</p>
+                  <p>{room.type}</p>
                   <p>Không gồm bữa sáng</p>
-                  <p>Superior Double Room With City View - Room Only</p>
-                  <p>Superior Double Room With City View - Room Only</p>
+                  <p>{room.type}</p>
+                  <p>{room.type}</p>
                 </TableCell>
                 <TableCell>
                   <div className="flex flex-col justify-center items-center">
                     <div className="flex space-x-2">
                       <UserRound className="size-4" />
-                      <span>x2</span>
+                      <span>x{room.adultCapacity}</span>
                     </div>
                     <div className="flex space-x-2">
                       <UserRound className="size-4" />
-                      <span>x1</span>
+                      <span>x{room.childrenCapacity}</span>
                     </div>
                   </div>
                 </TableCell>
                 <TableCell>
                   <div className="flex flex-col w-full gap-y-1 items-end justify-center">
                     <div className="max-w-fit flex gap-1 rounded-full p-1 bg-primary">
-                      <Image src={percentage} alt="" aria-hidden />
+                      <TicketPercentIcon className="size-4" aria-hidden />
                       <span className="overflow-hidden overflow-ellipsis whitespace-nowrap text-xs text-primary-foreground mr-1">Sale cuoi nam</span>
                     </div>
                     <div className="text-xs line-through">123.456 VND</div>
-                    <div className="font-bold text-base text-orange-600">123456 VND</div>
+                    <div className="font-bold text-base text-orange-600">{room.price} VND</div>
                     <div className="h-8 flex flex-col text-xs font-medium">
                       Exclude taxes and fees
                     </div>
@@ -127,25 +148,25 @@ function RoomCard () {
 
               <TableRow className="hover:bg-inherit data-[state=selected]:bg-inherit [&>td]:border-r [&>td]:last:border-r-0 [&>td]:p-3">
                 <TableCell>
-                  <p>Superior Double Room With City View - Room Only</p>
+                  <p>{room.type}</p>
                   <p>Không gồm bữa sáng</p>
-                  <p>Superior Double Room With City View - Room Only</p>
-                  <p>Superior Double Room With City View - Room Only</p>
+                  <p>{room.type}</p>
+                  <p>{room.type}</p>
                 </TableCell>
                 <TableCell>
                   <div className="flex justify-center">
                     <UserRound className="size-4" />
-                    x2
+                    x{room.adultCapacity}
                   </div>
                 </TableCell>
                 <TableCell>
                   <div className="flex flex-col w-full gap-y-1 items-end justify-center">
                     <div className="max-w-fit flex gap-1 rounded-full p-1 bg-primary">
-                      <Image src={percentage} alt="" aria-hidden />
+                      <TicketPercentIcon className="size-4" aria-hidden />
                       <span className="overflow-hidden overflow-ellipsis whitespace-nowrap text-xs text-primary-foreground mr-1">Sale cuoi nam</span>
                     </div>
                     <div className="text-xs line-through">123.456 VND</div>
-                    <div className="font-bold text-base text-orange-600">123456 VND</div>
+                    <div className="font-bold text-base text-orange-600">{room.price} VND</div>
                     <div className="h-8 flex flex-col text-xs font-medium">
                       Exclude taxes and fees
                     </div>

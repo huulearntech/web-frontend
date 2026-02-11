@@ -1,7 +1,10 @@
 model Booking {
   id          String         @id @default(cuid())
   userId      String
+  user        User           @relation(fields: [userId], references: [id], onDelete: Cascade)
   hotelId     String
+  hotel       Hotel          @relation(fields: [hotelId], references: [id], onDelete: Cascade)
+  // should rename to checkInDate and checkOutDate
   startDate   DateTime
   endDate     DateTime
   status      BookingStatus  @default(PENDING)
@@ -9,10 +12,9 @@ model Booking {
   notes       String?
   bookingRooms BookingRoom[]
   review      Review?        // optional review for this booking (one review per booking)
-  user        User           @relation(fields: [userId], references: [id], onDelete: Cascade)
-  hotel       Hotel          @relation(fields: [hotelId], references: [id], onDelete: Cascade)
 
   // TODO: add coupon(s)
+  // coupons     Coupon[]       @relation("BookingCoupons", references: [id])
 
   createdAt   DateTime       @default(now())
   updatedAt   DateTime       @updatedAt
@@ -45,11 +47,11 @@ model BookingRoom {
 model Review {
   id        String   @id @default(cuid())
   bookingId String   @unique
+  booking   Booking  @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
   rating    Int      // 1..5
   comment   String?
   createdAt DateTime @default(now())
-
-  booking   Booking  @relation(fields: [bookingId], references: [id], onDelete: Cascade)
 
   @@map("reviews")
 }

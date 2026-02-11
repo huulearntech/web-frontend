@@ -3,7 +3,7 @@ import Image from 'next/image';
 
 import { Button } from '@/components/ui/button';
 
-import { paths } from '@/lib/constants/paths'
+import { paths } from '@/lib/constants'
 import { tvlk_logo_text_dark } from "@/public/logos"
 import { HeartIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -35,7 +35,7 @@ export default async function Header({ className }: { className?: string }) {
             </>
           ) : (
             <div className="flex items-center gap-2">
-              <Link href={paths.partnershipRegister}>
+              <Link href={paths.hotelSignUp}>
                 Đăng ký cơ sở lưu trú của bạn
               </Link>
               <Button asChild>
