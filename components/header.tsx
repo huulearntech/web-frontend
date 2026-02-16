@@ -3,7 +3,7 @@ import Image from 'next/image';
 
 import { Button } from '@/components/ui/button';
 
-import { paths } from '@/lib/constants'
+import { PATHS } from '@/lib/constants'
 import { tvlk_logo_text_dark } from "@/public/logos"
 import { HeartIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -22,27 +22,27 @@ export default async function Header({ className }: { className?: string }) {
           <Image
             src={tvlk_logo_text_dark}
             alt="Traveloka Header Logo"
-            className="h-10 object-contain -ml-4"
+            className="h-10 object-contain"
           />
         </Link>
         <div className="flex items-center gap-16">
           {session?.user ? (
             <>
-              <Link href={paths.favorites}>
+              <Link href={PATHS.favorites}>
                 <HeartIcon className="size-6" strokeWidth={2} />
               </Link>
               <HeaderAvatar />
             </>
           ) : (
             <div className="flex items-center gap-2">
-              <Link href={paths.hotelSignUp}>
+              <Link href={PATHS.hotelSignUp}>
                 Đăng ký cơ sở lưu trú của bạn
               </Link>
               <Button asChild>
-                <Link href={paths.signIn}> Đăng nhập </Link>
+                <Link href={PATHS.signIn}> Đăng nhập </Link>
               </Button>
               <Button asChild>
-                <Link href={paths.signUp}> Đăng ký </Link>
+                <Link href={PATHS.signUp}> Đăng ký </Link>
               </Button>
             </div>
           )}

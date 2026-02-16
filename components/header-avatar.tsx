@@ -24,7 +24,7 @@ import {
 } from '@/components/ui/dialog';
 
 import { useSession, signOut } from "next-auth/react";
-import { paths } from "@/lib/constants";
+import { PATHS } from "@/lib/constants";
 import Link from "next/link";
 import { ChevronRightIcon } from "lucide-react";
 
@@ -59,7 +59,7 @@ export default function HeaderAvatar() {
             asChild
             className="flex gap-x-2"
           >
-            <Link href={paths.account} className="items-start">
+            <Link href={PATHS.account} className="items-start">
               Tài khoản của tôi
               <ChevronRightIcon className="ml-auto size-4" />
             </Link>
@@ -90,7 +90,7 @@ export default function HeaderAvatar() {
           <DialogClose asChild>
             <Button
               variant="destructive"
-              onClick={() => signOut({ redirectTo: paths.home })}>
+              onClick={() => signOut({ redirectTo: PATHS.home })}>
               Đăng xuất
             </Button>
           </DialogClose>

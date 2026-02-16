@@ -14,3 +14,7 @@ export default function Layout ({
     </>
   );
 }
+
+export const metadata = {
+  title: 'Hoteloka - Đặt phòng khách sạn dễ dàng, nhanh chóng',
+};

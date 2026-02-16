@@ -16,7 +16,6 @@ export type CouponProps = {
 
 export type PopularDestination = {
   regionName: string,
-  numberOfHotels: number,
   backgroundImage: StaticImageData
 };
 

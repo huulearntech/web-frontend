@@ -2,7 +2,7 @@ export const MAX_ADULTS = 30;
 export const MAX_CHILDREN = 6;
 export const MAX_ROOMS = 10;
 
-export const paths = {
+export const PATHS = {
   home: '/',
   signIn: '/sign-in',
   signUp: '/sign-up',

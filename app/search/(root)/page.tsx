@@ -1,12 +1,12 @@
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
-import Filter from "./filter";
+import Filter from "../filter";
 import Results, { ResultsSkeleton } from "./results";
 
 import type { SearchPageProps } from "@/lib/definitions";
 
-import FilterSheetProvider from "./filter-sheet-context";
+import FilterSheetProvider from "../filter-sheet-context";
 import SearchStatusBar, { SearchStatusBarSkeleton } from "./search-status-bar";
 
 // Should somehow get the filter and the status bar out
@@ -23,20 +23,18 @@ export default async function SearchPage( props: {
   // const childAges = childSpec?.split('.'); // age of every child
 
   return (
-    <>
-      <FilterSheetProvider>
-        <Filter />
+    <FilterSheetProvider>
+      <Filter />
 
-        <div className="w-full flex flex-col space-y-3">
-          <Suspense fallback={<SearchStatusBarSkeleton />}>
-            <SearchStatusBar />
-          </Suspense>
+      <div className="w-full flex flex-col space-y-3">
+        <Suspense fallback={<SearchStatusBarSkeleton />}>
+          <SearchStatusBar />
+        </Suspense>
 
-          <Suspense fallback={<ResultsSkeleton />}>
-            <Results />
-          </Suspense>
-        </div>
-      </FilterSheetProvider>
-    </>
+        <Suspense fallback={<ResultsSkeleton />}>
+          <Results />
+        </Suspense>
+      </div>
+    </FilterSheetProvider>
   )
 }

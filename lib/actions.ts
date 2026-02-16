@@ -1,7 +1,7 @@
 "use server";
 
 import { redirect } from "next/navigation";
-import { paths } from "@/lib/constants";
+import { PATHS } from "@/lib/constants";
 import { SignUpData } from "./zod_schemas/auth";
 
 export async function onSubmitSignUpForm(values: SignUpData) {
@@ -26,5 +26,5 @@ export async function onSubmitSignUpForm(values: SignUpData) {
     console.error("Error during sign up:", error);
     throw error;
   }
-  redirect(paths.signIn);
+  redirect(PATHS.signIn);
 };

@@ -9,7 +9,6 @@ export function useZodForm<TSchema extends z.ZodTypeAny>(params: {
   return useForm<
     z.infer<TSchema> extends FieldValues ? z.infer<TSchema> : FieldValues
   >({
-    // TODO: don't know if the AI got it right with the any casts here
     resolver: zodResolver(params.schema as any),
     defaultValues: params.defaultValues as any,
   });

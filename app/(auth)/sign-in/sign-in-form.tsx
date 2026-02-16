@@ -10,14 +10,14 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 
-import { paths } from "@/lib/constants";
+import { PATHS } from "@/lib/constants";
 import { schemaSignIn, SignInData, defaultSignInValues } from "@/lib/zod_schemas/auth";
 import { signIn } from "next-auth/react";
 
 
 export default function SignInForm () {
   const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get("callbackUrl") || paths.home;
+  const callbackUrl = searchParams.get("callbackUrl") || PATHS.home;
 
   const form = useForm<SignInData>({
     resolver: zodResolver(schemaSignIn),
@@ -68,10 +68,10 @@ export default function SignInForm () {
           <ArrowRight />
         </Button>
         <div className="flex flex-col gap-4 mt-4 text-sm">
-          <Link href={paths.signUp} replace>
+          <Link href={PATHS.signUp} replace>
             Don't have an account? Sign Up
           </Link>
-          <Link href={paths.forgotPassword}>
+          <Link href={PATHS.forgotPassword}>
             Forgot Password?
           </Link>
         </div>

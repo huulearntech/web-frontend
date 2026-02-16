@@ -32,7 +32,7 @@ import PartnersSection2 from "./section-partner";
 
 export default function Home() {
   return (
-    <main className="flex flex-col gap-y-12 -mt-20 lg:mt-0 mb-6">
+    <main className="flex flex-col gap-y-12 lg:mt-6 mb-6">
       <HeroSection />
       <WhyUsSection />
       <Feed />
@@ -246,62 +246,50 @@ function CouponSection () {
 const most_popular_destinations: PopularDestination[] = [
   {
     regionName: "Da Nang",
-    numberOfHotels: 763,
     backgroundImage: bg_danang,
   },
   {
     regionName: "Nha Trang",
-    numberOfHotels: 569,
     backgroundImage: bg_nhatrang,
   },
   {
     regionName: "Phu Quoc",
-    numberOfHotels: 381,
     backgroundImage: bg_phuquoc,
   },
   {
     regionName: "Vung Tau",
-    numberOfHotels: 339,
     backgroundImage: bg_vungtau,
   },
   {
     regionName: "Ha Noi",
-    numberOfHotels: 1049,
     backgroundImage: bg_hanoi,
   },
   {
     regionName: "Da Lat",
-    numberOfHotels: 591,
     backgroundImage: bg_dalat,
   },
   {
     regionName: "Hoi An",
-    numberOfHotels: 553,
     backgroundImage: bg_hoian,
   },
   {
     regionName: "Phan Thiet",
-    numberOfHotels: 243,
     backgroundImage: bg_phanthiet,
   },
   {
     regionName: "Quy Nhon",
-    numberOfHotels: 80,
     backgroundImage: bg_quynhon,
   },
   {
     regionName: "Hue",
-    numberOfHotels: 243,
     backgroundImage: bg_hue,
   },
   {
     regionName: "Ho Chi Minh",
-    numberOfHotels: 1527,
     backgroundImage: bg_hochiminh,
   },
   {
     regionName: "Ha Long",
-    numberOfHotels: 230,
     backgroundImage: bg_halong,
   },
 ];

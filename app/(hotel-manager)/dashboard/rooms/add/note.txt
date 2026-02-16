@@ -1,0 +1,4 @@
+add dialog (please aware of ux: because dialog is easy to be closed -> lost of editing form)
++ (excel import)
+-> initialized with one room form
+-> "add more" button at the bottom

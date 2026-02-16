@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import Image from "next/image";
 
 import { MapPin, Heart, TicketPercentIcon } from "lucide-react";
@@ -145,9 +144,10 @@ function HotelCard({
           price, rating, type, } = hotel;
 
   return (
-    <Link
+    <a
       href={`/hotels/${id}`}
       target="_blank"
+      rel="noreferrer"
       className={cn("w-full h-102 flex flex-col rounded-lg shadow-md overflow-hidden hover:shadow-primary/50 hover:shadow-md", className)}
     >
       <div className="relative h-40 shrink-0 overflow-hidden">
@@ -224,7 +224,7 @@ function HotelCard({
         </div>
 
       </div>
-    </Link>
+    </a>
   );
 };
 

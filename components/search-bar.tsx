@@ -129,7 +129,7 @@ export function SearchBarImpl({ className }: { className?: string }) {
   };
 
   const [mounted, setMounted] = useState(false);
-  const isDesktop = useMediaQuery("(min-width: 768px)");
+  const isDesktop = useMediaQuery("(min-width: var(--breakpoint-lg))");
   useEffect(() => {
     setMounted(true);
 
@@ -165,7 +165,7 @@ export function SearchBarImpl({ className }: { className?: string }) {
               };
             }, []);
             return (
-            <FormItem className="relative w-full">
+            <FormItem className="w-full">
               <FormLabel htmlFor="location-input">Location</FormLabel>
               <Autocomplete
                 // TODO: add debouncing then fetch from API -> which means move this autocomplete to a separate component
@@ -188,6 +188,7 @@ export function SearchBarImpl({ className }: { className?: string }) {
                   placeholder="Where are you going?"
                   showTrigger={false}
                   showClear
+                  className="w-full text-sm lg:text-base"
                 />
                 <AutocompleteContent>
                   <AutocompleteEmpty>No locations found.</AutocompleteEmpty>
@@ -212,7 +213,7 @@ export function SearchBarImpl({ className }: { className?: string }) {
               <FormLabel htmlFor="date-range-picker">Check-in / Check-out</FormLabel>
               <Popover>
                 <PopoverTrigger asChild>
-                  <Button variant="outline" id="date-range-picker" className="text-base">
+                  <Button variant="outline" id="date-range-picker" className="text-sm lg:text-base overflow-hidden items-start">
                     {formatDate(field.value.from) ?? "Check-in"}
                     <ArrowRight />
                     {formatDate(field.value.to) ?? "Check-out"}
@@ -247,7 +248,7 @@ export function SearchBarImpl({ className }: { className?: string }) {
                 <FormLabel htmlFor="guests-and-rooms">Guests and rooms</FormLabel>
                 <Popover>
                   <PopoverTrigger asChild>
-                    <Button id="guests-and-rooms" variant="outline" className="text-base">
+                    <Button id="guests-and-rooms" variant="outline" className="text-sm lg:text-base overflow-hidden items-start">
                       {field.value.numAdults} adults, {field.value.numChildren} children, {field.value.numRooms} rooms
                     </Button>
                   </PopoverTrigger>
@@ -328,9 +329,9 @@ export function SearchBarImpl({ className }: { className?: string }) {
           }}
         />
 
-        <Button type="submit" className="w-full mt-5.5 md:w-fit flex items-center">
+        <Button type="submit" className="w-full mt-5.5 md:w-fit flex items-center text-sm lg:text-base">
           <Search />
-          <span className="md:max-lg:hidden text-base">Search</span>
+          <span className="md:max-lg:hidden">Search</span>
         </Button>
       </form>
     </Form>

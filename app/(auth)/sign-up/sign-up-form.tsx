@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 
-import { paths } from "@/lib/constants";
+import { PATHS } from "@/lib/constants";
 import { schemaSignUp, SignUpData, defaultSignUpValues } from "@/lib/zod_schemas/auth";
 import { onSubmitSignUpForm } from "@/lib/actions";
 
@@ -65,10 +65,10 @@ export default function SignUpForm() {
           Sign Up <ArrowRight />
         </Button>
         <div className="flex flex-col gap-4 mt-4 text-sm">
-          <Link href={paths.signIn} replace>
+          <Link href={PATHS.signIn} replace>
             Already have an account? Sign In
           </Link>
-          <Link href={paths.forgotPassword}>
+          <Link href={PATHS.forgotPassword}>
             Forgot Password?
           </Link>
         </div>

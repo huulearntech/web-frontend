@@ -1,10 +1,21 @@
 import Image from "next/image";
-import Link from "next/link";
+// import Link from "next/link";
 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { UserRound, ExternalLink, RulerDimensionLineIcon, TicketPercentIcon } from "lucide-react";
 
 import { fake_hotels } from "@/old/mock_data";
+
+// Provide a lightweight default so component can still be used without props
+const defaultRoom: RoomCardProps = {
+  id: "room-default",
+  hotelId: "hotel-default",
+  type: "Superior Double Room With City View - Room Only",
+  adultCapacity: 2,
+  childrenCapacity: 0,
+  price: 123456,
+  imageUrls: fake_hotels[0]?.imageSrcs ?? ["/images/default-room.jpg"],
+};
 
 type RoomCardProps = {
   id: string;
@@ -22,27 +33,14 @@ export default function AvailableRoomsSection() {
     <section id="available-rooms" className="w-full flex flex-col scroll-mt-24 md:scroll-mt-30">
       <div className="rounded-4xl px-4 py-5 flex flex-col gap-y-5 shadow-xl">
         <h2 className="font-bold text-[1.25rem]">Những phòng còn trống tại bla bla</h2>
-        <RoomCard />
-        <RoomCard />
+        <RoomCard room={defaultRoom}/>
+        <RoomCard room={defaultRoom}/>
       </div>
     </section>
   )
 };
 
-function RoomCard(props: Partial<RoomCardProps> = {}) {
-  // Provide a lightweight default so component can still be used without props
-  const defaultRoom: RoomCardProps = {
-    id: "room-default",
-    hotelId: "hotel-default",
-    type: "Superior Double Room With City View - Room Only",
-    adultCapacity: 2,
-    childrenCapacity: 0,
-    price: 123456,
-    imageUrls: fake_hotels[0]?.imageSrcs ?? ["/images/default-room.jpg"],
-  };
-
-  const room: RoomCardProps = { ...defaultRoom, ...props };
-
+function RoomCard({ room }: { room: RoomCardProps }) {
   return (
     <div className="flex flex-col space-y-4 w-full max-w-7xl bg-white rounded-lg p-4 shadow-md overflow-hidden"
       style={{
@@ -135,13 +133,14 @@ function RoomCard(props: Partial<RoomCardProps> = {}) {
                 </TableCell>
                 <TableCell>
                   <div className="flex justify-center items-center">
-                    <Link
+                    <a
                       href={"/booking/1"} // Example booking id
                       target="_blank"
+                      rel="noreferrer"
                       className="bg-primary text-white text-sm font-bold px-3 py-2 rounded-[0.375rem]"
                     >
                       Chọn
-                    </Link>
+                    </a>
                   </div>
                 </TableCell>
               </TableRow>
@@ -179,13 +178,14 @@ function RoomCard(props: Partial<RoomCardProps> = {}) {
                 </TableCell>
                 <TableCell>
                   <div className="flex justify-center items-center">
-                    <Link
+                    <a
                       href={"/booking/1"} // Example booking id
                       target="_blank"
+                      rel="noreferrer"
                       className="bg-primary text-white text-sm font-bold px-3 py-2 rounded-[0.375rem]"
                     >
                       Chọn
-                    </Link>
+                    </a>
                   </div>
                 </TableCell>
               </TableRow>

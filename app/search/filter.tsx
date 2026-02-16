@@ -10,12 +10,27 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Accordion, AccordionContent, AccordionTrigger, AccordionItem } from '@/components/ui/accordion';
-import { Sheet, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle } from '@/components/ui/sheet';
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle
+} from '@/components/ui/sheet';
 import { ListFilter } from 'lucide-react';
 import { useFilterSheetContext } from './filter-sheet-context';
 
 import { Controller } from 'react-hook-form';
-import { CategoryKey, FILTER_CATEGORIES, FilterFormProvider, FilterFormType, typedEntries, useFilterForm } from './filter-form-context';
+import {
+  CategoryKey,
+  FILTER_CATEGORIES,
+  FilterFormProvider,
+  FilterFormType,
+  typedEntries,
+  useFilterForm
+} from './filter-form-context';
+import { cn } from '@/lib/utils';
 
 
 // TODO: Cleanup
@@ -23,7 +38,7 @@ const minPrice = 100_000;
 const maxPrice = 2_000_000;
 const step = 100_000;
 
-const defaultFilterContentValues: FilterFormType = {
+export const defaultFilterContentValues: FilterFormType = {
   priceRange: [minPrice, maxPrice],
   ratings: [],
   amenities: [],
@@ -33,10 +48,6 @@ const defaultFilterContentValues: FilterFormType = {
 export default function Filter() {
   const [mounted, setMounted] = useState(false);
   const isDesktop = useMediaQuery('(min-width: 1024px)');
-  const {
-    open: filterSheetOpen,
-    setOpen: setFilterSheetOpen,
-  } = useFilterSheetContext();
   useEffect(() => {
     setMounted(true);
   }, []);
@@ -52,27 +63,43 @@ export default function Filter() {
           <FilterContent />
         </aside>
       ) : (
-        <Sheet open={filterSheetOpen} onOpenChange={setFilterSheetOpen}>
-          <SheetContent side='left' className="w-full max-w-sm px-4 overflow-y-auto">
-
-            <SheetHeader className='sticky top-0 left-0 right-0 flex-row px-0 items-center justify-between backdrop-blur-md bg-white/20 z-10'>
-              <SheetTitle className='flex gap-2 items-center'>
-                <ListFilter className="size-5" aria-hidden />
-                <span className="text-lg font-bold">Bộ lọc</span>
-              </SheetTitle>
-              <SheetDescription className='sr-only' > Tuỳ chỉnh bộ lọc tìm kiếm của bạn </SheetDescription>
-            </SheetHeader>
-
-            <FilterContent />
-
-            <SheetFooter className='sticky bottom-0 left-0 right-0 backdrop-blur-md bg-white/20 z-10'>
-              <FilterResetApplyButtons />
-            </SheetFooter>
-
-          </SheetContent>
-        </Sheet>
+        <FilterSheet />
       )}
     </FilterFormProvider>
+  );
+};
+
+export function FilterSheet({
+  side = 'left', className
+}: {
+  side?: 'left' | 'right' | 'top' | 'bottom';
+  className?: string
+}) {
+  const { open: filterSheetOpen, setOpen: setFilterSheetOpen } = useFilterSheetContext();
+
+  return (
+    <Sheet open={filterSheetOpen} onOpenChange={setFilterSheetOpen}>
+      <SheetContent side={side} className={cn(
+        "w-full max-w-sm px-4 overflow-y-auto",
+        className
+      )}
+      >
+        <SheetHeader className='sticky top-0 left-0 right-0 flex-row px-0 items-center justify-between backdrop-blur-md bg-white/20 z-10'>
+          <SheetTitle className='flex gap-2 items-center'>
+            <ListFilter className="size-5" aria-hidden />
+            <span className="text-lg font-bold">Bộ lọc</span>
+          </SheetTitle>
+          <SheetDescription className='sr-only' > Tuỳ chỉnh bộ lọc tìm kiếm của bạn </SheetDescription>
+        </SheetHeader>
+
+        <FilterContent />
+
+        <SheetFooter className='sticky bottom-0 left-0 right-0 backdrop-blur-md bg-white/20 z-10'>
+          <FilterResetApplyButtons />
+        </SheetFooter>
+
+      </SheetContent>
+    </Sheet>
   );
 };
 

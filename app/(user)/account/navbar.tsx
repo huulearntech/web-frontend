@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 const navItems = [
   { name: "Profile", href: "/account", icon: UserIcon },
   { name: "History", href: "/account/history", icon: ListChecksIcon },
-  { name: "Watched Recently", href: "/account/watched", icon: HistoryIcon },
+  { name: "Watched Recently", href: "/account/recently-viewed", icon: HistoryIcon },
 ];
 
 export default function AccountNavbar() {

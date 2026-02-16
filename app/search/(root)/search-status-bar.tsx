@@ -16,7 +16,7 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 
 import { MapPinnedIcon, ListFilter } from "lucide-react";
-import { useFilterSheetContext } from "./filter-sheet-context";
+import { useFilterSheetContext } from "../filter-sheet-context";
 import { useMediaQuery } from "usehooks-ts";
 
 // TODO: Fetch the actual number of accommodations from the server

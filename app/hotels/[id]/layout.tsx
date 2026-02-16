@@ -3,6 +3,8 @@ import Footer from "@/components/footer"
 import SearchBar from "@/components/search-bar";
 import Navbar from "./navbar";
 
+import type { Metadata } from "next";
+
 export default function Layout ({
   children
 } : {
@@ -22,3 +24,24 @@ export default function Layout ({
     </>
   );
 }
+
+// export async function generateMetadata({ params }: { params: { id: string } }): Promise<Metadata> {
+//   const hotelId = params.id;
+
+//   const hotel = await fetch(`http://localhost:8080/api/hotels/${hotelId}`).then(res => res.json());
+  
+//   return {
+//     title: hotel.name,
+//     description: hotel.description,
+//     openGraph: {
+//       title: hotel.name,
+//       description: hotel.description,
+//       images: [
+//         {
+//           url: hotel.imageUrl,
+//           alt: hotel.name,
+//         },
+//       ],
+//     },
+//   };
+// }

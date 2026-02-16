@@ -12,6 +12,55 @@ import * as icons from "@/public/icons";
 
 import ImageCarouselDialog from "@/components/image-carousel-dialog";
 
+const mock_amenities = [
+  {
+    name: "Máy lạnh",
+    icon: icons.air_conditioner,
+  },
+  {
+    name: "Chỗ đậu xe",
+    icon: icons.parking,
+  },
+  {
+    name: "Nhà hàng",
+    icon: icons.knife_fork,
+  },
+  {
+    name: "Thang máy",
+    icon: icons.elevator,
+  },
+  {
+    name: "Hồ bơi",
+    icon: icons.pool,
+  },
+  {
+    name: "Wifi",
+    icon: icons.wifi,
+  },
+  {
+    name: "Tiếp tân 24h",
+    icon: icons.receptionist_24h,
+  },
+];
+
+const mock_nearby_locations = [
+  {
+    name: "Bãi biển Mỹ Khê",
+    address: "Đường Võ Nguyên Giáp, Phước Mỹ, Sơn Trà, Đà Nẵng",
+    distance: "0.5 km",
+  },
+  {
+    name: "Cầu Rồng",
+    address: "Đường Nguyễn Văn Linh, An Hải Tây, Sơn Trà, Đà Nẵng",
+    distance: "2 km",
+  },
+  {
+    name: "Bảo tàng Chăm",
+    address: "2 Đường 2 Tháng 9, Bình Hiên, Hải Châu, Đà Nẵng",
+    distance: "3 km",
+  },
+];
+
 
 export default async function OverviewSection () {
   // const hotel = await getHotelById();
@@ -131,18 +180,18 @@ export default async function OverviewSection () {
               </a>
             </div>
             <div className="flex flex-col gap-y-2 text-sm">
-              <p className="flex items-center gap-x-1">
-                <MapPin className="size-3" />
-                bla bla address
-              </p>
-              <p className="flex items-center gap-x-1">
-                <MapPin className="size-3" />
-                foo foo address
-              </p>
-              <p className="flex items-center gap-x-1">
-                <MapPin className="size-3" />
-                baz baz address
-              </p>
+              {mock_nearby_locations.map((loc, index) => (
+                <div key={index} className="flex items-start gap-x-2">
+                  <MapPin className="size-4 text-gray-500 mt-1" />
+                  <div>
+                    <div className="flex items-center gap-x-2">
+                      <div className="font-semibold">{loc.name}</div>
+                      <div className="text-gray-500">{loc.distance}</div>
+                    </div>
+                    <div className="text-gray-500">{loc.address}</div>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
 
@@ -156,34 +205,12 @@ export default async function OverviewSection () {
               </a>
             </div>
             <div className="grid grid-cols-2 gap-2 text-sm">
-              <div className="inline-flex items-center">
-                <Image src={icons.air_conditioner} alt="" className="size-6 mr-2" />
-                <span>Máy lạnh</span>
-              </div>
-              <div className="inline-flex items-center">
-                <Image src={icons.parking} alt="" className="size-6 mr-2" />
-                <span>Chỗ đậu xe</span>
-              </div>
-              <div className="inline-flex items-center">
-                <Image src={icons.knife_fork} alt="" className="size-6 mr-2" />
-                <span>Nhà hàng</span>
-              </div>
-              <div className="inline-flex items-center">
-                <Image src={icons.elevator} alt="" className="size-6 mr-2" />
-                <span>Thang máy</span>
-              </div>
-              <div className="inline-flex items-center">
-                <Image src={icons.pool} alt="" className="size-6 mr-2" />
-                <span>Hồ bơi</span>
-              </div>
-              <div className="inline-flex items-center">
-                <Image src={icons.wifi} alt="" className="size-6 mr-2" />
-                <span>Wifi</span>
-              </div>
-              <div className="inline-flex items-center">
-                <Image src={icons.receptionist_24h} alt="" className="size-6 mr-2" />
-                <span>Tiếp tân 24h</span>
-              </div>
+              {mock_amenities.map((a, index) => (
+                <div key={index} className="flex items-center gap-x-2">
+                  <Image src={a.icon} alt="" className="size-4" />
+                  {a.name}
+                </div>
+              ))}
             </div>
           </div>
         </div>
