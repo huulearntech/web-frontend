@@ -53,6 +53,9 @@ model Room {
   adultCapacity    Int      @map("adult_capacity")
   childrenCapacity Int      @map("children_capacity")
   price            Decimal
+  name             String   // e.g., "Deluxe Room", "Standard Room", etc.
+  areaM2           Float    // in square meters
+  // TODO: bed type
 
   imageUrls        String[] // list of image URLs for the room
   bookingRooms     BookingRoom[]

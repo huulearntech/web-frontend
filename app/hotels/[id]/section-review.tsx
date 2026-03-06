@@ -4,11 +4,10 @@ import { ThumbsUp } from "lucide-react"
 
 import { subDays, differenceInWeeks } from "date-fns"
 
-export default function ReviewSection() {
+export default function ReviewSection({ hotelName }: { hotelName: string }) {
   const rating = 9.2;
   const ratingText = "Xuất sắc"; // TODO: derive from rating
   const totalReviews = 25;
-  const hotelName = "bla bla bla";
   const criterias = [
     { name: "Vệ sinh", percentage: 90 },
     { name: "Tiện nghi phòng", percentage: 85 },

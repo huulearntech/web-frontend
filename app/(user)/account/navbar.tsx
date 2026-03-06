@@ -4,11 +4,12 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { UserIcon, ListChecksIcon, HistoryIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { PATHS } from "@/lib/constants";
 
 const navItems = [
-  { name: "Profile", href: "/account", icon: UserIcon },
-  { name: "History", href: "/account/history", icon: ListChecksIcon },
-  { name: "Watched Recently", href: "/account/recently-viewed", icon: HistoryIcon },
+  { name: "Profile", href: PATHS.account, icon: UserIcon },
+  { name: "History", href: PATHS.accountHistory, icon: ListChecksIcon },
+  { name: "Watched Recently", href: PATHS.accountRecentlyViewed, icon: HistoryIcon },
 ];
 
 export default function AccountNavbar() {

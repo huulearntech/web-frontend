@@ -5,6 +5,7 @@ import { defineConfig } from "prisma/config";
 
 export default defineConfig({
   schema: "prisma/schema.prisma", // this extension is really shit
+  // schema: "prisma",
   migrations: {
     path: "prisma/migrations",
   },

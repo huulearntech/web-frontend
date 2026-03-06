@@ -1,10 +1,10 @@
+import { Hotel } from "@/lib/generated/prisma/client";
 import {
   Accessibility,
   AirVent,
   Bed,
   Building2,
   CarTaxiFront,
-  DoorClosed,
   ForkKnifeCrossed,
   Store,
   Wifi
@@ -121,19 +121,13 @@ export const fake_facility_categories: FacilityCategory[] = [
   },
 ];
 
-export default function FacilitiesSection({
-  facilities,
-  hotelName,
-}: {
-  facilities: FacilityCategory[];
-  hotelName: string;
-}) {
+export default function FacilitiesSection({ hotel }: { hotel: Hotel }) {
   return (
     <section id="facilities" className="w-full flex flex-col scroll-mt-24 md:scroll-mt-30">
       <div className="rounded-4xl px-4 py-5 flex flex-col gap-y-5 shadow-xl">
-        <h2 className="font-bold text-[1.25rem]"> Tất cả những tiện ích tại {hotelName} </h2>
+        <h2 className="font-bold text-[1.25rem]"> Tất cả những tiện ích tại {hotel.name} </h2>
         <div className="grid grid-cols-3 gap-4">
-          {facilities.map((category, index) => (
+          {fake_facility_categories.map((category, index) => (
             <div key={index} className="flex flex-col gap-y-3">
               <div className="flex items-center gap-x-2">
                 {category.icon}

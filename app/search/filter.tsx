@@ -230,7 +230,7 @@ function PriceRangeSelector() {
                   inputMode="numeric"
                   name="minPrice"
                   placeholder="Min Price"
-                  className="text-xs md:text-xs px-2 py-1 rounded-full h-auto"
+                  className="px-2 py-1 rounded-full h-auto"
                   value={priceRange[0]}
                   onChange={e => {
                     const newMin = Number(e.target.value.replace(/[^0-9]/g, ''));
@@ -244,7 +244,7 @@ function PriceRangeSelector() {
                   inputMode="numeric"
                   name="maxPrice"
                   placeholder="Max Price"
-                  className="text-xs md:text-xs px-2 py-1 rounded-full h-auto"
+                  className="px-2 py-1 rounded-full h-auto"
                   value={priceRange[1]}
                   onChange={e => {
                     const newMax = Number(e.target.value.replace(/[^0-9]/g, ''));

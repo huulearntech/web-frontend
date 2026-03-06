@@ -1,7 +1,5 @@
-import HotelManagerDashboardBookingsPage, { mockBookings } from "./bookings/page";
-import HotelManagerStatisticsPage from "./statistics/page";
+import HotelManagerDashboardBookingsPage from "./bookings/page";
 
-/* ---------- Main Page Component ---------- */
 export default function DashboardPage() {
   return (
     <div className="p-6 space-y-6">
@@ -14,7 +12,6 @@ export default function DashboardPage() {
         </div>
       </header>
       <HotelManagerDashboardBookingsPage />
-      <HotelManagerStatisticsPage totalIncome={100} incomeByMonth={[['jan', 100]]} bookings={mockBookings} /> 
     </div>
   );
 };

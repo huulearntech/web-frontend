@@ -1,8 +1,7 @@
-import { HotelCard } from "@/components/hotel-card";
-import type { HotelCardProps } from "@/old/mock_data";
-import type { SearchPageProps } from "@/lib/definitions"
+import { HotelCard } from "@/components/hotel-card copy";
+import { notFound } from "next/navigation";
+import { SearchPage__SearchParamsCodec } from "./tmp";
 
-import { fake_hotels } from "@/old/mock_data";
 import {
   Pagination,
   PaginationContent,
@@ -13,28 +12,20 @@ import {
   PaginationPrevious
 } from "@/components/ui/pagination";
 import { Skeleton } from "@/components/ui/skeleton";
+import { fetchSearchResult } from "@/lib/actions/user-search-hotel";
 
 export default async function Results( props: { 
-  searchParams?: Promise<SearchPageProps>
+  searchParams?: Promise<Record<string, string>>
 }) {
-  // const searchParams = await props.searchParams;
-  // if (!searchParams || !searchParams.spec) notFound();
-  // const { spec, childSpec } = searchParams;
+  const safeDecodedParams = SearchPage__SearchParamsCodec.safeDecode(new URLSearchParams(await props.searchParams));
+  if (!safeDecodedParams.success) return notFound(); // TODO: navigate to home or search page with default params instead of 404, since the user may have manually edited the search params to be invalid, and 404 is not a good UX in this case
+  const {location, inOutDates, guestsAndRooms} = safeDecodedParams.data;
 
-  // const [location, inOutDate, numAdults, numRooms] = spec.split('.');
-  // const childAges = childSpec?.split('.'); // age of each child
 
-  /**
-   * Server-side data fetching
-   */
-  // simulate server delay and fetch the fake hotels
-  const results: HotelCardProps[] = await new Promise<HotelCardProps[]>(resolve => {
-    setTimeout(() => {
-      resolve(fake_hotels.concat(fake_hotels).concat(fake_hotels));
-    }, 5000);
-  });
   const currentPage = 9;
   const totalPages = 10;
+
+  const results = await fetchSearchResult();
 
   // TODO: Handle no results found
   if (results.length === 0) {

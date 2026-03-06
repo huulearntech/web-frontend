@@ -1,5 +1,5 @@
 import Image from "next/image"
-import { SearchBarImpl } from "@/components/search-bar"
+import { SearchBarImpl } from "@/components/search-bar copy"
 import { hero_image } from "@/public/images"
 
 export default function HeroSection() {
@@ -20,7 +20,8 @@ export default function HeroSection() {
             Khám phá nhiều lựa chọn từ khách sạn, biệt thự, resort và hơn thế nữa
           </h2>
           {/** Styling is a bit off */}
-          <SearchBarImpl className="w-full bg-white text-primary placeholder:text-secondary p-6 rounded-4xl border lg:absolute lg:inset-x-0" />
+          {/** fix always true isDesktop -> dual calendar */}
+          <SearchBarImpl isDesktop className="w-full bg-white text-primary placeholder:text-secondary p-6 rounded-4xl border lg:absolute lg:inset-x-0" />
         </div>
       </div>
     </section>

@@ -1,9 +1,9 @@
 import Link from "next/link";
 import Image from "next/image";
-import { Frown } from "lucide-react";
-import { ArrowLeft } from "lucide-react";
-import { tvlk_logo_text_dark } from "@/public/logos";
+import { PATHS } from "@/lib/constants";
 import { Button } from "@/components/ui/button";
+import { Frown, ArrowLeft } from "lucide-react";
+import { tvlk_logo_text_dark } from "@/public/logos";
 
 export default function NotFound () {
   return (
@@ -21,8 +21,8 @@ export default function NotFound () {
           <h2 className="text-xl font-semibold">404 Not Found</h2>
           <p>Could not find the requested resource.</p>
           <Button asChild>
-            <Link href="/" >
-              <ArrowLeft className="mr-2"/> Go back
+            <Link href={PATHS.home} >
+              <ArrowLeft className="mr-2" /> Go back
             </Link>
           </Button>
         </div>
@@ -30,3 +30,8 @@ export default function NotFound () {
     </main>
   );
 }
+
+export const metadata = {
+  title: "404 Not Found",
+  description: "The requested resource could not be found.",
+};

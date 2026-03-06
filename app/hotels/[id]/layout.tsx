@@ -1,9 +1,10 @@
 import Header from "@/components/header"
 import Footer from "@/components/footer"
-import SearchBar from "@/components/search-bar";
+import SearchBar from "@/components/search-bar copy";
 import Navbar from "./navbar";
 
 import type { Metadata } from "next";
+import prisma from "@/lib/prisma";
 
 export default function Layout ({
   children
@@ -25,23 +26,30 @@ export default function Layout ({
   );
 }
 
-// export async function generateMetadata({ params }: { params: { id: string } }): Promise<Metadata> {
-//   const hotelId = params.id;
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
+  const { id: hotelId } = await params;
+  const hotel = await prisma.hotel.findUnique({
+    where: { id: hotelId },
+  });
 
-//   const hotel = await fetch(`http://localhost:8080/api/hotels/${hotelId}`).then(res => res.json());
+  if (!hotel) {
+    return {
+      title: "Hotel not found",
+    };
+  }
   
-//   return {
-//     title: hotel.name,
-//     description: hotel.description,
-//     openGraph: {
-//       title: hotel.name,
-//       description: hotel.description,
-//       images: [
-//         {
-//           url: hotel.imageUrl,
-//           alt: hotel.name,
-//         },
-//       ],
-//     },
-//   };
-// }
+  return {
+    title: hotel.name,
+    description: hotel.description ?? undefined,
+    openGraph: {
+      title: hotel.name,
+      description: hotel.description ?? undefined,
+      images: [
+        {
+          url: hotel.imageUrls[0],
+          alt: hotel.name,
+        },
+      ],
+    },
+  };
+}

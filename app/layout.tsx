@@ -4,6 +4,7 @@ import "./globals.css";
 
 import { SessionProvider } from 'next-auth/react';
 import { cn } from "@/lib/utils";
+import { Toaster } from "@/components/ui/sonner";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -32,7 +33,6 @@ export default function RootLayout({
           crossOrigin="anonymous"
           src="//unpkg.com/react-scan/dist/auto.global.js"
         />
-        {/* rest of your scripts go under */}
       </head>
 
       <body
@@ -45,6 +45,7 @@ export default function RootLayout({
         <SessionProvider>
           {children}
         </SessionProvider>
+        <Toaster />
       </body>
     </html>
   );

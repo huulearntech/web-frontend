@@ -1,46 +1,46 @@
 import Image from "next/image";
-// import Link from "next/link";
 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { UserRound, ExternalLink, RulerDimensionLineIcon, TicketPercentIcon } from "lucide-react";
 
-import { fake_hotels } from "@/old/mock_data";
+import type { Hotel, Room, Facility } from "@/lib/generated/prisma/client";
+import { PATHS } from "@/lib/constants";
+import prisma from "@/lib/prisma";
 
-// Provide a lightweight default so component can still be used without props
-const defaultRoom: RoomCardProps = {
-  id: "room-default",
-  hotelId: "hotel-default",
-  type: "Superior Double Room With City View - Room Only",
-  adultCapacity: 2,
-  childrenCapacity: 0,
-  price: 123456,
-  imageUrls: fake_hotels[0]?.imageSrcs ?? ["/images/default-room.jpg"],
-};
-
-type RoomCardProps = {
-  id: string;
-  hotelId: string;
-  type: string;
-  adultCapacity: number;
-  childrenCapacity: number;
-  // price stored as Decimal in Prisma; expose as number|string for UI
-  price: number | string;
-  imageUrls: string[];
+type RoomWithFacilities = Room & {
+  facilities: Facility[];
 }
 
-export default function AvailableRoomsSection() {
+export default async function AvailableRoomsSection({ hotel }: { hotel: Hotel }) {
+  const rooms = await prisma.room.findMany({
+    where: { hotelId: hotel.id },
+    include: {
+      facilities: true
+    }
+  });
+
   return (
     <section id="available-rooms" className="w-full flex flex-col scroll-mt-24 md:scroll-mt-30">
       <div className="rounded-4xl px-4 py-5 flex flex-col gap-y-5 shadow-xl">
-        <h2 className="font-bold text-[1.25rem]">Những phòng còn trống tại bla bla</h2>
-        <RoomCard room={defaultRoom}/>
-        <RoomCard room={defaultRoom}/>
+        <h2 className="font-bold text-[1.25rem]">Những phòng còn trống tại {hotel.name}</h2>
+        {
+          rooms.length === 0 && (
+            <div className="w-full h-48 flex items-center justify-center bg-muted rounded-lg">
+              <span className="text-sm text-muted-foreground">Không có phòng nào còn trống cho khoảng thời gian này</span>
+            </div>
+          )
+        }
+        {
+          rooms.length > 0  && rooms.map((room) => (
+            <RoomCard key={room.id} room={room} breakfastAvailability={hotel.breakfastAvailability} />
+          ))
+        }
       </div>
     </section>
   )
 };
 
-function RoomCard({ room }: { room: RoomCardProps }) {
+function RoomCard({ room, breakfastAvailability }: { room: RoomWithFacilities, breakfastAvailability: boolean }) {
   return (
     <div className="flex flex-col space-y-4 w-full max-w-7xl bg-white rounded-lg p-4 shadow-md overflow-hidden"
       style={{
@@ -66,9 +66,18 @@ function RoomCard({ room }: { room: RoomCardProps }) {
             </div>
 
             <ul className="grid grid-cols-2 gap-2">
-              {Array.from({ length: 5 }).map((_, index) => (
-                <li key={index} className="flex items-center text-sm">
-                  <span>bla amenity {index}</span>
+              {room.facilities.map(facility => (
+                <li key={facility.id} className="flex items-center text-sm">
+                  <Image
+                    src={facility.iconUrl ?? "/images/default-facility-icon.svg"
+                      // TODO: handle missing icon
+                    }
+                    alt={facility.name}
+                    width={16}
+                    height={16}
+                    className="size-4 object-contain"
+                  />
+                  <span>{facility.name}</span>
                 </li>
               ))}
             </ul>
@@ -97,9 +106,9 @@ function RoomCard({ room }: { room: RoomCardProps }) {
               <TableRow className="hover:bg-inherit data-[state=selected]:bg-inherit [&>td]:border-r [&>td]:last:border-r-0 [&>td]:p-3">
                 <TableCell>
                   <p>{room.type}</p>
-                  <p>Không gồm bữa sáng</p>
-                  <p>{room.type}</p>
-                  <p>{room.type}</p>
+                  <p>{breakfastAvailability ? "Bao gồm bữa sáng" : "Không gồm bữa sáng"}</p>
+                  <p>{/** room.beds */}</p>
+                  <p>{/** room.policy */}</p>
                 </TableCell>
                 <TableCell>
                   <div className="flex flex-col justify-center items-center">
@@ -120,7 +129,7 @@ function RoomCard({ room }: { room: RoomCardProps }) {
                       <span className="overflow-hidden overflow-ellipsis whitespace-nowrap text-xs text-primary-foreground mr-1">Sale cuoi nam</span>
                     </div>
                     <div className="text-xs line-through">123.456 VND</div>
-                    <div className="font-bold text-base text-orange-600">{room.price} VND</div>
+                    <div className="font-bold text-base text-orange-600">{room.price.toString()} VND</div>
                     <div className="h-8 flex flex-col text-xs font-medium">
                       Exclude taxes and fees
                     </div>
@@ -134,7 +143,7 @@ function RoomCard({ room }: { room: RoomCardProps }) {
                 <TableCell>
                   <div className="flex justify-center items-center">
                     <a
-                      href={"/booking/1"} // Example booking id
+                      href={PATHS.bookings + "/1"} // Example booking id
                       target="_blank"
                       rel="noreferrer"
                       className="bg-primary text-white text-sm font-bold px-3 py-2 rounded-[0.375rem]"
@@ -149,8 +158,6 @@ function RoomCard({ room }: { room: RoomCardProps }) {
                 <TableCell>
                   <p>{room.type}</p>
                   <p>Không gồm bữa sáng</p>
-                  <p>{room.type}</p>
-                  <p>{room.type}</p>
                 </TableCell>
                 <TableCell>
                   <div className="flex justify-center">
@@ -165,7 +172,7 @@ function RoomCard({ room }: { room: RoomCardProps }) {
                       <span className="overflow-hidden overflow-ellipsis whitespace-nowrap text-xs text-primary-foreground mr-1">Sale cuoi nam</span>
                     </div>
                     <div className="text-xs line-through">123.456 VND</div>
-                    <div className="font-bold text-base text-orange-600">{room.price} VND</div>
+                    <div className="font-bold text-base text-orange-600">{room.price.toString()} VND</div>
                     <div className="h-8 flex flex-col text-xs font-medium">
                       Exclude taxes and fees
                     </div>
@@ -179,7 +186,7 @@ function RoomCard({ room }: { room: RoomCardProps }) {
                 <TableCell>
                   <div className="flex justify-center items-center">
                     <a
-                      href={"/booking/1"} // Example booking id
+                      href={PATHS.bookings + "/1"} // Example booking id
                       target="_blank"
                       rel="noreferrer"
                       className="bg-primary text-white text-sm font-bold px-3 py-2 rounded-[0.375rem]"

@@ -2,7 +2,6 @@
 
 import { useEffect, useState, useRef } from "react";
 import { useMediaQuery } from "usehooks-ts";
-import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -36,33 +35,19 @@ import {
 
 import { ArrowRight, Minus, Plus, Search } from "lucide-react";
 
-// TODO: Move formSchema to a separate file if it's used in multiple places
-const formSchema = z.object({
-  location: z.string() /*.min(1, { message: "Location is required" })*/,
-  inOutDates: z.object({
-    from: z.date(),
-    to: z.date(),
-  }),
-  guestsAndRooms: z.object({
-    numAdults: z.number().min(1).max(30),
-    numChildren: z.number().min(0).max(6),
-    numRooms: z.number().min(1).max(30),
-  }),
-});
+import { formSchema, type SearchBarFormData, formatDate } from "@/lib/zod_schemas/search-bar";
+import { fake_locations } from "@/old/mock_data";
 
-export default function SearchBar({
-  className,
-}: {
-  className?: string,
-}) {
+
+// TODO: duplicated client-side useMediaQuery.
+export default function SearchBar({ className }: { className?: string }) {
   const [mounted, setMounted] = useState(false);
   const isDesktop = useMediaQuery("(min-width: 768px)");
   useEffect(() => setMounted(true), []); // Prevent hydration mismatch
-  if (!mounted) {
-    return <div className={cn("h-12", className)} />
-  }
 
-  if (isDesktop) return (<SearchBarImpl className={className} />);
+  if (!mounted) return <SearchBarSkeleton className={className} />; 
+  if (isDesktop) return <SearchBarImpl className={className} />;
+
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -92,27 +77,15 @@ export default function SearchBar({
 }
 
 export function SearchBarImpl({ className }: { className?: string }) {
-  const [locations, setLocations] = useState<string[]>([
-    "New York",
-    "Los Angeles",
-    "Chicago",
-    "Houston",
-    "Miami",
-    "San Francisco",
-    "Seattle",
-    "Boston",
-    "Denver",
-    "Atlanta",
-  ]);
+  const [locations, setLocations] = useState<string[]>(fake_locations);
 
-  const form = useForm<z.infer<typeof formSchema>>({
+  const form = useForm<SearchBarFormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       location: "",
       inOutDates: {
-        // FIXME: workaround to prevent render mismatch
-        from: undefined as unknown as Date,
-        to: undefined as unknown as Date,
+        from: new Date(),
+        to: new Date(),
       },
       // TODO: Should ungroup this?
       guestsAndRooms: {
@@ -123,8 +96,8 @@ export function SearchBarImpl({ className }: { className?: string }) {
     },
   });
 
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
-    // Replace with real navigation / search handler
+  const onSubmit = (values: SearchBarFormData) => {
+    // TODO: Replace with real navigation / search handler
     console.log("Search submitted:", values);
   };
 
@@ -347,20 +320,4 @@ export function SearchBarSkeleton({ className }: { className?: string }) {
       <Skeleton className="h-full w-full md:w-1/10 rounded-full" />
     </div>
   );
-}
-
-
-// TODO: use nextjs built-in internationalization support then clean up
-export function formatDate(
-  value: Date | string | undefined | null,
-  locale: string = "en-US",
-  opts?: Intl.DateTimeFormatOptions
-) {
-  if (!value) return null;
-  const date = typeof value === "string" ? new Date(value) : value;
-  return new Intl.DateTimeFormat(locale, opts ?? {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-  }).format(date);
 }

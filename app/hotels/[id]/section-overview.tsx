@@ -12,6 +12,8 @@ import * as icons from "@/public/icons";
 
 import ImageCarouselDialog from "@/components/image-carousel-dialog";
 
+import { fetchHotel } from "@/lib/actions/hotel";
+
 const mock_amenities = [
   {
     name: "Máy lạnh",
@@ -62,31 +64,49 @@ const mock_nearby_locations = [
 ];
 
 
-export default async function OverviewSection () {
-  // const hotel = await getHotelById();
+export default async function OverviewSection({
+  hotel
+}: {
+  hotel: Awaited<ReturnType<typeof fetchHotel>>
+}) {
+  if (!hotel) {
+    return <div>Hotel not found</div>;
+  }
+  const country = hotel.ward.district.province.country;
+  const province = hotel.ward.district.province;
+  const district = hotel.ward.district;
+  const ward = hotel.ward;
   return (
     <section id="overview" className="w-full flex flex-col scroll-mt-24 md:scroll-mt-30">
       <Breadcrumb className="py-1 mb-3">
         <BreadcrumbList className="text-xs font-semibold">
           <BreadcrumbItem>
-            <BreadcrumbLink href="#">Vietnam</BreadcrumbLink>
+            <BreadcrumbLink href="#">{country.name}</BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>
-            <BreadcrumbLink href="#">Danang</BreadcrumbLink>
+            <BreadcrumbLink href="#">{province.name}</BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>
-            <BreadcrumbLink href="#">Blablabla</BreadcrumbLink>
+            <BreadcrumbLink href="#">{district.name}</BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbLink href="#">{ward.name}</BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbLink href="#">{hotel.name}</BreadcrumbLink>
           </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>
       
-      <ImageCarouselDialog imageSources={fake_hotels[0].imageSrcs} />
+      <ImageCarouselDialog imageSources={fake_hotels[0].imageUrls} />
       {/** Change this to another layout on non-large screen */}
       <figure className="rounded-t-[10px] overflow-hidden grid grid-cols-1 lg:grid-cols-3 lg:grid-rows-2 gap-2 mx-3 h-auto lg:h-83">
         <Image
-          src={fake_hotels[0].imageSrcs[0]}
+          src={fake_hotels[0].imageUrls[0]}
           alt=""
           width={480}
           height={332}
@@ -94,7 +114,7 @@ export default async function OverviewSection () {
         />
         <div className="grid grid-cols-2 sm:grid-cols-3 grid-rows-2 gap-2 h-full w-full lg:col-span-2 lg:row-span-2">
           {
-            fake_hotels[0].imageSrcs.concat(fake_hotels[0].imageSrcs).slice(1, 7).map((src, index) => (
+            fake_hotels[0].imageUrls.concat(fake_hotels[0].imageUrls).slice(1, 7).map((src, index) => (
               <Image
                 key={index}
                 src={src}
@@ -111,10 +131,10 @@ export default async function OverviewSection () {
       <div className="rounded-4xl px-4 py-5 flex flex-col gap-y-5 shadow-xl">
         <div className="flex space-x-10">
           <div className="flex-1 gap-y-2">
-            <h1 className="text-[1.5rem] font-bold">Hotel name</h1>
+            <h1 className="text-[1.5rem] font-bold">{hotel.name}</h1>
             <div className="flex gap-x-2 items-center">
               <span className="px-2 py-1 rounded-full text-xs bg-blue-50 text-primary">Khach san</span>
-              <RatingStars rating={5} width={16} height={16} />
+              <RatingStars rating={5} />
             </div>
           </div>
 

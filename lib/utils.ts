@@ -1,3 +1,4 @@
+import { fake_locations } from "@/old/mock_data";
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
 
@@ -23,22 +24,11 @@ export function debounce<T extends (...args: any[]) => void>(fn: T, wait = 300) 
   return debounced as T & { cancel: () => void };
 }
 
+// TODO: Handle vietnamese accents properly in search (e.g. "Ha Noi" should match "Hà Nội")
 export function simulateFetchLocations(query: string, delay = 400): Promise<string[]> {
-  const all = [
-    "New York",
-    "Los Angeles",
-    "Chicago",
-    "Houston",
-    "Miami",
-    "San Francisco",
-    "Seattle",
-    "Boston",
-    "Denver",
-    "Atlanta",
-  ];
   return new Promise((resolve) => {
     setTimeout(() => {
-      const filtered = all.filter((loc) =>
+      const filtered = fake_locations.filter((loc) =>
         loc.toLowerCase().includes(query.toLowerCase())
       );
       resolve(filtered);

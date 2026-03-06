@@ -8,7 +8,7 @@ export default function Layout ({
 }) {
   return (
     <>
-      <Header className="sticky top-0"/>
+      <Header className="sticky top-0" />
       {children}
       <Footer />
     </>

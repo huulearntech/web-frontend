@@ -1,52 +1,44 @@
-"use client";
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { currency } from "../helper-to-be-deleted";
-import { Booking } from "../columns";
-import {
-  ResponsiveContainer,
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  Tooltip,
-  CartesianGrid,
-} from "recharts";
 
-/* ---------- Recharts small bar chart component ---------- */
-function MiniBarChart({
-  data,
-  height = 140,
-}: {
-  data: { label: string; value: number }[];
-  height?: number;
-}) {
-  const rechartsData = data.map((d) => ({ name: d.label, value: d.value }));
-  return (
-    <div style={{ width: "100%", height }}>
-      <ResponsiveContainer width="100%" height="100%">
-        <BarChart data={rechartsData} margin={{ top: 16, right: 12, left: 6, bottom: 24 }}>
-          <CartesianGrid strokeDasharray="3 3" stroke="#e6edf3" />
-          <XAxis dataKey="name" tick={{ fontSize: 11 }} />
-          <YAxis tick={{ fontSize: 11 }} />
-          <Tooltip formatter={(val?: number) => (val == null ? "" : currency(val))} />
-          <Bar dataKey="value" fill="#0ea5e9" radius={[6, 6, 0, 0]} />
-        </BarChart>
-      </ResponsiveContainer>
-    </div>
-  );
-}
+import prisma from "@/lib/prisma";
+import { auth } from "@/auth";
 
-export default function HotelManagerStatisticsPage({
-  totalIncome,
-  incomeByMonth,
-  bookings,
-}: {
-  totalIncome: number;
-  incomeByMonth: [string, number][];
-  bookings: Booking[];
-}) {
+import MiniBarChart from "./chart";
+
+export default async function HotelManagerStatisticsPage() {
+  const session = await auth();
+  if (!session || !session.user) {
+    return null;
+  }
+
+  const hotel = await prisma.hotel.findUnique({
+    where: { ownerId: session.user.id },
+    select: { id: true }
+  });
+
+  if (!hotel) {
+    // TODO: redirect to normal user page
+    return <div className="p-4">No hotel found for this manager.</div>;
+  }
+
+  const bookings = await prisma.booking.findMany({
+    where: { hotelId: hotel.id },
+    select: {
+      id: true,
+      status: true,
+      totalPrice: true,
+      createdAt: true,
+    },
+  });
+
+  // FIXME: using toNumber on Decimal may causes precision loss, but just demo for now
+  const totalIncome = bookings.reduce((sum, b) => sum + b.totalPrice.toNumber(), 0);
+  const incomeByMonth = bookings.reduce((acc, b) => {
+    const month = b.createdAt.toLocaleString("default", { month: "short", year: "numeric" });
+    acc[month] = (acc[month] || 0) + b.totalPrice.toNumber();
+    return acc;
+  }, {} as Record<string, number>);
+
   return (
     <div className="grid md:grid-cols-3 gap-6">
       <Card className="md:col-span-2">
@@ -57,20 +49,20 @@ export default function HotelManagerStatisticsPage({
           <div className="mb-4 flex items-center justify-between">
             <div>
               <div className="text-sm text-muted-foreground">Last months</div>
-              <div className="text-2xl font-semibold">{currency(totalIncome)}</div>
+              <div className="text-2xl font-semibold">{totalIncome}</div>
             </div>
-            <div className="flex gap-2">
+            {/* <div className="flex gap-2">
               <Button onClick={() => alert("Load more (stub)")}>Last 12 months</Button>
-            </div>
+            </div> */}
           </div>
 
-          <MiniBarChart data={incomeByMonth.map(([label, value]) => ({ label, value }))} />
+          <MiniBarChart data={Object.entries(incomeByMonth).map(([name, value]: [string, number]) => ({ name, value }))} />
 
           <div className="mt-4 grid grid-cols-2 gap-4">
-            {incomeByMonth.map(([label, value]) => (
-              <div key={label} className="p-3 border rounded">
-                <div className="text-xs text-muted-foreground">{label}</div>
-                <div className="text-lg font-semibold">{currency(value)}</div>
+            {Object.entries(incomeByMonth).map(([name, value]: [string, number]) => (
+              <div key={name} className="p-3 border rounded">
+                <div className="text-xs text-muted-foreground">{name}</div>
+                <div className="text-lg font-semibold">{value}</div>
               </div>
             ))}
           </div>
@@ -85,7 +77,7 @@ export default function HotelManagerStatisticsPage({
           <div className="space-y-3">
             <div className="flex justify-between">
               <div className="text-sm text-muted-foreground">Total Income</div>
-              <div className="font-medium">{currency(totalIncome)}</div>
+              <div className="font-medium">{totalIncome}</div>
             </div>
             <div className="flex justify-between">
               <div className="text-sm text-muted-foreground">Bookings</div>
@@ -95,13 +87,13 @@ export default function HotelManagerStatisticsPage({
             <div className="flex justify-between">
               <div className="text-sm text-muted-foreground">Confirmed</div>
               <div className="font-medium">
-                {bookings.filter((b) => b.status === "confirmed").length}
+                {bookings.filter((b) => b.status === "CONFIRMED").length}
               </div>
             </div>
             <div className="flex justify-between">
               <div className="text-sm text-muted-foreground">Pending</div>
               <div className="font-medium">
-                {bookings.filter((b) => b.status === "pending").length}
+                {bookings.filter((b) => b.status === "PENDING").length}
               </div>
             </div>
           </div>

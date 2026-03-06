@@ -31,8 +31,7 @@ const policies = [
   },
 ]
 
-export default function PolicySection() {
-  const hotelName = "Nature Hotel - Lac Long Quan";
+export default function PolicySection({ hotelName }: { hotelName: string }) {
   return (
     <section id="policy" className="w-full flex flex-col scroll-mt-24 md:scroll-mt-30">
       <div className="rounded-4xl px-4 py-5 flex flex-col gap-y-5 shadow-xl">

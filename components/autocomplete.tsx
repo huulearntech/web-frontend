@@ -65,7 +65,7 @@ function AutocompleteInput({
   return (
     <InputGroup className={cn("w-auto", className)}>
       <AutocompletePrimitive.Input
-        render={<InputGroupInput disabled={disabled} />}
+        render={<InputGroupInput disabled={disabled} className="lg:text-base"/>}
         {...props}
       />
       <InputGroupAddon align="inline-end">

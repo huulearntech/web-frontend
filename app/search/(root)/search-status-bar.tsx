@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { Label } from "@/components/ui/label";
 import {
@@ -20,7 +19,8 @@ import { useFilterSheetContext } from "../filter-sheet-context";
 import { useMediaQuery } from "usehooks-ts";
 
 // TODO: Fetch the actual number of accommodations from the server
-export default function SearchStatusBar() {
+// TODO: pass the search params via props may be better
+export default function SearchStatusBar({ location }: { location: string }) {
   const searchParams = useSearchParams();
   const { setOpen: setFilterSheetOpen } = useFilterSheetContext();
   const [mounted, setMounted] = useState(false);
@@ -46,8 +46,8 @@ export default function SearchStatusBar() {
           </Button>
         }
         <div className="flex flex-col text-sm">
-          <span className="font-bold"> Location </span>
-          <span> 10000 noi luu tru duoc tim thay </span>
+          <span className="font-bold"> {location} </span>
+          <span> {10000} noi luu tru duoc tim thay </span>
         </div>
       </div>
       <div className="flex gap-x-4 items-center">
@@ -72,13 +72,10 @@ export default function SearchStatusBar() {
           asChild
           className="h-fit bg-primary text-primary-foreground text-xs font-bold px-3 py-2 rounded-full flex items-center gap-x-2"
         >
-          <Link
-            href={"/search/map?" + searchParams.toString()}
-            target="_blank"
-          >
+          <a href={"/search/map?" + searchParams.toString()} target="_blank" >
             Xem trên bản đồ
             <MapPinnedIcon className="size-4" />
-          </Link>
+          </a>
         </Button>
       </div>
     </div>
@@ -87,18 +84,18 @@ export default function SearchStatusBar() {
 
 export function SearchStatusBarSkeleton() {
   return (
-      <div className="flex items-center justify-between sticky top-15 md:top-20.5 border-b p-3 -mt-3 z-10 bg-background shadow-md">
-        <div className="flex flex-col text-sm gap-2">
-          <Skeleton className="w-24 h-4 rounded-md" />
-          <Skeleton className="w-40 h-3 rounded-md" />
-        </div>
-        <div className="flex gap-x-4">
-          <div className="flex gap-x-2 items-center">
-            <Skeleton className="w-40 h-8 rounded-full" />
-          </div>
-          <Skeleton className="w-40 h-8 rounded-full" />
-          <Skeleton className="size-8 rounded-full" />
-        </div>
+    <div className="flex items-center justify-between sticky top-15 md:top-20.5 border-b p-3 -mt-3 z-10 bg-background shadow-md">
+      <div className="flex flex-col text-sm gap-2">
+        <Skeleton className="w-24 h-4 rounded-md" />
+        <Skeleton className="w-40 h-3 rounded-md" />
       </div>
+      <div className="flex gap-x-4">
+        <div className="flex gap-x-2 items-center">
+          <Skeleton className="w-40 h-8 rounded-full" />
+        </div>
+        <Skeleton className="w-40 h-8 rounded-full" />
+        <Skeleton className="size-8 rounded-full" />
+      </div>
+    </div>
   );
 }

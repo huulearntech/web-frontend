@@ -13,6 +13,16 @@ const nextConfig: NextConfig = {
         protocol: 'https',
         hostname: 'maps.googleapis.com',
         pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'ik.imagekit.io',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 's3-ap-southeast-1.amazonaws.com',
+        pathname: '/**',
       }
     ]
   }

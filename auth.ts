@@ -2,6 +2,7 @@ import bcrypt from 'bcrypt';
 import prisma from "@/lib/prisma"
 import { schemaSignIn } from "@/lib/zod_schemas/auth";
 import { PrismaAdapter } from "@auth/prisma-adapter";
+import { PATHS } from './lib/constants';
 
 /* These bullshit javashit frameworks change their API every fucking month
  * because the new one sounds cooler
@@ -44,11 +45,33 @@ export const nextAuthConfig = {
       },
     }),
   ],
+  callbacks: {
+    async jwt({ token, user }) {
+      // On initial sign in, include the user id in the token
+      if (user) {
+        (token as any).id = (user as any).id ?? (token as any).sub;
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      // expose id to session.user
+      session.user = session.user ?? ({} as any);
+      (session.user as any).id = (token as any).id ?? (token as any).sub;
+      return session;
+    },
+    async redirect({ url, baseUrl }) {
+      // Allow relative callback URLs
+      if (url.startsWith("/")) return `${baseUrl}${url}`;
+      // Allow callback URLs on the same origin
+      if (new URL(url).origin === baseUrl) return url;
+      return baseUrl;
+    }
+  },
   session: {
     strategy: "jwt",
   },
   pages: {
-    signIn: "/sign-in",
+    signIn: PATHS.signIn,
   },
 } satisfies NextAuthConfig;
 
