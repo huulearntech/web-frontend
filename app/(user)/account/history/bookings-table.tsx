@@ -3,9 +3,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import { DataTable } from "@/components/data-table";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
-// TODO: Find better way to infer these kind of types where
-// Nextjs serialization doesn't support complex types like Decimal, and we don't want to litter our codebase with "Serialized" types everywhere. Maybe we can have some kind of "type transformers" that can be applied globally to convert complex types to simpler ones for serialization, and automatically infer the original types in the rest of the codebase?
-import { TmpBooking } from "@/lib/actions/user-history";
+import { type RecentBookingType } from "@/lib/actions/user-history";
 
 function StatusBadge({ status }: { status: string }) {
   const map: Record<string, { text: string; variant: string }> = {
@@ -19,7 +17,7 @@ function StatusBadge({ status }: { status: string }) {
 }
 
 
-const columns: ColumnDef<TmpBooking>[] = [
+const columns: ColumnDef<RecentBookingType>[] = [
   {
     id: "booking",
     header: "Booking",
@@ -35,7 +33,7 @@ const columns: ColumnDef<TmpBooking>[] = [
     id: "hotel",
     header: "Hotel",
     accessorKey: "hotelName",
-    cell: ({ row }) => <div className="font-medium">{row.original.hotelName}</div>,
+    cell: ({ row }) => <div className="font-medium">{row.original.hotel.name}</div>,
   },
   {
     id: "dates",
@@ -90,7 +88,7 @@ const columns: ColumnDef<TmpBooking>[] = [
 export default function BookingsTable({
   bookings,
 }: {
-  bookings: TmpBooking[];
+  bookings: RecentBookingType[];
 }) {
   return (
     <Card>

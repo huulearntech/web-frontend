@@ -1,5 +1,5 @@
 import Image from "next/image"
-import { SearchBarImpl } from "@/components/search-bar copy"
+import { SearchBarImpl } from "@/components/search-bar"
 import { hero_image } from "@/public/images"
 
 export default function HeroSection() {

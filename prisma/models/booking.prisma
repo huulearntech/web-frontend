@@ -4,12 +4,15 @@ model Booking {
   user        User           @relation(fields: [userId], references: [id], onDelete: Cascade)
   hotelId     String
   hotel       Hotel          @relation(fields: [hotelId], references: [id], onDelete: Cascade)
+
   // should rename to checkInDate and checkOutDate
   startDate   DateTime
   endDate     DateTime
-  status      BookingStatus  @default(PENDING)
+  status      BookingStatus  @default(DRAFT)
   totalPrice  Decimal
   notes       String?
+  
+  // This is many-to-many relationship between Booking and Room, with additional fields (pricePerNight, nights, totalPrice)
   bookingRooms BookingRoom[]
   review      Review?        // optional review for this booking (one review per booking)
 
@@ -25,15 +28,18 @@ model Booking {
   @@map("bookings")
 }
 
+// This is a join table. Consider make it implicit.
+// But the BookingRoom implies that the price per night is snap-shot, because the price of the room may change in the future, but the booking should keep the original price.
 model BookingRoom {
   id            String   @id @default(cuid())
   bookingId     String
+  booking       Booking  @relation(fields: [bookingId], references: [id], onDelete: Cascade)
   roomId        String
+  room          Room     @relation(fields: [roomId], references: [id], onDelete: Cascade)
+
   pricePerNight Decimal
   nights        Int
-  totalPrice    Decimal
-  booking       Booking  @relation(fields: [bookingId], references: [id], onDelete: Cascade)
-  room          Room     @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  totalPrice    Decimal // This is redundant.
 
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
@@ -56,12 +62,14 @@ model Review {
   @@map("reviews")
 }
 enum BookingStatus {
+  DRAFT
   PENDING
   CONFIRMED
   CANCELLED
   COMPLETED
 }
 
+// TODO: consider remove this to reduce complexity of this project.
 model Coupon {
   id          String   @id @default(cuid())
   code        String   @unique

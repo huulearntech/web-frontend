@@ -12,47 +12,43 @@ import {
   TabsContent
 } from "@/components/ui/tabs";
 
-import { fake_locations } from "@/old/mock_data";
-import { fetchSearchResult } from "@/lib/actions/user-search-hotel";
-import { HotelCard } from "@/components/hotel-card copy";
+import HotelCard from "@/components/hotel-card";
+import { fetchFeed } from "@/lib/actions/home";
 
 // This can be named as Promotion, because admin can "promote" things
-export default async function Feed () { // This should be modifiable by admin
-  const hotels = await fetchSearchResult();
-  const locations = fake_locations;
-  const title = "Di choi cuoi tuan gan nha"
+export default async function Feed () {
+  const { title, locations } = await fetchFeed();
   return (
     <section className="flex flex-col gap-y-4">
       <div className="content">
         <h2 className="text-2xl font-bold">{title}</h2>
       </div>
       <Tabs
-        defaultValue={locations[0]}
+        defaultValue={locations[0].provinceName}
         className="content"
       >
         <div className="overflow-x-auto justify-start">
           <TabsList className="bg-inherit gap-x-2" >
-            {locations.map((location) => (
-              <TabsTrigger value={location} key={location}
+            {locations.map(({ provinceName }) => (
+              <TabsTrigger value={provinceName} key={provinceName}
                 className="h-9 text-sm font-bold px-3 py-2 rounded-full data-[state=active]:bg-primary data-[state=active]:text-primary-foreground dark:data-[state=active]:text-primary-foreground dark:data-[state=active]:border-input dark:data-[state=active]:bg-input/30 bg-accent text-foreground dark:text-muted-foreground data-[state=active]:shadow-sm"
               >
-                {location}
+                {provinceName}
               </TabsTrigger>
             ))}
           </TabsList>
         </div>
 
-        {locations.map((location) => (
-          <TabsContent value={location} key={location}>
+        {locations.map(({ provinceName, hotels }) => (
+          <TabsContent value={provinceName} key={provinceName}>
             <Carousel opts={{ align: "start" }}
             >
               <CarouselContent className="p-2">
-                {hotels.concat(hotels).map((hotel, index) => (
+                {hotels.map((hotel) => (
                   <CarouselItem
-                    key={hotel.id + index}
+                    key={hotel.id}
                     className="basis-1/2 md:basis-1/3 xl:basis-1/4"
                   >
-                    {/** Decimal is non serializable here */}
                     <HotelCard hotel={hotel} />
                   </CarouselItem>
                 ))}

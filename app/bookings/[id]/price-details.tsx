@@ -11,7 +11,7 @@ export default function PriceDetail() {
     // replace with real submit logic
     console.log("form submit", data);
   }
-  const form = useInformationForm();
+  const { handleSubmit } = useInformationForm();
   return (
     <div className="flex flex-col rounded-4xl bg-white shadow-lg">
       <div className="flex px-4 py-2 gap-x-3 items-center">
@@ -45,11 +45,11 @@ export default function PriceDetail() {
 
       <Button
         className="m-4 rounded-full h-12 font-semibold"
-        onClick={() => form.handleSubmit(onSubmit)()}
+        onClick={handleSubmit(onSubmit)}
       >
         Tiếp tục
       </Button>
-      <div className="text-xs text-gray-500 px-4 pb-4 whitespace-pre">
+      <div className="text-xs text-gray-500 px-4 pb-4">
         {"Bằng cách tiến hành thanh toán, bạn đã đồng ý với "}
         <Link href="#" className="underline">Điều khoản và Điều kiện</Link>,
         <Link href="#" className="underline">Chính sách Bảo mật</Link>{", và "}

@@ -1,8 +1,26 @@
-// NOTE: This component is a bit complex
+// FIXME: Fix default value can not be passed from server to client. It can only drill through 1 layer of component
+// aka if SearchBarImpl is used directly, it is okay, but if SearchBar is used, SearchBarImpl can not receive the defaultValues passed from server. This is probably because of the Dialog in SearchBar, which makes SearchBarImpl a child component of DialogPortal, which is rendered on client side only. So the defaultValues can not be passed from server to client through props. We need to find a way to pass the defaultValues from server to client through some global state or context, or maybe we can move the Dialog logic to SearchBarImpl and make it a self contained component that can be used in both desktop and mobile without the need of SearchBar wrapper.
+//  For now, we can just use SearchBarImpl directly in desktop and use SearchBar for mobile, but this is not ideal and we should fix this issue in the future.
 "use client";
 
+// if user click on "Near me", we ask for location permission.
+  // useEffect(() => {
+  //   // Ask for user's location permission and set default center to their location if granted
+  //   if (navigator.geolocation) {
+  //     navigator.geolocation.getCurrentPosition(
+  //       (position) => {
+  //         setDefaultCenter([position.coords.latitude, position.coords.longitude]);
+  //         setUserLocated(true);
+  //       },
+  //       (error) => {
+  //         console.warn("Geolocation permission denied or unavailable, using default center.", error);
+  //       }
+  //     );
+  //   }
+  // }, []);
+
 import { useEffect, useState } from "react";
-import { useMediaQuery } from "usehooks-ts";
+import { useMediaQuery } from "@/lib/hooks";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
@@ -38,10 +56,26 @@ import {
 import { ArrowRight, Minus, Plus, Search } from "lucide-react";
 
 import { formSchema, type SearchBarFormData, formatDate } from "@/lib/zod_schemas/search-bar";
-import { PATHS } from "@/lib/constants";
+import {
+  MAX_ADULTS,
+  MAX_CHILDREN,
+  MAX_ROOMS,
+  MIN_ADULTS,
+  MIN_CHILDREN,
+  MIN_ROOMS,
+  PATHS
+} from "@/lib/constants";
 
+import useSWR from "swr";
+import { SearchParamsCodec } from "@/app/search/(root)/tmp";
 
-export default function SearchBar({ className }: { className?: string }) {
+export default function SearchBar({
+  defaultValues,
+  className
+}: {
+  defaultValues?: SearchBarFormData;
+  className?: string
+}) {
   const [mounted, setMounted] = useState(false);
   const desktopQuery = "(min-width: 768px)";
   const isDesktop = useMediaQuery(desktopQuery);
@@ -50,6 +84,7 @@ export default function SearchBar({ className }: { className?: string }) {
   if (!mounted) return <SearchBarSkeleton className={className} />; 
   if (isDesktop) return <SearchBarImpl isDesktop className={className} />;
 
+  // TODO Tooltip for error when location is empty / number of guests is less than number of rooms
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -71,35 +106,60 @@ export default function SearchBar({ className }: { className?: string }) {
               Enter your search criteria below.
             </DialogDescription>
           </DialogHeader>
-          <SearchBarImpl isDesktop={isDesktop} className="p-4 w-screen max-w-md" />
+          <SearchBarImpl
+            defaultValues={defaultValues}
+            isDesktop={isDesktop}
+            className="p-4 w-screen max-w-md"
+          />
         </DialogContent>
       </DialogPortal>
     </Dialog>
   );
 }
 
-export function SearchBarImpl({ isDesktop, className }: { isDesktop: boolean; className?: string }) {
+export function SearchBarImpl({
+  defaultValues,
+  isDesktop,
+  className
+}: {
+  defaultValues?: SearchBarFormData;
+  isDesktop: boolean;
+  className?: string
+}) {
+
+  if (!defaultValues) { console.warn("SearchBarImpl rendered without defaultValues, form may not work properly"); }
+  else {
+    console.log("SearchBarImpl received defaultValues:", defaultValues);
+  }
   const form = useForm<SearchBarFormData>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
+    defaultValues: defaultValues ?? {
       location: "",
       inOutDates: {
         from: new Date(),
-        to: new Date(),
+        to: new Date(Date.now() + 24 * 60 * 60 * 1000),
       },
       guestsAndRooms: {
         numAdults: 2,
         numChildren: 0,
         numRooms: 1,
-      },
-    },
+      }
+    }
   });
   const router = useRouter();
 
+  const locationValue = form.watch("location");
+
+  const { data: searchedLocations = [], isValidating, error } = useSWR(
+    locationValue && locationValue.trim() !== "" ? ["locations", locationValue] : null,
+    async ([, q]) => simulateFetchLocations(q),
+    { dedupingInterval: 500 }
+  );
+
   // TODO: checkin & checkout -> date only
   const onSubmit = (values: SearchBarFormData) => {
-    const searchParams = SearchPage__SearchParamsCodec.encode(values);
-    router.push(`${PATHS.search}?${searchParams.toString()}`);
+    const searchParams = new URLSearchParams(SearchParamsCodec.encode(values)).toString();
+    router.push(`${PATHS.search}?${searchParams}`);
   };
 
   return (
@@ -114,10 +174,44 @@ export function SearchBarImpl({ isDesktop, className }: { isDesktop: boolean; cl
           render={({ field }) => (
             <FormItem className="w-full">
               <FormLabel htmlFor="location-input">Location</FormLabel>
-              <LocationAutocomplete
+
+              <Autocomplete
+                modal={false}
+                items={searchedLocations}
                 value={field.value}
                 onValueChange={field.onChange}
-              />
+              >
+                <AutocompleteInput
+                  id="location-input"
+                  placeholder="Where are you going?"
+                  showTrigger={false}
+                  showClear
+                  className="w-full"
+                />
+                <AutocompleteContent>
+                  {isValidating && (
+                    <div className="px-2 py-1 text-sm text-gray-500">Loading...</div>
+                  )}
+
+                  {error && (
+                    <div className="px-2 py-1 text-sm text-red-500">Failed to load locations.</div>
+                  )}
+
+                  {!isValidating && !error && searchedLocations.length === 0 && (
+                    <AutocompleteEmpty>No locations found.</AutocompleteEmpty>
+                  )}
+
+                  {!isValidating && !error && searchedLocations.length > 0 && (
+                    <AutocompleteList>
+                      {searchedLocations.map((location, idx) => (
+                        <AutocompleteItem key={`${location}-${idx}`} value={location}>
+                          {location}
+                        </AutocompleteItem>
+                      ))}
+                    </AutocompleteList>
+                  )}
+                </AutocompleteContent>
+              </Autocomplete>
             </FormItem>
           )}
         />
@@ -160,7 +254,6 @@ export function SearchBarImpl({ isDesktop, className }: { isDesktop: boolean; cl
             const setGuests = (patch: Partial<typeof field.value>) =>
               field.onChange({ ...field.value, ...patch });
 
-            // TODO: This component is getting pretty big, consider extracting it to a separate component
             return (
               <FormItem className="w-full">
                 <FormLabel htmlFor="guests-and-rooms">Guests and rooms</FormLabel>
@@ -177,7 +270,7 @@ export function SearchBarImpl({ isDesktop, className }: { isDesktop: boolean; cl
                       <div className="flex space-x-2 items-center">
                         <Button
                           onClick={() => setGuests({ numAdults: field.value.numAdults - 1 })}
-                          disabled={field.value.numAdults <= 1}
+                          disabled={field.value.numAdults <= MIN_ADULTS}
                           className="flex size-6 items-center justify-center rounded-full"
                         >
                           <Minus className="size-4" />
@@ -187,7 +280,7 @@ export function SearchBarImpl({ isDesktop, className }: { isDesktop: boolean; cl
                         </FormControl>
                         <Button
                           onClick={() => setGuests({ numAdults: field.value.numAdults + 1 })}
-                          disabled={field.value.numAdults >= 30}
+                          disabled={field.value.numAdults >= MAX_ADULTS}
                           className="flex size-6 items-center justify-center rounded-full"
                         >
                           <Plus className="size-4" />
@@ -200,7 +293,7 @@ export function SearchBarImpl({ isDesktop, className }: { isDesktop: boolean; cl
                       <div className="flex space-x-2 items-center">
                         <Button
                           onClick={() => setGuests({ numChildren: field.value.numChildren - 1 })}
-                          disabled={field.value.numChildren <= 0}
+                          disabled={field.value.numChildren <= MIN_CHILDREN}
                           className="flex size-6 items-center justify-center rounded-full"
                         >
                           <Minus className="size-4" />
@@ -210,7 +303,7 @@ export function SearchBarImpl({ isDesktop, className }: { isDesktop: boolean; cl
                         </FormControl>
                         <Button
                           onClick={() => setGuests({ numChildren: field.value.numChildren + 1 })}
-                          disabled={field.value.numChildren >= 6}
+                          disabled={field.value.numChildren >= MAX_CHILDREN}
                           className="flex size-6 items-center justify-center rounded-full"
                         >
                           <Plus className="size-4" />
@@ -223,7 +316,7 @@ export function SearchBarImpl({ isDesktop, className }: { isDesktop: boolean; cl
                       <div className="flex space-x-2 items-center">
                         <Button
                           onClick={() => setGuests({ numRooms: field.value.numRooms - 1 })}
-                          disabled={field.value.numRooms <= 1}
+                          disabled={field.value.numRooms <= MIN_ROOMS}
                           className="flex size-6 items-center justify-center rounded-full"
                         >
                           <Minus className="size-4" />
@@ -233,7 +326,7 @@ export function SearchBarImpl({ isDesktop, className }: { isDesktop: boolean; cl
                         </FormControl>
                         <Button
                           onClick={() => setGuests({ numRooms: field.value.numRooms + 1 })}
-                          disabled={field.value.numRooms >= field.value.numAdults}
+                          disabled={field.value.numRooms >= Math.max(field.value.numAdults, MAX_ROOMS)}
                           className="flex size-6 items-center justify-center rounded-full"
                         >
                           <Plus className="size-4" />
@@ -255,6 +348,7 @@ export function SearchBarImpl({ isDesktop, className }: { isDesktop: boolean; cl
     </Form>
   );
 }
+
 export function SearchBarSkeleton({ className }: { className?: string }) {
   return (
     <div className={cn("h-10 flex flex-col md:flex-row gap-2 items-start", className)}>
@@ -263,68 +357,5 @@ export function SearchBarSkeleton({ className }: { className?: string }) {
       <Skeleton className="h-full w-full md:w-3/10 rounded-full" />
       <Skeleton className="h-full w-full md:w-1/10 rounded-full" />
     </div>
-  );
-}
-
-import useSWR from "swr";
-import { SearchPage__SearchParamsCodec } from "@/app/search/(root)/tmp";
-function useLocationSearch(query: string) {
-  return useSWR(
-    query && query.trim() !== "" ? ["locations", query] : null,
-    async ([, q]) => simulateFetchLocations(q),
-    { dedupingInterval: 500 }
-  );
-}
-
-function LocationAutocomplete({
-  value,
-  onValueChange,
-}: {
-  value: string;
-  onValueChange: (value: string) => void;
-}) {
-  const maxSuggestions = 5;
-  const { data, isLoading, error } = useLocationSearch(value);
-  const suggestedLocations = Array.isArray(data) ? data : [];
-  const items = suggestedLocations.slice(0, maxSuggestions);
-
-  return (
-    <Autocomplete
-      modal={false}
-      items={items}
-      value={value}
-      onValueChange={onValueChange}
-    >
-      <AutocompleteInput
-        id="location-input"
-        placeholder="Where are you going?"
-        showTrigger={false}
-        showClear
-        className="w-full"
-      />
-      <AutocompleteContent>
-        {isLoading && (
-          <div className="px-2 py-1 text-sm text-gray-500">Loading...</div>
-        )}
-
-        {error && (
-          <div className="px-2 py-1 text-sm text-red-500">Failed to load locations.</div>
-        )}
-
-        {!isLoading && !error && items.length === 0 && (
-          <AutocompleteEmpty>No locations found.</AutocompleteEmpty>
-        )}
-
-        {!isLoading && !error && items.length > 0 && (
-          <AutocompleteList>
-            {items.map((item, idx) => (
-              <AutocompleteItem key={`${item}-${idx}`} value={item}>
-                {item}
-              </AutocompleteItem>
-            ))}
-          </AutocompleteList>
-        )}
-      </AutocompleteContent>
-    </Autocomplete>
   );
 }

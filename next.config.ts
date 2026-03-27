@@ -11,7 +11,7 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: 'https',
-        hostname: 'maps.googleapis.com',
+        hostname: 'picsum.photos',
         pathname: '/**',
       },
       {
@@ -23,7 +23,12 @@ const nextConfig: NextConfig = {
         protocol: 'https',
         hostname: 's3-ap-southeast-1.amazonaws.com',
         pathname: '/**',
-      }
+      },
+      {
+        protocol: 'https',
+        hostname: 'maps.geoapify.com',
+        pathname: '/**',
+      },
     ]
   }
 };

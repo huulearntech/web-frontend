@@ -14,6 +14,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Loader2Icon } from "lucide-react";
+import PasswordInput from "@/components/password-input";
 
 
 export default function SignInForm () {
@@ -24,7 +25,7 @@ export default function SignInForm () {
 
   const form = useForm<SignInData>({
     resolver: zodResolver(schemaSignIn),
-    defaultValues: defaultSignInValues
+    defaultValues: defaultSignInValues // Must be defined, otherwise it will complain.
   })
 
   const onSubmit = (data: SignInData) => {
@@ -48,7 +49,7 @@ export default function SignInForm () {
             <FormItem>
               <FormLabel>Email</FormLabel>
               <FormControl>
-                <Input {...field} disabled={isPending} />
+                <Input {...field} disabled={isPending} autoFocus className="md:text-base"/>
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -61,7 +62,7 @@ export default function SignInForm () {
             <FormItem>
               <FormLabel>Password</FormLabel>
               <FormControl>
-                <Input {...field} type="password" disabled={isPending} />
+                <PasswordInput {...field} disabled={isPending} className="md:text-base" />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -71,7 +72,7 @@ export default function SignInForm () {
           {form.formState.errors.root?.message}
         </p>
 
-        <Button type="submit" className="mt-2">
+        <Button type="submit" className="mt-2 md:text-base" disabled={isPending}>
           {isPending ?
             <div className="flex items-center gap-2">
               Signing in...

@@ -7,13 +7,18 @@ model Hotel {
   wardId      String   @map("ward_id")
   ward        Ward     @relation(fields: [wardId], references: [id], onDelete: Cascade)
   
-  geolocation Unsupported("geography(Point, 4326)")
+  // geolocation Unsupported("geography(Point, 4326)")
   longitude   Float
   latitude    Float
 
+  type        HotelType
+
   description String?
-  rating      Float?    // average rating snapshot, optional
-  checkInTime  DateTime @db.Time  @map("check_in_time")  // time within a day
+
+  reviewPoints Float    @map("review_points")
+  numberOfReviews Int    @map("number_of_reviews")
+
+  checkInTime  DateTime @db.Time  @map("check_in_time")
   checkOutTime DateTime @db.Time  @map("check_out_time")
   breakfastAvailability Boolean @map("breakfast_availability")
   // TODO: may have videos
@@ -27,14 +32,56 @@ model Hotel {
   favoritedBy      Favorite[]
   recentlyViewedBy RecentlyViewed[]
   bookings         Booking[]
+  // policies         Policy[] // TODO: Move check-in/check-out time to policies
 
   @@map("hotels")
+}
+
+enum HotelType {
+  HOTEL
+  MOTEL
+  RESORT
+  APARTMENT
+  HOSTEL
+  OTHER
+}
+
+// enum PolicyType {
+//   CANCELLATION
+//   CHECK_IN_OUT
+//   SMOKING
+//   OTHER
+// }
+
+// model Policy {
+//   id        String   @id @default(cuid())
+//   hotelId   String   @map("hotel_id")
+//   hotel     Hotel    @relation(fields: [hotelId], references: [id], onDelete: Cascade)
+//   type      PolicyType
+//   iconUrl   String?  @map("icon_url") // optional icon URL for the policy
+//   content   String   // detailed policy content
+
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+
+//   @@index([hotelId])
+//   @@map("policies")
+// }
+
+enum FacilityType {
+  HOTEL_SERVICES
+  FOOD_AND_DRINK
+  PUBLIC
+  IN_ROOM
+  ACCESSIBILITY
+  OTHER
 }
 
 model Facility {
   id        String   @id @default(cuid())
   name      String   @unique
   iconUrl   String?  @map("icon_url") // optional icon URL for the facility
+  type      FacilityType
 
   hotels    Hotel[]
   rooms     Room[]
@@ -49,15 +96,16 @@ model Room {
   id               String   @id @default(cuid())
   hotelId          String   @map("hotel_id")
   hotel            Hotel    @relation(fields: [hotelId], references: [id], onDelete: Cascade)
+
+  name             String   @unique
   type             String
   adultCapacity    Int      @map("adult_capacity")
   childrenCapacity Int      @map("children_capacity")
   price            Decimal
-  name             String   // e.g., "Deluxe Room", "Standard Room", etc.
-  areaM2           Float    // in square meters
-  // TODO: bed type
+  areaM2           Float
+  bedType          BedType  @map("bed_type")
+  imageUrls        String[]
 
-  imageUrls        String[] // list of image URLs for the room
   bookingRooms     BookingRoom[]
   facilities       Facility[]
 
@@ -66,4 +114,13 @@ model Room {
 
   @@index([hotelId])
   @@map("rooms")
+}
+
+enum BedType {
+  SINGLE
+  DOUBLE
+  QUEEN
+  KING
+  TWIN
+  OTHER
 }

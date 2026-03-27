@@ -1,49 +1,15 @@
-import { RatingStars } from "@/components/hotel-card";
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
 import { Skeleton } from "@/components/ui/skeleton";
 
 import Image from "next/image";
 
-import { fake_hotels } from "@/old/mock_data";
-
 import { ChevronRight, MapPin } from 'lucide-react';
 import { tvlk_favicon } from "@/public/logos";
-import * as icons from "@/public/icons";
 
-import ImageCarouselDialog from "@/components/image-carousel-dialog";
+import { ImagePresentation } from "@/components/image-presentation";
+import OverviewImagePresentation from "./overview-image-presentation";
 
 import { fetchHotel } from "@/lib/actions/hotel";
-
-const mock_amenities = [
-  {
-    name: "Máy lạnh",
-    icon: icons.air_conditioner,
-  },
-  {
-    name: "Chỗ đậu xe",
-    icon: icons.parking,
-  },
-  {
-    name: "Nhà hàng",
-    icon: icons.knife_fork,
-  },
-  {
-    name: "Thang máy",
-    icon: icons.elevator,
-  },
-  {
-    name: "Hồ bơi",
-    icon: icons.pool,
-  },
-  {
-    name: "Wifi",
-    icon: icons.wifi,
-  },
-  {
-    name: "Tiếp tân 24h",
-    icon: icons.receptionist_24h,
-  },
-];
 
 const mock_nearby_locations = [
   {
@@ -69,182 +35,168 @@ export default async function OverviewSection({
 }: {
   hotel: Awaited<ReturnType<typeof fetchHotel>>
 }) {
-  if (!hotel) {
-    return <div>Hotel not found</div>;
-  }
-  const country = hotel.ward.district.province.country;
+
+  if (!hotel) return null;
+
   const province = hotel.ward.district.province;
   const district = hotel.ward.district;
   const ward = hotel.ward;
+
+  const facilities = hotel.facilities;
+  const rooms = hotel.rooms;
   return (
-    <section id="overview" className="w-full flex flex-col scroll-mt-24 md:scroll-mt-30">
-      <Breadcrumb className="py-1 mb-3">
-        <BreadcrumbList className="text-xs font-semibold">
-          <BreadcrumbItem>
-            <BreadcrumbLink href="#">{country.name}</BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbLink href="#">{province.name}</BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbLink href="#">{district.name}</BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbLink href="#">{ward.name}</BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbLink href="#">{hotel.name}</BreadcrumbLink>
-          </BreadcrumbItem>
-        </BreadcrumbList>
-      </Breadcrumb>
-      
-      <ImageCarouselDialog imageSources={fake_hotels[0].imageUrls} />
-      {/** Change this to another layout on non-large screen */}
-      <figure className="rounded-t-[10px] overflow-hidden grid grid-cols-1 lg:grid-cols-3 lg:grid-rows-2 gap-2 mx-3 h-auto lg:h-83">
-        <Image
-          src={fake_hotels[0].imageUrls[0]}
-          alt=""
-          width={480}
-          height={332}
-          className="object-cover w-full h-full lg:row-span-2 lg:col-span-1"
-        />
-        <div className="grid grid-cols-2 sm:grid-cols-3 grid-rows-2 gap-2 h-full w-full lg:col-span-2 lg:row-span-2">
-          {
-            fake_hotels[0].imageUrls.concat(fake_hotels[0].imageUrls).slice(1, 7).map((src, index) => (
-              <Image
-                key={index}
-                src={src}
-                alt=""
-                width={400}
-                height={300}
-                className="w-full h-full object-cover"
-              />
-            ))
-          }
-        </div>
-      </figure>
+    <ImagePresentation
+      imageSources={hotel.imageUrls}
+      title={hotel.name}
+      description={hotel.description}
+    >
+      <section id="overview" className="w-full flex flex-col scroll-mt-24 md:scroll-mt-30">
+        <Breadcrumb className="py-1 mb-3">
+          {/** TODO: real link to regions */}
+          <BreadcrumbList className="text-xs font-semibold">
+            <BreadcrumbItem>
+              <BreadcrumbLink href="#">{province.name}</BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbLink href="#">{district.name}</BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbLink href="#">{ward.name}</BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbLink href="#">{hotel.name}</BreadcrumbLink>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
 
-      <div className="rounded-4xl px-4 py-5 flex flex-col gap-y-5 shadow-xl">
-        <div className="flex space-x-10">
-          <div className="flex-1 gap-y-2">
-            <h1 className="text-[1.5rem] font-bold">{hotel.name}</h1>
-            <div className="flex gap-x-2 items-center">
-              <span className="px-2 py-1 rounded-full text-xs bg-blue-50 text-primary">Khach san</span>
-              <RatingStars rating={5} />
+        <OverviewImagePresentation imageUrls={hotel.imageUrls} />
+
+        <div className="rounded-4xl px-4 py-5 flex flex-col gap-y-5 shadow-xl">
+          <div className="flex space-x-10">
+            <div className="flex-1 gap-y-2">
+              <h1 className="text-[1.5rem] font-bold">{hotel.name}</h1>
+              <div className="flex gap-x-2 items-center">
+                <span className="px-2 py-1 rounded-full text-xs bg-blue-50 text-primary lowercase first-letter:capitalize">{hotel.type}</span>
+              </div>
+            </div>
+
+            <div className="flex gap-x-2 py-2">
+              <div className="flex flex-col text-end">
+                <span className="text-xs">Gia/phong/dem</span>
+                <span className="text-[1.25rem] font-bold text-orange-600">{Math.min(...rooms.map(room => room.price.toNumber()))} VND</span>
+              </div>
+              <a href="#available-rooms" className="font-bold text-white flex items-center bg-orange-600 px-3 py-2 rounded-[0.375rem]">Chon phong</a>
             </div>
           </div>
 
-          <div className="flex gap-x-2 py-2">
-            <div className="flex flex-col text-end">
-              <span className="text-xs">Gia/phong/dem</span>
-              <span className="text-[1.25rem] font-bold text-orange-600">123456 VND</span>
-            </div>
-            <a href="#available-rooms" className="font-bold text-white flex items-center bg-orange-600 px-3 py-2 rounded-[0.375rem]">Chon phong</a>
-          </div>
-        </div>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
+            <div className="bg-white border border-gray-200 rounded-[0.625rem] p-3 flex-1 flex-col space-y-3">
+              <div className="flex gap-x-2">
+                <div className="flex items-center p-1">
+                  <Image src={tvlk_favicon} alt="" className="mr-2" />
+                  <div className="flex items-end text-primary">
+                    <div className="text-[1.625rem] font-bold">{hotel.reviewPoints}</div>
+                    <div className="text-sm font-semibold"> /10 </div>
+                  </div>
+                </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
-          <div className="bg-white border border-gray-200 rounded-[0.625rem] p-3 flex-1 flex-col space-y-3">
-            <div className="flex gap-x-2">
-              <div className="flex items-center p-1">
-                <Image src={tvlk_favicon} alt="" className="mr-2" />
-                <div className="flex items-end text-primary">
-                  <div className="text-[1.625rem] font-bold">{9.5}</div>
-                  <div className="text-sm font-semibold"> /10 </div>
+                <div className="flex flex-col font-bold">
+                  <span>Rất tốt</span>
+                  <a href="#review" className="text-sm text-primary flex gap-x-1">
+                    {hotel.numberOfReviews} đánh giá
+                    <ChevronRight className="size-5" />
+                  </a>
                 </div>
               </div>
-
-              <div className="flex flex-col font-bold">
-                <span>Rất tốt</span>
-                <a href="#review" className="text-sm text-primary flex gap-x-1">
-                  {10} đánh giá
-                  <ChevronRight className="size-5" />
-                </a>
-              </div>
-            </div>
-            <h2 className="font-semibold">Khách nói gì về kỳ nghỉ của họ</h2>
-            { /*
+              <h2 className="font-semibold">Khách nói gì về kỳ nghỉ của họ</h2>
+              { /*
             review_tags.map((tag, index) => (
               <Tag key={index} color="green" className="mr-1">
                 {tag}
               </Tag>
             ))
             */
-            }
-            <div className="flex flex-col overflow-y-auto max-h-32 space-y-2">
-              {Array.from({ length: 5 }).map((_, index) => (
-                <div key={index} className="border border-gray-200 rounded-[0.625rem] p-2 flex flex-col space-y-2">
-                  <div className="flex justify-between items-center gap-y-2 font-bold">
-                    <span className="text-sm">bla bla {index}</span>
-                    <div className="bg-blue-50 px-1 py-0.5 rounded-[0.375rem] inline-flex gap-x-0.5 items-center text-primary text-xs">
-                      <Image src={tvlk_favicon} alt="" className="size-3" />
-                      10 / 10
+              }
+              <div className="flex flex-col overflow-y-auto max-h-32 space-y-2">
+                {Array.from({ length: 5 }).map((_, index) => (
+                  <div key={index} className="border border-gray-200 rounded-[0.625rem] p-2 flex flex-col space-y-2">
+                    <div className="flex justify-between items-center gap-y-2 font-bold">
+                      <span className="text-sm">bla bla {index}</span>
+                      <div className="bg-blue-50 px-1 py-0.5 rounded-[0.375rem] inline-flex gap-x-0.5 items-center text-primary text-xs">
+                        <Image src={tvlk_favicon} alt="" className="size-3" />
+                        10 / 10
+                      </div>
+                    </div>
+                    <p className="text-sm line-clamp-3 overflow-hidden overflow-ellipsis">this hotels good this hotels goodthis hotels goodthis hotels goodthis hotels goodthis hotels goodthis hotels goodthis hotels goodthis hotels goodthis hotels goodthis hotels goodthis hotels goodthis hotels goodthis hotels goodthis hotels goodthis hotels good{index}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="bg-white border border-gray-300 rounded-lg p-4 flex-1" >
+              <div className="flex items-center justify-between mb-2 font-bold" >
+                <h2>Trong khu vực</h2>
+                <a href="#location" className="text-sm text-primary flex gap-x-1">
+                  Xem bản đồ
+                  <ChevronRight className="size-5" />
+                </a>
+              </div>
+              <div className="flex flex-col gap-y-2 text-sm">
+                {mock_nearby_locations.map((loc, index) => (
+                  <div key={index} className="flex items-start gap-x-2">
+                    <MapPin className="size-4 text-gray-500 mt-1" />
+                    <div>
+                      <div className="flex items-center gap-x-2">
+                        <div className="font-semibold">{loc.name}</div>
+                        <div className="text-gray-500">{loc.distance}</div>
+                      </div>
+                      <div className="text-gray-500">{loc.address}</div>
                     </div>
                   </div>
-                  <p className="text-sm line-clamp-3 overflow-hidden overflow-ellipsis">this hotels good this hotels goodthis hotels goodthis hotels goodthis hotels goodthis hotels goodthis hotels goodthis hotels goodthis hotels goodthis hotels goodthis hotels goodthis hotels goodthis hotels goodthis hotels goodthis hotels goodthis hotels good{index}</p>
-                </div>
-              ))}
+                ))}
+              </div>
+            </div>
+
+            <div className="bg-white border border-gray-300 rounded-lg p-4 flex-1">
+              <div className="flex items-center justify-between mb-2 font-bold">
+                {/* TODO(huutp): Add real amenities list */}
+                <h2>Tiện ích chính</h2>
+                <a href="#facilities" className="text-sm text-primary flex gap-x-1">
+                  Xem thêm
+                  <ChevronRight className="size-5" />
+                </a>
+              </div>
+              <div className="grid grid-cols-2 gap-2 text-sm">
+                {facilities.map((facility, index) => (
+                  <div key={index} className="flex items-center gap-x-2">
+                    <Image
+                      src={facility.iconUrl || ""}
+                      alt=""
+                      className="size-4"
+                      width={16}
+                      height={16}
+                    />
+                    {facility.name}
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
 
-          <div className="bg-white border border-gray-300 rounded-lg p-4 flex-1" >
-            <div className="flex items-center justify-between mb-2 font-bold" >
-              <h2>Trong khu vực</h2>
-              <a href="#location" className="text-sm text-primary flex gap-x-1">
-                Xem bản đồ
-                <ChevronRight className="size-5" />
-              </a>
-            </div>
-            <div className="flex flex-col gap-y-2 text-sm">
-              {mock_nearby_locations.map((loc, index) => (
-                <div key={index} className="flex items-start gap-x-2">
-                  <MapPin className="size-4 text-gray-500 mt-1" />
-                  <div>
-                    <div className="flex items-center gap-x-2">
-                      <div className="font-semibold">{loc.name}</div>
-                      <div className="text-gray-500">{loc.distance}</div>
-                    </div>
-                    <div className="text-gray-500">{loc.address}</div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
 
-          <div className="bg-white border border-gray-300 rounded-lg p-4 flex-1">
-            <div className="flex items-center justify-between mb-2 font-bold">
-              {/* TODO(huutp): Add real amenities list */}
-              <h2>Tiện ích chính</h2>
-              <a href="#facilities" className="text-sm text-primary flex gap-x-1">
-                Xem thêm
-                <ChevronRight className="size-5" />
-              </a>
-            </div>
-            <div className="grid grid-cols-2 gap-2 text-sm">
-              {mock_amenities.map((a, index) => (
-                <div key={index} className="flex items-center gap-x-2">
-                  <Image src={a.icon} alt="" className="size-4" />
-                  {a.name}
-                </div>
-              ))}
+          <div className="bg-white border border-gray-200 rounded-[0.625rem] p-3 flex-1 flex-col space-y-3">
+            <p className="text-sm max-h-20 overflow-hidden overflow-ellipsis">{hotel.description}</p>
+            <div className="flex space-x-1 text-sm font-bold text-primary">
+              Xem thêm
+              <ChevronRight className="size-5" />
             </div>
           </div>
         </div>
-
-
-        <div className="bg-white border border-gray-200 rounded-[0.625rem] p-3 flex-1 flex-col space-y-3">
-          <p className="text-sm max-h-20 overflow-hidden overflow-ellipsis">Diamond Beach Hotel toạ lạc tại khu vực / thành phố An Hải Bắc. Quầy tiếp tân 24 giờ luôn sẵn sàng phục vụ quý khách từ thủ tục nhận phòng đến trả phòng hay bất kỳ yêu cầu nào. Nếu cần giúp đỡ xin hãy liên hệ đội ngũ tiếp tân, chúng tôi luôn sẵn sàng hỗ trợ quý khách. Sóng WiFi phủ khắp các khu vực chung của khách sạn cho phép quý khách luôn kết nối với gia đình và bè bạn.</p>
-          <div className="flex space-x-1 text-sm font-bold text-primary">
-            Xem thêm
-            <ChevronRight className="size-5" />
-          </div>
-        </div>
-      </div>
-    </section>
+      </section>
+    </ImagePresentation>
   )
 }
 

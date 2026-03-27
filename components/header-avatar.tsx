@@ -1,4 +1,3 @@
-// TODO: this component be server component will be better
 "use client";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -24,36 +23,38 @@ import {
   DialogTrigger
 } from '@/components/ui/dialog';
 
-import { useSession, signOut } from "next-auth/react";
+import { signOut } from "next-auth/react";
 import { PATHS } from "@/lib/constants";
 import Link from "next/link";
 import { ChevronRightIcon } from "lucide-react";
 
-export default function HeaderAvatar() {
-  // FIXME: useSession get called every time when component re-rendered, even when user switch tabs
-  const { data: session } = useSession();
-
-  if (!session || !session.user) {
-    return null;
-  }
+export default function HeaderAvatar({
+  userName,
+  userEmail,
+  userImageSrc
+}: {
+  userName: string;
+  userEmail: string;
+  userImageSrc: string;
+}) {
 
   return (
     <Dialog>
-      <DropdownMenu>
+      <DropdownMenu modal={false}>
         <DropdownMenuTrigger>
           <Avatar>
-            <AvatarImage src={undefined /** undefined for now */} alt={session.user.name || "User Avatar"} />
-            <AvatarFallback>{session.user.name ? session.user.name.toUpperCase() : "U"}</AvatarFallback>
+            <AvatarImage src={userImageSrc} alt={userName} />
+            <AvatarFallback>{userName.toUpperCase()}</AvatarFallback>
           </Avatar>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-50">
           <DropdownMenuGroup>
             <DropdownMenuLabel className="flex flex-col gap-1">
-              <p className="font-semibold"> Xin chào, {session.user.name} </p>
-              <p className="font-normal text-muted-foreground">{session.user.email}</p>
+              <p className="font-semibold"> Xin chào, {userName} </p>
+              <p className="font-normal text-muted-foreground">{userEmail}</p>
               <Avatar className="size-16 mt-2 mx-auto">
-                <AvatarImage src={undefined /** undefined for now */} alt={session.user.name || "User Avatar"} />
-                <AvatarFallback>{session.user.name ? session.user.name.toUpperCase() : "U"}</AvatarFallback>
+                <AvatarImage src={userImageSrc} alt={userName} />
+                <AvatarFallback>{userName.toUpperCase()}</AvatarFallback>
               </Avatar>
             </DropdownMenuLabel>
           <DropdownMenuItem

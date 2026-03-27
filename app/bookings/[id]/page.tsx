@@ -20,8 +20,12 @@ import imageGirlJump from "@/public/images/booking-page-remind-user-to-signin.we
 import { InformationFormProvider } from "./information-form-context";
 import { PATHS } from "@/lib/constants";
 
-export default async function BookingPage({ params }: { params: { id: string } }) {
+export default async function BookingPage({ params }: { params: Promise<{ id: string }> }) {
   const session = await auth();
+  const { id } = await params;
+  console.log("booking id: ", id);
+
+  // const booking = await fetchBooking(id);
 
   // TODO: callbackUrl
   return (
@@ -31,9 +35,9 @@ export default async function BookingPage({ params }: { params: { id: string } }
           <Image src={imageGirlJump} width={85} height={74} alt="" className="absolute left-4 -top-7 w-[85px] object-contain" />
           Đăng nhập hoặc đăng ký để có giá rẻ hơn và nhiều ưu đãi hơn!
           <div className="flex whitespace-pre">
-            <Link href={PATHS.signIn} className="font-semibold text-primary">{"Đăng nhập "}</Link>
-            <span className="text-gray-500">/</span>
-            <Link href={PATHS.signUp} className="font-semibold text-primary">{" Đăng ký"}</Link>
+            <Link href={PATHS.signIn} className="font-semibold text-primary">Đăng nhập</Link>
+            <span className="text-gray-500">{" / "}</span>
+            <Link href={PATHS.signUp} className="font-semibold text-primary">Đăng ký</Link>
           </div>
         </div>
       )}

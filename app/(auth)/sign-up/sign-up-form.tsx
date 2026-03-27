@@ -14,6 +14,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Loader2Icon } from "lucide-react";
+import PasswordInput from "@/components/password-input";
 
 
 export default function SignUpForm() {
@@ -57,7 +58,7 @@ export default function SignUpForm() {
             <FormItem>
               <FormLabel>Email</FormLabel>
               <FormControl>
-                <Input {...field} disabled={isPending} />
+                <Input {...field} disabled={isPending} autoFocus className="md:text-base"/>
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -70,7 +71,7 @@ export default function SignUpForm() {
             <FormItem>
               <FormLabel>Name</FormLabel>
               <FormControl>
-                <Input {...field} disabled={isPending} />
+                <Input {...field} disabled={isPending} className="md:text-base"/>
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -83,13 +84,13 @@ export default function SignUpForm() {
             <FormItem>
               <FormLabel>Password</FormLabel>
               <FormControl>
-                <Input type="password" {...field} disabled={isPending} />
+                <PasswordInput {...field} disabled={isPending} className="md:text-base"/>
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
-        <Button type="submit" className="mt-2">
+        <Button type="submit" className="mt-2 md:text-base" disabled={isPending}>
           {isPending ? (
             <div className="flex items-center gap-2">
               Signing up...

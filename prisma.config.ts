@@ -4,10 +4,17 @@ import "dotenv/config";
 import { defineConfig } from "prisma/config";
 
 export default defineConfig({
-  schema: "prisma/schema.prisma", // this extension is really shit
-  // schema: "prisma",
+  // The prisma extension for VSCode is really shit.
+  // We need recursive path to generate types, but then the extension goes crazy
+  // and eats the whole computer resources.
+  // But if we specify the direct path to the main schema, it can't generate type. WTF?
+  // So I comment this out for a little work-around convinience.
+
+  schema: "prisma/schema.prisma", // Uncomment when need to use Prisma extension for syntax highlighting
+  // schema: "prisma", // Uncomment when need to generate types
   migrations: {
     path: "prisma/migrations",
+    seed: "tsx prisma/seed"
   },
   datasource: {
     url: process.env["DATABASE_URL"],

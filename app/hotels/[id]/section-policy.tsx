@@ -16,7 +16,7 @@ const generalInformation = {
 const policies = [
   {
     icon: Clock,
-    title: "Check-in/Check-out time",
+    title: "Check-in / Check-out time",
     description: "bla bla bla",
   },
   {

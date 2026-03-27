@@ -19,10 +19,10 @@ export default function CouponSection () {
             >
               {Object.keys(coupons).map((coupon_type) => (
                 <TabsTrigger value={coupon_type} key={coupon_type}
-              className={
-                // Check this on dark mode
-                "h-9 text-sm font-bold px-3 py-2 rounded-full data-[state=active]:bg-primary data-[state=active]:text-primary-foreground dark:data-[state=active]:text-primary-foreground dark:data-[state=active]:border-input dark:data-[state=active]:bg-input/30 bg-accent text-foreground dark:text-muted-foreground data-[state=active]:shadow-sm"
-              }
+                  className={
+                    // Check this on dark mode
+                    "h-9 text-sm font-bold px-3 py-2 rounded-full data-[state=active]:bg-primary data-[state=active]:text-primary-foreground dark:data-[state=active]:text-primary-foreground dark:data-[state=active]:border-input dark:data-[state=active]:bg-input/30 bg-accent text-foreground dark:text-muted-foreground data-[state=active]:shadow-sm"
+                  }
                 >
                   {coupon_type}
                 </TabsTrigger>

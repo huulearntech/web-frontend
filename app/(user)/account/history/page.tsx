@@ -1,12 +1,9 @@
-import { auth } from "@/auth";
 import BookingsTable from "./bookings-table";
-import { fetchTmpBookings } from "@/lib/actions/user-history";
+import { fetchRecentBookings } from "@/lib/actions/user-history";
 
 
 export default async function AccountHistoryPage() {
-  const session = await auth();
-  if (!session || !session.user) return null;
-  const bookings = await fetchTmpBookings(session.user.id!);
+  const bookings = await fetchRecentBookings();
 
   return (
     <div className="max-w-6xl mx-auto py-10 px-4">

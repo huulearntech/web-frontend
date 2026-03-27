@@ -1,30 +1,27 @@
-import prisma from "@/lib/prisma";
-import type { BookingSerialized } from "@/lib/actions/hotel-manager/bookings";
-export type TmpBooking = Omit<BookingSerialized, "user"> & { hotelName: string };
+"use server";
 
-export const fetchTmpBookings = async (userId: string): Promise<TmpBooking[]> => {
-  "use server";
-  const bookingsRaw = await prisma.booking.findMany({
-    where: { userId },
+import prisma from "@/lib/prisma";
+import { auth } from "@/auth";
+
+export async function fetchRecentBookings() {
+  const session = await auth();
+  if (session?.user.role !== "USER") {
+    // TODO: Handle
+    return [];
+  }
+
+  return prisma.booking.findMany({
+    where: { userId: session.user.id },
     orderBy: { createdAt: "desc" },
     include: {
       hotel: {
         select: { name: true }
       }
     }
-  });
-  const bookings: TmpBooking[] = bookingsRaw.map(b => ({
-    id: b.id,
-    userId: b.userId,
-    hotelId: b.hotelId,
-    hotelName: b.hotel.name,
-    startDate: b.startDate,
-    endDate: b.startDate,
-    status: b.status,
-    totalPrice: b.totalPrice.toString(),
-    createdAt: b.createdAt,
-    updatedAt: b.updatedAt,
-    notes: b.notes,
-  }));
-  return bookings;
+  }).then(bookings => bookings.map(booking => ({
+    ...booking,
+    totalPrice: booking.totalPrice.toString(),
+  })));
 }
+
+export type RecentBookingType = Awaited<ReturnType<typeof fetchRecentBookings>>[number];

@@ -1,40 +1,47 @@
 import Image from "next/image";
 
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { UserRound, ExternalLink, RulerDimensionLineIcon, TicketPercentIcon } from "lucide-react";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow
+} from "@/components/ui/table";
 
-import type { Hotel, Room, Facility } from "@/lib/generated/prisma/client";
+import {
+  UserRound,
+  ExternalLink,
+  RulerDimensionLineIcon,
+  PercentIcon,
+  BedDoubleIcon
+} from "lucide-react";
+
 import { PATHS } from "@/lib/constants";
-import prisma from "@/lib/prisma";
+import { fetchHotel } from "@/lib/actions/hotel";
 
-type RoomWithFacilities = Room & {
-  facilities: Facility[];
-}
+type RoomWithFacilities = NonNullable<Awaited<ReturnType<typeof fetchHotel>>>["rooms"][number];
 
-export default async function AvailableRoomsSection({ hotel }: { hotel: Hotel }) {
-  const rooms = await prisma.room.findMany({
-    where: { hotelId: hotel.id },
-    include: {
-      facilities: true
-    }
-  });
+export default async function AvailableRoomsSection({
+  hotel
+}: {
+  hotel: Awaited<ReturnType<typeof fetchHotel>>
+}) {
+  if (!hotel) return null;
 
+  const rooms = hotel.rooms;
   return (
     <section id="available-rooms" className="w-full flex flex-col scroll-mt-24 md:scroll-mt-30">
       <div className="rounded-4xl px-4 py-5 flex flex-col gap-y-5 shadow-xl">
         <h2 className="font-bold text-[1.25rem]">Những phòng còn trống tại {hotel.name}</h2>
-        {
-          rooms.length === 0 && (
-            <div className="w-full h-48 flex items-center justify-center bg-muted rounded-lg">
-              <span className="text-sm text-muted-foreground">Không có phòng nào còn trống cho khoảng thời gian này</span>
-            </div>
-          )
-        }
-        {
-          rooms.length > 0  && rooms.map((room) => (
-            <RoomCard key={room.id} room={room} breakfastAvailability={hotel.breakfastAvailability} />
-          ))
-        }
+        {rooms.length === 0 && (
+          <div className="w-full h-48 flex items-center justify-center bg-muted rounded-lg">
+            <span className="text-sm text-muted-foreground">Không có phòng nào còn trống cho khoảng thời gian này</span>
+          </div>
+        )}
+        {rooms.length > 0 && rooms.map((room) => (
+          <RoomCard key={room.id} room={room} breakfastAvailability={hotel.breakfastAvailability} />
+        ))}
       </div>
     </section>
   )
@@ -53,16 +60,21 @@ function RoomCard({ room, breakfastAvailability }: { room: RoomWithFacilities, b
       <div className="flex w-full space-x-4">
         <div className="flex flex-col w-full max-w-74 space-y-2">
           <Image
-            src={room.imageUrls[0]}
+            src={
+              Array.isArray(room.imageUrls) && room.imageUrls.length > 0
+                ? room.imageUrls[0]
+                : "/images/default-room.jpg"
+            }
             alt={room.type}
             width={296}
             height={222}
             className="w-full h-auto rounded-3xl object-cover"
+            loading="lazy"
           />
           <div className="flex flex-col space-y-3 p-2">
             <div className="flex items-center space-x-2">
               <RulerDimensionLineIcon className="size-4" />
-              <span className="text-sm">100 m²</span>
+              <span className="text-sm">{room.areaM2} m²</span>
             </div>
 
             <ul className="grid grid-cols-2 gap-2">
@@ -107,8 +119,11 @@ function RoomCard({ room, breakfastAvailability }: { room: RoomWithFacilities, b
                 <TableCell>
                   <p>{room.type}</p>
                   <p>{breakfastAvailability ? "Bao gồm bữa sáng" : "Không gồm bữa sáng"}</p>
-                  <p>{/** room.beds */}</p>
-                  <p>{/** room.policy */}</p>
+                  <div className="flex items-center space-x-2">
+                    <BedDoubleIcon className="size-4" />
+                    <span className="lowercase first-letter:capitalize">{room.bedType}</span>
+                  </div>
+                  <p>{/** room.policy: smoking,... */}</p>
                 </TableCell>
                 <TableCell>
                   <div className="flex flex-col justify-center items-center">
@@ -124,9 +139,9 @@ function RoomCard({ room, breakfastAvailability }: { room: RoomWithFacilities, b
                 </TableCell>
                 <TableCell>
                   <div className="flex flex-col w-full gap-y-1 items-end justify-center">
-                    <div className="max-w-fit flex gap-1 rounded-full p-1 bg-primary">
-                      <TicketPercentIcon className="size-4" aria-hidden />
-                      <span className="overflow-hidden overflow-ellipsis whitespace-nowrap text-xs text-primary-foreground mr-1">Sale cuoi nam</span>
+                    <div className="max-w-fit flex gap-1 rounded-full p-1 bg-primary text-primary-foreground">
+                      <PercentIcon className="size-4" aria-hidden />
+                      <span className="overflow-hidden overflow-ellipsis whitespace-nowrap text-xs mr-1">Sale cuoi nam</span>
                     </div>
                     <div className="text-xs line-through">123.456 VND</div>
                     <div className="font-bold text-base text-orange-600">{room.price.toString()} VND</div>
@@ -167,9 +182,9 @@ function RoomCard({ room, breakfastAvailability }: { room: RoomWithFacilities, b
                 </TableCell>
                 <TableCell>
                   <div className="flex flex-col w-full gap-y-1 items-end justify-center">
-                    <div className="max-w-fit flex gap-1 rounded-full p-1 bg-primary">
-                      <TicketPercentIcon className="size-4" aria-hidden />
-                      <span className="overflow-hidden overflow-ellipsis whitespace-nowrap text-xs text-primary-foreground mr-1">Sale cuoi nam</span>
+                    <div className="max-w-fit flex gap-1 rounded-full p-1 bg-primary text-primary-foreground">
+                      <PercentIcon className="size-4" aria-hidden />
+                      <span className="overflow-hidden overflow-ellipsis whitespace-nowrap text-xs mr-1">Sale cuoi nam</span>
                     </div>
                     <div className="text-xs line-through">123.456 VND</div>
                     <div className="font-bold text-base text-orange-600">{room.price.toString()} VND</div>

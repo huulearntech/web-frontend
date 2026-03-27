@@ -62,6 +62,7 @@ function AutocompleteInput({
   showTrigger?: boolean
   showClear?: boolean
 }) {
+  console.log("bla");
   return (
     <InputGroup className={cn("w-auto", className)}>
       <AutocompletePrimitive.Input

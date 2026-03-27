@@ -3,7 +3,7 @@ import L from "leaflet";
 import { Button } from "@/components/ui/button";
 import { renderToString } from "react-dom/server";
 
-type Hotel = { id: string; name: string; lat: number; lng: number; price?: number; imageUrl?: string };
+import { type SearchHotelsByBBoxResult } from "../../../lib/actions/search/map";
 
 function createPriceIcon(price?: number) {
   const PriceIcon = () => {
@@ -23,9 +23,9 @@ function createPriceIcon(price?: number) {
 }
 
 
-export default function MyMarker({ hotel } : { hotel: Hotel }) {
+export default function MyMarker({ hotel } : { hotel: SearchHotelsByBBoxResult }) {
   return (
-    <Marker position={[hotel.lat, hotel.lng]} icon={createPriceIcon(hotel.price)}>
+    <Marker position={[hotel.latitude, hotel.longitude]} icon={createPriceIcon(hotel.price)}>
       <Popup
         closeButton={false}
       >
@@ -38,16 +38,26 @@ export default function MyMarker({ hotel } : { hotel: Hotel }) {
               <div className="w-full h-full flex items-center justify-center text-sm text-muted-foreground">No image</div>
             )}
           </div>
-          <div>
-            <div className="text-sm font-semibold">{hotel.name}</div>
-            <div className="text-xs text-gray-600">{hotel.price}</div>
+          <div className="flex flex-col gap-y-1">
+            <h3 className="text-base font-bold">{hotel.name}</h3>
+            <div className="inline-flex items-center gap-x-1 text-xs">
+              <div className="font-black text-primary">{hotel.reviewPoints}/10</div>
+              <div className="font-black text-primary">{"Rat tot"
+                // TODO: calculate rating text based on review points, e.g. "Excellent", "Good", "Average", "Poor"
+              }</div>
+              <div className="font-medium text-gray-500">({hotel.numberOfReviews} danh gia)</div>
+            </div>
+
+            <div className="text-base font-bold text-orange-500">{hotel.price + " VND"
+              //TODO: format price with currency and thousand separators, e.g. "1,234,567 VND"
+            }</div>
             <div className="mt-2">
-              <Button asChild size="sm" variant="outline" className="w-full">
+              <Button asChild className="w-full bg-orange-500 hover:bg-orange-600 focus:ring-orange-300">
                 <a
                   href={`/hotels/${hotel.id}`}
                   target="_blank"
                   rel="noreferrer"
-                  className="text-xs text-primary! hover:underline"
+                  className="text-sm text-primary-foreground! font-bold!"
                 >
                   View
                 </a>

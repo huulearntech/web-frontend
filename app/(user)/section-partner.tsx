@@ -31,10 +31,10 @@ export default function PartnersSection() {
         >
           <CarouselContent>
             {Object.values(hotel_partner_logos).map((logo, index) => (
-              <CarouselItem key={index} className="basis-1/8 w-fit flex justify-center items-center">
+              <CarouselItem key={index} className="basis-1/8 h-10 w-full">
                 <Image
                   src={logo} alt=""
-                  className="h-10 w-auto object-contain"
+                  className="object-contain m-auto max-w-full max-h-full"
                 />
               </CarouselItem>
             ))}

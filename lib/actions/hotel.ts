@@ -13,17 +13,26 @@ export const fetchHotel = async (hotelId: string) => {
             select: {
               name: true,
               province: {
-                select: {
-                  name: true,
-                  country: { select: { name: true } },
-                },
+                select: { name: true, },
               },
             },
           },
         },
+      },
+      facilities: {
+        select: {
+          name: true,
+          iconUrl: true,
+        },
+      },
+      rooms: {
+        include: {
+          facilities: true,
+        }
       },
     },
   });
   return hotel;
 }
 
+export type FetchHotelResult = Awaited<ReturnType<typeof fetchHotel>>;

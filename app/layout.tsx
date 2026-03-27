@@ -5,6 +5,8 @@ import "./globals.css";
 import { SessionProvider } from 'next-auth/react';
 import { cn } from "@/lib/utils";
 import { Toaster } from "@/components/ui/sonner";
+import { TanstackQueryProvider } from "./tanstack-query-provider";
+import { TooltipProvider } from "@/components/ui/tooltip";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -35,15 +37,13 @@ export default function RootLayout({
         />
       </head>
 
-      <body
-        className={cn(
-          `${geistSans.variable} ${geistMono.variable} antialiased`,
-          // "min-w-md"
-          // "dark"
-        )}
-      >
+      <body className={cn(geistSans.variable, geistMono.variable, "antialiased")}>
         <SessionProvider>
-          {children}
+          <TanstackQueryProvider>
+            <TooltipProvider>
+              {children}
+            </TooltipProvider>
+          </TanstackQueryProvider>
         </SessionProvider>
         <Toaster />
       </body>

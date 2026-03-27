@@ -1,33 +1,26 @@
 "use client";
 
 import { createContext, useContext, useState } from "react";
+import { Sheet } from "@/components/ui/sheet";
 
-type FilterSheetContextType = {
-  open: boolean;
-  setOpen: (open: boolean) => void;
-}
-
-export const FilterSheetContext = createContext<FilterSheetContextType | null>(null);
+const FilterSheetSetOpenContext = createContext<React.Dispatch<React.SetStateAction<boolean>> | null>(null);
 
 export default function FilterSheetProvider({ children }: { children: React.ReactNode }) {
   const [open, setOpen] = useState(false);
 
   return (
-    <FilterSheetContext.Provider
-      value={{
-        open: open,
-        setOpen: setOpen,
-      }}
-    >
-      {children}
-    </FilterSheetContext.Provider>
+    <Sheet open={open} onOpenChange={setOpen}>
+      <FilterSheetSetOpenContext.Provider value={setOpen}>
+        {children}
+      </FilterSheetSetOpenContext.Provider>
+    </Sheet>
   );
 }
 
-export function useFilterSheetContext() {
-  const context = useContext(FilterSheetContext);
-  if (context === null) {
-    throw new Error("useFilterSheetContext must be used within a FilterSheetProvider");
+export function useFilterSheetSetOpen() {
+  const setOpen = useContext(FilterSheetSetOpenContext);
+  if (setOpen === null) {
+    throw new Error("useFilterSheetSetOpen must be used within a FilterSheetProvider");
   }
-  return context;
+  return setOpen;
 }

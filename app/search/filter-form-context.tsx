@@ -1,3 +1,5 @@
+// TODO: Clean up.
+"use client";
 import { useForm, FormProvider, useFormContext } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -23,17 +25,19 @@ export const filterZodSchema = z.object({
 });
 
 export type FilterFormType = z.infer<typeof filterZodSchema>;
+// TODO: Clean up
+export const minPrice = 100_000;
+export const maxPrice = 2_000_000;
 
-export function FilterFormProvider({
-  initialValues,
-  children,
-}: {
-  initialValues: FilterFormType;
-  children: React.ReactNode;
-}) {
+export function FilterFormProvider({ children }: { children: React.ReactNode }) {
   const form = useForm<z.infer<typeof filterZodSchema>>({
     resolver: zodResolver(filterZodSchema),
-    defaultValues: initialValues,
+    defaultValues: {
+      priceRange: [minPrice, maxPrice],
+      ratings: [],
+      amenities: [],
+      propertyTypes: [],
+    },
     mode: "onChange",
   });
 

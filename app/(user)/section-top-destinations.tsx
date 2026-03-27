@@ -17,7 +17,7 @@ import {
 
 const top_destinations = [
   {
-    regionName: "Da Nang",
+    regionName: "Đà Nẵng",
     backgroundImage: bg_danang,
   },
   {
@@ -25,43 +25,43 @@ const top_destinations = [
     backgroundImage: bg_nhatrang,
   },
   {
-    regionName: "Phu Quoc",
+    regionName: "Phú Quốc",
     backgroundImage: bg_phuquoc,
   },
   {
-    regionName: "Vung Tau",
+    regionName: "Vũng Tàu",
     backgroundImage: bg_vungtau,
   },
   {
-    regionName: "Ha Noi",
+    regionName: "Hà Nội",
     backgroundImage: bg_hanoi,
   },
   {
-    regionName: "Da Lat",
+    regionName: "Đà Lạt",
     backgroundImage: bg_dalat,
   },
   {
-    regionName: "Hoi An",
+    regionName: "Hội An",
     backgroundImage: bg_hoian,
   },
   {
-    regionName: "Phan Thiet",
+    regionName: "Phan Thiết",
     backgroundImage: bg_phanthiet,
   },
   {
-    regionName: "Quy Nhon",
+    regionName: "Quy Nhơn",
     backgroundImage: bg_quynhon,
   },
   {
-    regionName: "Hue",
+    regionName: "Huế",
     backgroundImage: bg_hue,
   },
   {
-    regionName: "Ho Chi Minh",
+    regionName: "Hồ Chí Minh",
     backgroundImage: bg_hochiminh,
   },
   {
-    regionName: "Ha Long",
+    regionName: "Hạ Long",
     backgroundImage: bg_halong,
   },
 ];

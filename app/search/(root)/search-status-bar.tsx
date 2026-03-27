@@ -1,6 +1,5 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { Label } from "@/components/ui/label";
 import {
@@ -15,39 +14,28 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 
 import { MapPinnedIcon, ListFilter } from "lucide-react";
-import { useFilterSheetContext } from "../filter-sheet-context";
-import { useMediaQuery } from "usehooks-ts";
+import { useFilterSheetSetOpen } from "../filter-sheet-context";
+import { PATHS } from "@/lib/constants";
 
-// TODO: Fetch the actual number of accommodations from the server
 // TODO: pass the search params via props may be better
-export default function SearchStatusBar({ location }: { location: string }) {
+export default function SearchStatusBar({ location, total }: { location: string; total: number }) {
   const searchParams = useSearchParams();
-  const { setOpen: setFilterSheetOpen } = useFilterSheetContext();
-  const [mounted, setMounted] = useState(false);
-  const isDesktop = useMediaQuery('(min-width: 1024px)');
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-  if (!mounted) {
-    return <SearchStatusBarSkeleton />
-  }
+  const setFilterSheetOpen = useFilterSheetSetOpen();
 
   return (
     <div className="flex items-center justify-between sticky top-15 md:top-20.5 border-b p-3 -mt-3 z-10 bg-background shadow-md">
       <div className="flex gap-x-4 items-center">
-        {!isDesktop &&
-          <Button
-            onClick={() => setFilterSheetOpen(true)}
-            variant='outline'
-            className="size-8 flex items-center justify-center"
-            aria-label="Open filter sheet"
-          >
-            <ListFilter className="size-4" />
-          </Button>
-        }
+        <Button
+          onClick={() => setFilterSheetOpen(true)}
+          variant='outline'
+          className="size-8 flex lg:hidden items-center justify-center"
+          aria-label="Open filter sheet"
+        >
+          <ListFilter className="size-4" />
+        </Button>
         <div className="flex flex-col text-sm">
           <span className="font-bold"> {location} </span>
-          <span> {10000} noi luu tru duoc tim thay </span>
+          <span> {total} noi luu tru duoc tim thay </span>
         </div>
       </div>
       <div className="flex gap-x-4 items-center">
@@ -72,7 +60,7 @@ export default function SearchStatusBar({ location }: { location: string }) {
           asChild
           className="h-fit bg-primary text-primary-foreground text-xs font-bold px-3 py-2 rounded-full flex items-center gap-x-2"
         >
-          <a href={"/search/map?" + searchParams.toString()} target="_blank" >
+          <a href={`${PATHS.searchMap}?${searchParams.toString()}`} target="_blank" >
             Xem trên bản đồ
             <MapPinnedIcon className="size-4" />
           </a>

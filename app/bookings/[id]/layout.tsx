@@ -1,7 +1,6 @@
 import Image from "next/image"
 
 import { tvlk_logo_text_dark } from "@/public/logos"
-import { RatingStars } from "@/components/hotel-card"
 
 export default async function Layout({
   children,
@@ -23,7 +22,7 @@ export default async function Layout({
                 Hotel name goes here
               </div>
               <div className="flex items-center gap-x-2 text-xs">
-                <RatingStars rating={4.5} />
+                {/* <RatingStars rating={4.5} /> Replace Rating stars with review point */}
                 <span className="text-primary font-black">8.7/10</span>
                 <span className="text-gray-500 font-semibold">(200 reviews)</span>
               </div>

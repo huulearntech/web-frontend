@@ -1,17 +1,15 @@
 import bcrypt from 'bcrypt';
 import prisma from "@/lib/prisma"
+import Credentials from "next-auth/providers/credentials";
 import { schemaSignIn } from "@/lib/zod_schemas/auth";
-import { PrismaAdapter } from "@auth/prisma-adapter";
 import { PATHS } from './lib/constants';
 
-/* These bullshit javashit frameworks change their API every fucking month
- * because the new one sounds cooler
- */
 import NextAuth, { type NextAuthConfig } from "next-auth";
-import Credentials from "next-auth/providers/credentials";
+import { PrismaAdapter } from "@auth/prisma-adapter";
 
 export const nextAuthConfig = {
-  adapter: PrismaAdapter(prisma),
+  // adapter: PrismaAdapter(prisma),
+  session: { strategy: "jwt" },
   providers: [
     Credentials({
       credentials: {
@@ -32,13 +30,21 @@ export const nextAuthConfig = {
             name: true,
             email: true,
             password: true,
+            role: true,
           },
         });
         if (!user) return null;
-        const passwordMatch = await bcrypt.compare(
+        
+
+        // Remove this on production
+        const isDevelopment = process.env.NODE_ENV === "development";
+        let passwordMatch = false;
+        if (isDevelopment) passwordMatch = (password === (user.password as string));
+        else passwordMatch = await bcrypt.compare(
           password,
           user.password as string
         );
+
         if (!passwordMatch) return null;
         const { password: _, ...userWithoutPassword } = user;
         return userWithoutPassword;
@@ -47,18 +53,18 @@ export const nextAuthConfig = {
   ],
   callbacks: {
     async jwt({ token, user }) {
-      // On initial sign in, include the user id in the token
       if (user) {
-        (token as any).id = (user as any).id ?? (token as any).sub;
+        token.id = user.id!;
+        token.role = user.role;
       }
       return token;
     },
     async session({ session, token }) {
-      // expose id to session.user
-      session.user = session.user ?? ({} as any);
-      (session.user as any).id = (token as any).id ?? (token as any).sub;
+      session.user.id = token.id;
+      session.user.role = token.role;
       return session;
     },
+
     async redirect({ url, baseUrl }) {
       // Allow relative callback URLs
       if (url.startsWith("/")) return `${baseUrl}${url}`;
@@ -66,9 +72,6 @@ export const nextAuthConfig = {
       if (new URL(url).origin === baseUrl) return url;
       return baseUrl;
     }
-  },
-  session: {
-    strategy: "jwt",
   },
   pages: {
     signIn: PATHS.signIn,

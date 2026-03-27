@@ -31,11 +31,15 @@ export default async function Header({ className }: { className?: string }) {
               <Link href={PATHS.favorites}>
                 <HeartIcon className="size-6" strokeWidth={2} />
               </Link>
-              <HeaderAvatar />
+              <HeaderAvatar
+                userName={session.user.name || ""}
+                userEmail={session.user.email || ""}
+                userImageSrc={session.user.image || ""}
+              />
             </>
           ) : (
             <div className="flex items-center gap-2">
-              <Link href={PATHS.hotelSignUp}>
+              <Link href={PATHS.signUpHotel}>
                 Đăng ký cơ sở lưu trú của bạn
               </Link>
               <Button asChild>

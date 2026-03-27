@@ -19,14 +19,6 @@ type Response__SignUp = {
   };
 }
 
-// type Response__SignIn = {
-//   success: boolean;
-//   errors: {
-//     fieldErrors: Partial<Record<keyof SignInData, string[]>>;
-//     formErrors: string[];
-//   };
-// }
-
 export async function signUpUser(userData: SignUpData): Promise<Response__SignUp> {
   const safeParsedUserData = schemaSignUp.safeParse(userData);
 
@@ -38,8 +30,15 @@ export async function signUpUser(userData: SignUpData): Promise<Response__SignUp
     };
   }
 
-  const saltRounds = 10;
-  const hashedPassword = await bcrypt.hash(safeParsedUserData.data.password, saltRounds);
+  const isDevelopment = process.env.NODE_ENV === "development";
+  let hashedPassword = safeParsedUserData.data.password;
+  if (isDevelopment) {
+    console.warn("Running in development mode, storing password in plaintext. DO NOT USE THIS IN PRODUCTION!");
+  } else {
+    // Hash the password before storing it in the database
+    const saltRounds = 10;
+    hashedPassword = await bcrypt.hash(safeParsedUserData.data.password, saltRounds);
+  }
   try {
     await prisma.user.create({
       data: {
@@ -75,7 +74,7 @@ export async function signUpUser(userData: SignUpData): Promise<Response__SignUp
 
 export async function signInUserWithOptionalCallback(
   formData: SignInData,
-  callbackUrl?: string | null
+  callbackUrl?: string
 ) {
   const safeParsedSignInData = schemaSignIn.safeParse(formData);
   if (!safeParsedSignInData.success) {

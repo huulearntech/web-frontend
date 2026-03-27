@@ -1,96 +1,96 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { format } from "date-fns";
 import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
-import { Copy, Edit, Trash2 } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+
+import { Copy, Edit, Ellipsis, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
-import type { Room } from "@/lib/generated/prisma/client";
+import type { RoomSerialized } from "@/lib/actions/hotel-manager/rooms";
 
-type RoomSerialized = Omit<Room, "price"> & { price: string };
-
-export function createColumns(
-  handleDelete: (id: string) => void,
-): ColumnDef<RoomSerialized>[] {
+export function createColumns(handleDelete: (id: string) => void): ColumnDef<RoomSerialized>[] {
   return [
-    // {
-    //   accessorKey: "name",
-    //   header: "Room",
-    //   cell: (info) => info.getValue() ?? "Untitled",
-    // },
+    {
+      accessorKey: "name",
+      header: "Name",
+      cell: ({ row }) => row.original.name ?? "Untitled",
+    },
     {
       accessorKey: "type",
       header: "Type",
-      cell: (info) => info.getValue() ?? "—",
+      cell: ({ row }) => row.original.type ?? "—",
     },
     {
       accessorKey: "price",
       header: "Price",
-      cell: (info) => info.getValue() ?? "—",
+      cell: ({ row }) => row.original.price?.toString() ?? "—",
     },
     {
       accessorKey: "adultCapacity",
-      header: "Adult Capacity",
-      cell: (info) => info.getValue() ?? "—",
+      header: "Adults",
+      cell: ({ row }) => row.original.adultCapacity ?? "—",
     },
     {
       accessorKey: "childrenCapacity",
-      header: "Children Capacity",
-      cell: (info) => info.getValue() ?? "—",
+      header: "Children",
+      cell: ({ row }) => row.original.childrenCapacity ?? "—",
     },
-    // {
-    //   accessorKey: "isAvailable",
-    //   header: "Status",
-    //   cell: (info) => {
-    //     const val = info.getValue() as boolean | null;
-    //     return (
-    //       <Badge variant={val ? "outline" : "secondary"}>
-    //         {val ? "Available" : "Unavailable"}
-    //       </Badge>
-    //     );
-    //   },
-    // },
     {
       accessorKey: "createdAt",
       header: "Created",
-      cell: (info) => format(new Date(info.getValue() as string), "PPP"),
+      cell: ({ row }) =>
+        Intl.DateTimeFormat("en-US", {
+          month: "short",
+          day: "numeric",
+          year: "numeric",
+        }).format(row.original.createdAt),
     },
     {
       id: "actions",
       header: "Actions",
       cell: ({ row }) => {
-        const r = row.original as RoomSerialized;
+        const r = row.original;
         return (
-          <div className="flex justify-end items-center gap-2">
-            <Button size="sm" variant="outline" className="p-2"
-              onClick={() => {
-                navigator.clipboard.writeText(r.id);
-                toast("Copied room ID to clipboard", {
-                  description: r.id,
-                });
-              }}
-            >
-              <Copy className="h-4 w-4" />
-              Copy ID
-            </Button>
+          <div className="flex items-center">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button size="sm" variant="ghost" aria-label="Open actions">
+                  <Ellipsis className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
 
-            <Link href={`/dashboard/rooms/${r.id}/edit`}>
-              <Button size="sm" variant="ghost" className="p-2">
-                <Edit className="h-4 w-4" />
-              </Button>
-            </Link>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem
+                  onClick={() => {
+                    navigator.clipboard.writeText(r.id);
+                    toast("Copied room ID to clipboard", { description: r.id });
+                  }}
+                >
+                  <Copy className="mr-2 h-4 w-4" /> Copy ID
+                </DropdownMenuItem>
 
-            <Button
-              size="sm"
-              variant="ghost"
-              className="p-2 text-destructive"
-              onClick={() => handleDelete(r.id)}
-            >
-              <Trash2 className="h-4 w-4" />
-            </Button>
+                <DropdownMenuItem asChild>
+                  <Link href={`/dashboard/rooms/${r.id}/edit`} className="flex items-center gap-2">
+                    <Edit className="h-4 w-4" /> Edit
+                  </Link>
+                </DropdownMenuItem>
+
+                <DropdownMenuItem
+                  onClick={() => handleDelete(r.id)}
+                  className="text-destructive"
+                >
+                  <Trash2 className="mr-2 h-4 w-4" /> Delete
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         );
       },

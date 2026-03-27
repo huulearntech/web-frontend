@@ -140,4 +140,9 @@ export {
   SheetFooter,
   SheetTitle,
   SheetDescription,
+
+
+  // Custom
+  SheetPortal,
+  SheetOverlay,
 }

@@ -1,14 +1,8 @@
-// TODO: Update images instead of just URLs. Maybe use Cloudinary
-// TODO: useSWR for image URLs so we can show previews and validate them before submission
-// TODO: handle image editing/deletion in the form (currently you can only add new ones, not remove or edit existing ones)
-// TODO: handle multiple room in one form (e.g. for bulk editing/creation) - this will require more significant changes to the form structure and API
-
 "use client";
 
 import { useTransition } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm, useFieldArray } from "react-hook-form";
-import { z } from "zod";
+import { useForm, useFieldArray, FormProvider } from "react-hook-form";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -22,108 +16,254 @@ import {
   CardTitle
 } from "@/components/ui/card";
 
-const RoomFormSchema = z.object({
-  type:             z.string(),
-  adultCapacity:    z.coerce.number().int(),
-  childrenCapacity: z.coerce.number().int(),
-  price:            z.coerce.number(),
-  imageUrls:        z.object({ url: z.url() }).array().transform(urlObjects => urlObjects.map(obj => obj.url)),
-  // Transformation on client-side to reduce payload (for a bit).
-})
-type RoomFormInput = z.input<typeof RoomFormSchema>;
-type RoomFormOutput = z.output<typeof RoomFormSchema>;
-type RoomFormValues = z.infer<typeof RoomFormSchema>;
+import { MultiRoomFormSchema, type MultiRoomFormInput, MultiRoomFormOutput } from "@/lib/zod_schemas/create-room";
+import { FormField, FormItem, FormLabel, FormControl } from "@/components/ui/form";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
-export default function RoomForm({ onSubmit }: { onSubmit: (data: any) => Promise<any> }) {
+export default function RoomForm({ onSubmit }: { onSubmit: (data: MultiRoomFormOutput) => Promise<void> }) {
   const [isPending, startTransition] = useTransition();
+
+  const form = useForm<MultiRoomFormInput, unknown, MultiRoomFormOutput>({
+    resolver: zodResolver(MultiRoomFormSchema),
+    defaultValues: {
+      rooms: [
+        {
+          name: "",
+          type: "",
+          price: 0,
+          adultCapacity: 0,
+          childrenCapacity: 0,
+          areaM2: 0,
+          bedType: "OTHER",
+          imageUrls: [{ url: "" }],
+        },
+      ],
+    },
+  });
 
   const {
     register,
     handleSubmit,
     control,
+    setError,
     formState: { errors },
-  } = useForm<RoomFormInput, unknown, RoomFormOutput>({
-    resolver: zodResolver(RoomFormSchema),
-  });
+  } = form;
 
-  const { fields, append, remove } = useFieldArray({
+  const { fields: roomFields, append: appendRoom, remove: removeRoom } = useFieldArray({
     control,
-    name: "imageUrls",
+    name: "rooms",
   });
 
-  async function onSubmitLocal(values: RoomFormValues) {
+  async function onSubmitLocal(data: MultiRoomFormOutput) {
     startTransition(async () => {
-      const res = await onSubmit(values); // await network
-      // if (res instanceof Error) {
+      await onSubmit(data);
+      // TODO: handle success or error (feedback, resetting form, etc.)
     });
   }
 
   return (
-    <Card>
+    <FormProvider {...form}>
+      <form onSubmit={handleSubmit(onSubmitLocal)} className="space-y-4">
+        {roomFields.map((field, idx) => (
+          <RoomFields
+            key={field.id}
+            index={idx}
+            control={control}
+            register={register}
+            errors={errors}
+            roomFields={roomFields}
+            removeRoom={removeRoom}
+          />
+        ))}
+
+        <div className="flex gap-2">
+          <Button
+            type="button"
+            onClick={() =>
+              appendRoom({
+                name: "",
+                type: "",
+                price: 0,
+                adultCapacity: 0,
+                childrenCapacity: 0,
+                areaM2: 0,
+                bedType: "OTHER",
+                imageUrls: [{ url: "" }],
+              })
+            }
+          >
+            Add room
+          </Button>
+
+          <Button type="submit" disabled={isPending}>
+            {isPending ? "Saving..." : "Save all rooms"}
+          </Button>
+        </div>
+      </form>
+    </FormProvider>
+  );
+}
+
+/* RoomFields moved out of RoomForm so it keeps a stable identity across renders
+   which prevents inputs from being remounted and losing focus. */
+function RoomFields({
+  index,
+  control,
+  register,
+  errors,
+  roomFields,
+  removeRoom,
+}: {
+  index: number;
+  control: any;
+  register: any;
+  errors: any;
+  roomFields: any;
+  removeRoom: (i: number) => void;
+}) {
+  // Each room has its own imageUrls field array.
+  const {
+    fields: imageFields,
+    append: appendImage,
+    remove: removeImage,
+  } = useFieldArray({
+    control,
+    name: `rooms.${index}.imageUrls` as const,
+  });
+
+  const roomErrors = (errors.rooms && (errors.rooms as any)[index]) || {};
+
+  return (
+    <Card key={roomFields[index].id} className="mb-4">
       <CardHeader>
-        <CardTitle>Add new room</CardTitle>
-        <CardDescription>Fill in the details of the new room.</CardDescription>
+        <CardTitle>Room {index + 1}</CardTitle>
+        <CardDescription>Fill in the details of this room.</CardDescription>
       </CardHeader>
-      <CardContent>
+      <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="md:col-span-2 flex flex-col gap-1">
+          <Label htmlFor={`rooms.${index}.name`} className="text-sm font-medium">
+            Name
+          </Label>
+          <Input id={`rooms.${index}.name`} className="w-full" {...register(`rooms.${index}.name` as const)} />
+          {roomErrors?.name && <p className="text-xs text-destructive mt-1">{roomErrors.name.message}</p>}
+        </div>
 
-        <form onSubmit={handleSubmit(onSubmitLocal)} className="space-y-4">
-          <div>
-            <Label htmlFor="name">Type</Label>
-            <Input id="type" {...register("type")} />
-            {errors.type && <p className="text-xs text-destructive mt-1">{errors.type.message}</p>}
-          </div>
+        <div className="flex flex-col gap-1">
+          <Label htmlFor={`rooms.${index}.type`} className="text-sm font-medium">
+            Type
+          </Label>
+          <Input id={`rooms.${index}.type`} className="w-full" {...register(`rooms.${index}.type` as const)} />
+          {roomErrors?.type && <p className="text-xs text-destructive mt-1">{roomErrors.type.message}</p>}
+        </div>
 
-          <div>
-            <Label htmlFor="price">Price per night (USD)</Label>
-            <Input id="price" type="number" step="0.01" {...register("price", { valueAsNumber: true })} />
-            {errors.price && <p className="text-xs text-destructive mt-1">{errors.price.message}</p>}
-          </div>
+        <div className="flex flex-col gap-1">
+          <Label htmlFor={`rooms.${index}.price`} className="text-sm font-medium">
+            Price per night (USD)
+          </Label>
+          <Input
+            id={`rooms.${index}.price`}
+            type="number"
+            step="0.01"
+            className="w-full"
+            {...register(`rooms.${index}.price`, { valueAsNumber: true } as any)}
+          />
+          {roomErrors?.price && <p className="text-xs text-destructive mt-1">{roomErrors.price.message}</p>}
+        </div>
 
-          <div>
-            <Label htmlFor="adultCapacity">Adult capacity</Label>
-            <Input id="adultCapacity" type="number" {...register("adultCapacity")} />
-            {errors.adultCapacity && <p className="text-xs text-destructive mt-1">{errors.adultCapacity.message}</p>}
-          </div>
+        <div className="flex flex-col gap-1">
+          <Label htmlFor={`rooms.${index}.adultCapacity`} className="text-sm font-medium">
+            Adult capacity
+          </Label>
+          <Input id={`rooms.${index}.adultCapacity`} type="number" className="w-full" {...register(`rooms.${index}.adultCapacity` as const)} />
+          {roomErrors?.adultCapacity && <p className="text-xs text-destructive mt-1">{roomErrors.adultCapacity.message}</p>}
+        </div>
 
-          <div>
-            <Label htmlFor="childrenCapacity">Children capacity</Label>
-            <Input id="childrenCapacity" type="number" {...register("childrenCapacity")} />
-            {errors.childrenCapacity && <p className="text-xs text-destructive mt-1">{errors.childrenCapacity.message}</p>}
-          </div>
+        <div className="flex flex-col gap-1">
+          <Label htmlFor={`rooms.${index}.childrenCapacity`} className="text-sm font-medium">
+            Children capacity
+          </Label>
+          <Input id={`rooms.${index}.childrenCapacity`} type="number" className="w-full" {...register(`rooms.${index}.childrenCapacity` as const)} />
+          {roomErrors?.childrenCapacity && <p className="text-xs text-destructive mt-1">{roomErrors.childrenCapacity.message}</p>}
+        </div>
 
-          <div>
-            <Label htmlFor="imageUrls">Image URLs</Label>
+        <div className="flex flex-col gap-1">
+          <Label htmlFor={`rooms.${index}.areaM2`} className="text-sm font-medium">
+            Area (m2)
+          </Label>
+          <Input id={`rooms.${index}.areaM2`} type="number" className="w-full" {...register(`rooms.${index}.areaM2` as const)} />
+          {roomErrors?.areaM2 && <p className="text-xs text-destructive mt-1">{roomErrors.areaM2.message}</p>}
+        </div>
 
-            {fields.map((field, index) => (
-              <div key={field.id} className="flex items-center gap-2 mb-2">
+        {/** This should be select instead of input. But do we need addtional information for choice "OTHER"? */}
+        {/* <div className="flex flex-col gap-1">
+          <Label htmlFor={`rooms.${index}.bedType`} className="text-sm font-medium">
+            Bed Type
+          </Label>
+          <Input id={`rooms.${index}.bedType`} className="w-full" {...register(`rooms.${index}.bedType` as const)} />
+          {roomErrors?.bedType && <p className="text-xs text-destructive mt-1">{roomErrors.bedType.message}</p>}
+        </div> */}
+        <FormField
+          control={control}
+          name={`rooms.${index}.bedType` as const}
+          render={({ field }) => (
+            <FormItem className="flex flex-col gap-1">
+              <FormLabel className="text-sm font-medium">Bed Type</FormLabel>
+              <Select
+                onValueChange={field.onChange}
+                defaultValue={field.value}
+              >
+                <FormControl>
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select bed type"/>
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  <SelectItem value="SINGLE">Single</SelectItem>
+                  <SelectItem value="DOUBLE">Double</SelectItem>
+                  <SelectItem value="QUEEN">Queen</SelectItem>
+                  <SelectItem value="KING">King</SelectItem>
+                  <SelectItem value="TWIN">Twin</SelectItem>
+                  <SelectItem value="OTHER">Other</SelectItem>
+                </SelectContent>
+              </Select>
+            </FormItem>
+          )}
+        />
+
+        <div className="md:col-span-2 flex flex-col gap-2">
+          <Label className="text-sm font-medium">Image URLs</Label>
+
+          <div className="flex flex-col space-y-2">
+            {imageFields.map((field, imgIndex) => (
+              <div key={field.id} className="flex flex-col sm:flex-row sm:items-center gap-2">
                 <Input
                   placeholder="https://placehold.co/400x300.png?text=Room+Image"
-                  {...register(`imageUrls.${index}.url` as const)}
+                  className="flex-1"
+                  {...register(`rooms.${index}.imageUrls.${imgIndex}.url` as const)}
                 />
-                <Button type="button" variant="ghost" onClick={() => remove(index)}>
+                <Button type="button" variant="ghost" className="h-9" onClick={() => removeImage(imgIndex)}>
                   Remove
                 </Button>
               </div>
             ))}
+          </div>
 
-            <Button type="button" onClick={() => append({ url: "" })}>
+          <div>
+            <Button type="button" onClick={() => appendImage({ url: "" })}>
               Add image URL
             </Button>
-
-            {errors.imageUrls && <p className="text-xs text-destructive mt-1">{(errors.imageUrls as any).message ?? "Invalid image URLs"}</p>}
           </div>
 
-          {/* {error && <div className="text-sm text-destructive">{error}</div>} */}
-
-          <div className="flex items-center gap-2">
-            <Button type="submit" disabled={isPending}>
-              {isPending ? "Saving..." : "Save changes"}
-            </Button>
-          </div>
-        </form>
+          {roomErrors?.imageUrls && <p className="text-xs text-destructive mt-1">{(roomErrors.imageUrls as any)?.message ?? "Invalid image URLs"}</p>}
+        </div>
       </CardContent>
-      <CardFooter>
-
+      <CardFooter className="flex justify-between items-center gap-4">
+        <div className="text-sm text-destructive">{(errors.rooms as any)?.[index]?.message}</div>
+        <div className="flex items-center gap-2">
+          <Button type="button" variant="destructive" onClick={() => removeRoom(index)}>
+            Remove room
+          </Button>
+        </div>
       </CardFooter>
     </Card>
   );

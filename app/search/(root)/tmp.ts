@@ -1,31 +1,50 @@
 import { formSchema } from "@/lib/zod_schemas/search-bar";
 import z from "zod";
 
-export const SearchPage__SearchParamsCodec = z.codec(
-  z.instanceof(URLSearchParams),
+export type SearchParams = {
+  location: string,
+  fromDate: string,
+  toDate: string,
+  numAdults: string,
+  numChildren: string,
+  numRooms: string,
+}
+
+export const SearchParamsCodec = z.codec(
+  z.object({
+    location: z.string(),
+    fromDate: z.string().refine((dateStr) => !isNaN(Date.parse(dateStr)), {
+      message: "Invalid fromDate format",
+    }),
+    toDate: z.string().refine((dateStr) => !isNaN(Date.parse(dateStr)), {
+      message: "Invalid toDate format",
+    }),
+    numAdults: z.string(),
+    numChildren: z.string(),
+    numRooms: z.string(),
+  }),
   formSchema,
   {
-  encode(data: z.infer<typeof formSchema>): URLSearchParams {
-    return new URLSearchParams({
+  encode(data: z.infer<typeof formSchema>) {
+    return {
       location: data.location,
       fromDate: data.inOutDates.from.toISOString(),
       toDate: data.inOutDates.to.toISOString(),
       numAdults: String(data.guestsAndRooms.numAdults),
       numChildren: String(data.guestsAndRooms.numChildren),
       numRooms: String(data.guestsAndRooms.numRooms),
-    });
+    };
   },
 
-  decode(input: URLSearchParams): z.infer<typeof formSchema> {
-    const params = new URLSearchParams(input);
+  decode(input: SearchParams): z.infer<typeof formSchema> {
     const {
       location,
       fromDate,
       toDate,
-      numAdults = "0",
-      numChildren = "0",
-      numRooms = "0",
-    } = Object.fromEntries(params.entries());
+      numAdults,
+      numChildren,
+      numRooms,
+    } = input;
 
     return formSchema.parse({
       location,
@@ -34,9 +53,9 @@ export const SearchPage__SearchParamsCodec = z.codec(
         to: new Date(toDate),
       },
       guestsAndRooms: {
-        numAdults: parseInt(numAdults, 10),
-        numChildren: parseInt(numChildren, 10),
-        numRooms: parseInt(numRooms, 10),
+        numAdults: parseInt(numAdults, 10) || 0,
+        numChildren: parseInt(numChildren, 10) || 0,
+        numRooms: parseInt(numRooms, 10) || 0,
       },
     });
   },

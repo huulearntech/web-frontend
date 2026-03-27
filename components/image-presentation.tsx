@@ -1,3 +1,4 @@
+// FIXME: Cant open the dialog
 "use client";
 
 import { createContext, useContext, useEffect, useState, useCallback } from "react";
@@ -64,7 +65,8 @@ function ImagePresentation({
   const onMainSelect = useCallback(() => {
     if (!mainApi || !thumbsApi) return;
     const idx = mainApi.selectedScrollSnap();
-    setSelectedIndex(idx); thumbsApi.scrollTo(idx, false); // keep thumbnail carousel in view
+    setSelectedIndex(idx);
+    thumbsApi.scrollTo(idx);
   }, [mainApi, thumbsApi, setSelectedIndex]);
 
   useEffect(() => {
@@ -86,20 +88,14 @@ function ImagePresentation({
     if (!mainApi || !thumbsApi) return;
     setSelectedIndex(index);
     setIsOpen(true);
-    mainApi.scrollTo(index, false);
-    thumbsApi.scrollTo(index, false);
-  }, [mainApi, thumbsApi, setSelectedIndex, setIsOpen]);
+  }, [isOpen, mainApi, thumbsApi]);
 
   return (
     <ImagePresentationContext.Provider value={{ openAtIndex }}>
       {children}
 
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
-        <DialogContent className={cn(
-            "sm:max-w-[min(90vw,var(--container-6xl))] p-4",
-            className
-          )}
-        >
+        <DialogContent className={cn("sm:max-w-[min(90vw,var(--container-6xl))] p-4", className)}>
           <DialogHeader>
             <DialogTitle>{title}</DialogTitle>
             <DialogDescription> {description} </DialogDescription>
@@ -111,7 +107,7 @@ function ImagePresentation({
                 <CarouselItem key={index} className="flex items-center justify-center">
                   <Image
                     src={src}
-                    alt={`Image ${index + 1}`} // FIXME: improve alt text
+                    alt=""
                     width={800}
                     height={600}
                     className="object-contain"

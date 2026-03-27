@@ -4,11 +4,10 @@ import { useState } from "react";
 
 import { toast } from "sonner";
 import { DataTable } from "@/components/data-table";
-import type { Room } from "@/lib/generated/prisma/client";
 import { createColumns } from "./columns";
 import { deleteRoomAction } from "@/lib/actions/hotel-manager/rooms";
 
-type RoomSerialized = Omit<Room, "price"> & { price: string };
+import type { RoomSerialized } from "@/lib/actions/hotel-manager/rooms";
 
 export default function RoomTable({ rooms }: { rooms: RoomSerialized[] }) {
   const [roomsSerialized, setRoomsSerialized] = useState<RoomSerialized[]>(rooms);
