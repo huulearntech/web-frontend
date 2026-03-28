@@ -1,5 +1,3 @@
-"use client";
-
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -23,38 +21,37 @@ import {
   DialogTrigger
 } from '@/components/ui/dialog';
 
-import { signOut } from "next-auth/react";
 import { PATHS } from "@/lib/constants";
 import Link from "next/link";
 import { ChevronRightIcon } from "lucide-react";
+import SignOutButton from "./button-signout";
 
-export default function HeaderAvatar({
-  userName,
-  userEmail,
-  userImageSrc
+export default async function HeaderAvatar({
+  name,
+  email,
+  profileImageUrl,
 }: {
-  userName: string;
-  userEmail: string;
-  userImageSrc: string;
+  name: string | null;
+  email: string | null;
+  profileImageUrl: string | null;
 }) {
-
   return (
     <Dialog>
       <DropdownMenu modal={false}>
         <DropdownMenuTrigger>
           <Avatar>
-            <AvatarImage src={userImageSrc} alt={userName} />
-            <AvatarFallback>{userName.toUpperCase()}</AvatarFallback>
+            <AvatarImage src={profileImageUrl ?? undefined} alt={name || "Something is wrong"} />
+            <AvatarFallback>{name}</AvatarFallback>
           </Avatar>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-50">
           <DropdownMenuGroup>
             <DropdownMenuLabel className="flex flex-col gap-1">
-              <p className="font-semibold"> Xin chào, {userName} </p>
-              <p className="font-normal text-muted-foreground">{userEmail}</p>
+              <p className="font-semibold"> Xin chào, {name} </p>
+              <p className="font-normal text-muted-foreground">{email}</p>
               <Avatar className="size-16 mt-2 mx-auto">
-                <AvatarImage src={userImageSrc} alt={userName} />
-                <AvatarFallback>{userName.toUpperCase()}</AvatarFallback>
+                <AvatarImage src={profileImageUrl ?? undefined} alt={name || "Something is wrong"} />
+                <AvatarFallback>{name}</AvatarFallback>
               </Avatar>
             </DropdownMenuLabel>
           <DropdownMenuItem
@@ -90,11 +87,7 @@ export default function HeaderAvatar({
             <Button variant="outline"> Hủy </Button>
           </DialogClose>
           <DialogClose asChild>
-            <Button
-              variant="destructive"
-              onClick={() => signOut({ redirectTo: PATHS.home })}>
-              Đăng xuất
-            </Button>
+            <SignOutButton />
           </DialogClose>
         </DialogFooter>
       </DialogContent>

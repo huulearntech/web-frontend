@@ -9,7 +9,9 @@ export default function Layout ({
   return (
     <>
       <Header className="sticky top-0" />
-      {children}
+      <div className="min-h-[calc(100svh-5rem)]">
+        {children}
+      </div>
       <Footer />
     </>
   );

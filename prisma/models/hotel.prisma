@@ -7,14 +7,11 @@ model Hotel {
   wardId      String   @map("ward_id")
   ward        Ward     @relation(fields: [wardId], references: [id], onDelete: Cascade)
   
-  // geolocation Unsupported("geography(Point, 4326)")
   longitude   Float
   latitude    Float
 
   type        HotelType
-
   description String?
-
   reviewPoints Float    @map("review_points")
   numberOfReviews Int    @map("number_of_reviews")
 
@@ -32,9 +29,11 @@ model Hotel {
   favoritedBy      Favorite[]
   recentlyViewedBy RecentlyViewed[]
   bookings         Booking[]
-  // policies         Policy[] // TODO: Move check-in/check-out time to policies
 
   @@map("hotels")
+
+  // TODO: add indexes for search optimization (e.g., by name, location, type)
+  // @@index([])
 }
 
 enum HotelType {
@@ -45,28 +44,6 @@ enum HotelType {
   HOSTEL
   OTHER
 }
-
-// enum PolicyType {
-//   CANCELLATION
-//   CHECK_IN_OUT
-//   SMOKING
-//   OTHER
-// }
-
-// model Policy {
-//   id        String   @id @default(cuid())
-//   hotelId   String   @map("hotel_id")
-//   hotel     Hotel    @relation(fields: [hotelId], references: [id], onDelete: Cascade)
-//   type      PolicyType
-//   iconUrl   String?  @map("icon_url") // optional icon URL for the policy
-//   content   String   // detailed policy content
-
-//   createdAt DateTime @default(now())
-//   updatedAt DateTime @updatedAt
-
-//   @@index([hotelId])
-//   @@map("policies")
-// }
 
 enum FacilityType {
   HOTEL_SERVICES

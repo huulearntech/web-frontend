@@ -4,36 +4,38 @@ import { useForm, FormProvider, useFormContext } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 
+import { FILTER_MAX_PRICE, FILTER_MIN_PRICE } from "@/lib/constants";
+
 export const FILTER_CATEGORIES = {
   amenities: { label: "Tiện nghi", options: ["WiFi", "Parking", "Pool", "Gym"] },
   propertyTypes: { label: "Loại hình lưu trú", options: ["Apartment", "House", "Villa"] },
   ratings: { label: "Đánh giá", options: ["1 sao", "2 sao", "3 sao", "4 sao", "5 sao"] },
 } as const;
 
-export type CategoryKey = keyof typeof FILTER_CATEGORIES;
-
-export const typedEntries = <T extends Record<string, any>>(obj: T) =>
-  Object.entries(obj) as [keyof T, T[keyof T]][];
-
-const groupsShape = Object.fromEntries(
-  (Object.keys(FILTER_CATEGORIES) as CategoryKey[]).map((key) => [key, z.array(z.string())])
-) as { [K in CategoryKey]: z.ZodArray<z.ZodString> };
-
 export const filterZodSchema = z.object({
   priceRange: z.tuple([z.number().min(0), z.number().min(0)]),
-  ...groupsShape,
+  sortBy: z.enum(["priceAsc", "priceDesc", "ratingAsc", "ratingDesc"]),
+  amenities: z.array(z.enum(FILTER_CATEGORIES.amenities.options)),
+  propertyTypes: z.array(z.enum(FILTER_CATEGORIES.propertyTypes.options)),
+  ratings: z.array(z.enum(FILTER_CATEGORIES.ratings.options)),
 });
 
 export type FilterFormType = z.infer<typeof filterZodSchema>;
-// TODO: Clean up
-export const minPrice = 100_000;
-export const maxPrice = 2_000_000;
+
+export const defaultFilterValues: FilterFormType = {
+  priceRange: [FILTER_MIN_PRICE, FILTER_MAX_PRICE],
+  sortBy: "priceAsc",
+  amenities: [],
+  propertyTypes: [],
+  ratings: [],
+};
 
 export function FilterFormProvider({ children }: { children: React.ReactNode }) {
   const form = useForm<z.infer<typeof filterZodSchema>>({
     resolver: zodResolver(filterZodSchema),
     defaultValues: {
-      priceRange: [minPrice, maxPrice],
+      priceRange: [FILTER_MIN_PRICE, FILTER_MAX_PRICE],
+      sortBy: "priceAsc",
       ratings: [],
       amenities: [],
       propertyTypes: [],

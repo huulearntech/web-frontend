@@ -1,17 +1,19 @@
-// The problem must be in the server action.
 "use client";
-import { useState } from "react";
+
+import { useLayoutEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 
 import { fetchPage } from "./tmp-action";
 import SearchStatusBar, { SearchStatusBarSkeleton } from "./search-status-bar";
 
-import { useSearchParams } from "next/navigation";
-
 
 export default function Results({ initialPage = 1, location }: { initialPage?: number; location: string }) {
   const [page, setPage] = useState(initialPage);
-  const pageSize = 24;
+  const pageSize = 6;
+  useLayoutEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [page]);
 
   const searchParams = useSearchParams();
 
@@ -21,28 +23,24 @@ export default function Results({ initialPage = 1, location }: { initialPage?: n
       return fetchPage(page, pageSize);
     },
     placeholderData: keepPreviousData
-});
+  });
 
   if (isLoading) return <ResultsSkeleton />;
   // TODO: proper onRetry
   if (isError) return <ResultsError onRetry={() => setPage(1)} />;
 
-  const totalPages = Math.ceil((data?.total as number ?? 0) / pageSize);
+  const totalPages = Math.ceil((data?.total ?? 0) / pageSize);
   const hotelsSerialized = data?.items ?? [];
 
   return ( hotelsSerialized.length === 0 ? <NoResult /> :
     // TODO: location
     <div className="w-full flex flex-col space-y-3">
-      <SearchStatusBar location={location} total={data?.total as number ?? 0} />
+      <SearchStatusBar location={location} total={data?.total ?? 0} />
 
       <SearchResultPagination
         currentPage={page}
         totalPages={totalPages}
-        onPageChange={(p: number) => {
-          // TODO: scroll to top
-          // window.scrollTo({ top: 0, behavior: "smooth" }); // This does not work on next and previous buttons
-          setPage(p);
-        }}
+        onPageChange={(p: number) => { setPage(p); }}
       />
 
       <ul className="w-full grid grid-cols-2 lg:grid-cols-3 gap-4">
@@ -55,11 +53,7 @@ export default function Results({ initialPage = 1, location }: { initialPage?: n
       <SearchResultPagination
         currentPage={page}
         totalPages={totalPages}
-        onPageChange={(p: number) => {
-          // TODO: scroll to top
-          // window.scrollTo({ top: 0, behavior: "smooth" }); // This does not work on next and previous buttons
-          setPage(p);
-        }}
+        onPageChange={(p: number) => { setPage(p); }}
       />
     </div>
   );
@@ -76,7 +70,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import noResultImage from "@/public/images/no-result.svg";
 import Image from "next/image";
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
-import HotelCard from "@/components/hotel-card copy";
+import HotelCard from "@/components/hotel-card";
 import { AlertCircle } from "lucide-react";
 import { PATHS } from "@/lib/constants";
 
@@ -123,17 +117,9 @@ function SearchResultPagination({
                 </PaginationItem>
               }
 
-              {currentPage >= 4 &&
-                <PaginationItem>
-                  <PaginationEllipsis />
-                </PaginationItem>
-              }
-
               {currentPage >= 3 &&
                 <PaginationItem>
-                  <Button variant="ghost" onClick={() => onPageChange(currentPage - 1)}>
-                    {currentPage - 1}
-                  </Button>
+                  <PaginationEllipsis />
                 </PaginationItem>
               }
 
@@ -144,14 +130,6 @@ function SearchResultPagination({
               </PaginationItem>
 
               {currentPage <= totalPages - 2 &&
-                <PaginationItem>
-                  <Button variant="ghost" onClick={() => onPageChange(currentPage + 1)}>
-                    {currentPage + 1}
-                  </Button>
-                </PaginationItem>
-              }
-
-              {currentPage <= totalPages - 3 &&
                 <PaginationItem>
                   <PaginationEllipsis />
                 </PaginationItem>

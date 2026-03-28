@@ -4,10 +4,6 @@ search bar: using searchbarimpl directly temporarily, because somehow the props 
 filter: onsubmit need to somehow capture the search spec to call server action, or set searchparams
   then router.push.
 
-search results: on page change
+proxy: handle redirecting.
 
-serialize Next-js' non-serializable type: e.g. Decimal -> number or string? either way must be consistent.
-
-proxy: handle permission and redirecting.
-
-sidebar: won't close after click an item (on mobile). I did modify the onClick in the SideBarMenuItem, but it's flickering
+server actions: merge server actions for user: account, recently viewed, booking history, favorites.

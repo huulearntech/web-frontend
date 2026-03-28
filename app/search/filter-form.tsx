@@ -9,25 +9,28 @@ import { Accordion, AccordionContent, AccordionTrigger, AccordionItem } from '@/
 
 import { Controller } from 'react-hook-form';
 import {
-  CategoryKey,
   FILTER_CATEGORIES,
-  typedEntries,
   useFilterForm
 } from './filter-form-context';
 
-// TODO: Cleanup fragmentation of min price, max price definitions
-import { minPrice, maxPrice } from './filter-form-context';
-const step = 100_000;
+import { FILTER_MAX_PRICE, FILTER_MIN_PRICE, FILTER_PRICE_STEP } from '@/lib/constants';
 
-export function FilterForm() {
+export function FilterForm({
+  'data-issheet': dataIsSheet = false,
+}: {
+  'data-issheet'?: boolean
+}) {
   const { control } = useFilterForm();
 
   return (
-    <div className="flex flex-col space-y-3 w-full max-w-sm overflow-y-auto px-3" >
+    <div
+      data-issheet={dataIsSheet}
+      className="flex flex-col space-y-3 w-full max-w-sm overflow-y-auto data-[issheet=true]:px-3"
+    >
       <Controller
         control={control}
         name="priceRange"
-        defaultValue={[minPrice, maxPrice]}
+        defaultValue={[FILTER_MIN_PRICE, FILTER_MAX_PRICE]}
         render={({ field: { value: priceRange, onChange: setPriceRange } }) => {
           return (
             <div className="w-full bg-white border border-gray-300 rounded-lg p-4 flex flex-col space-y-3">
@@ -36,9 +39,9 @@ export function FilterForm() {
                 <p className="text-xs text-gray-500 mb-2">1 phòng, 1 đêm</p>
               </div>
               <Slider
-                min={minPrice}
-                max={maxPrice}
-                step={step}
+                min={FILTER_MIN_PRICE}
+                max={FILTER_MAX_PRICE}
+                step={FILTER_PRICE_STEP}
                 value={priceRange}
                 onValueChange={setPriceRange}
               />
@@ -53,9 +56,14 @@ export function FilterForm() {
                     value={priceRange[0]}
                     onChange={e => {
                       const newMin = Number(e.target.value.replace(/[^0-9]/g, ''));
-                      setPriceRange([isNaN(newMin) ? minPrice : newMin, priceRange[1]]);
+                      setPriceRange([isNaN(newMin) ? FILTER_MIN_PRICE : newMin, priceRange[1]]);
                     }}
-                  // onBlur={() => { }} // swap input fields if necessary
+                    onBlur={() => {
+                      // TODO: we should also enforce that the price range values are within the allowed min and max bounds (e.g. if user enters a value less than minPrice or greater than maxPrice, we should reset it to the respective bound). For now, we just ensure that min is not greater than max.
+                      if (priceRange[0] > priceRange[1]) {
+                        setPriceRange([priceRange[1], priceRange[0]]);
+                      }
+                    }}
                   />
                   <div className="h-px w-2 bg-(--color-border) top-1/2 left-1/2 -translate-x-1 absolute" />
                   <Input
@@ -67,14 +75,16 @@ export function FilterForm() {
                     value={priceRange[1]}
                     onChange={e => {
                       const newMax = Number(e.target.value.replace(/[^0-9]/g, ''));
-                      setPriceRange([priceRange[0], isNaN(newMax) ? maxPrice : newMax]);
-                    }} // set values
-                  // onBlur={() => {}}
+                      setPriceRange([priceRange[0], isNaN(newMax) ? FILTER_MAX_PRICE : newMax]);
+                    }}
+                    onBlur={() => {
+                      if (priceRange[0] > priceRange[1]) {
+                        setPriceRange([priceRange[1], priceRange[0]]);
+                      }
+                    }}
                   />
                 </div>
-                <span className="text-right text-xs">VND</span> {/** should I support other currencies?
-               * If so, we might need to add a currency selector and handle currency conversion for the price range. For now, we can assume all prices are in VND and display the currency symbol accordingly.
-               */}
+                <span className="text-right text-xs">VND</span>
               </div>
             </div>
           );
@@ -84,14 +94,13 @@ export function FilterForm() {
       <Accordion
         type="multiple"
         className="flex-col space-y-3"
-        defaultValue={typedEntries(FILTER_CATEGORIES).map(([key]) => key as CategoryKey)}
+        defaultValue={Object.keys(FILTER_CATEGORIES)}
       >
-        {typedEntries(FILTER_CATEGORIES).map(([key, category]) => {
-          const category_index = key as CategoryKey;
+        {Object.entries(FILTER_CATEGORIES).map(([category_key, category]) => {
           return (
             <AccordionItem
-              key={category_index}
-              value={category_index}
+              key={category_key as keyof typeof FILTER_CATEGORIES}
+              value={category_key as keyof typeof FILTER_CATEGORIES}
               className="border rounded-md last:border"
             >
               <AccordionTrigger className="flex px-4 py-3 justify-between items-center text-sm font-bold">
@@ -102,14 +111,14 @@ export function FilterForm() {
                 {/* Controller manages an array of selected option strings for this category */}
                 <Controller
                   control={control}
-                  name={category_index}
+                  name={category_key as keyof typeof FILTER_CATEGORIES}
                   defaultValue={[]}
-                  render={({ field: { value, onChange } }) => (
+                  render={({ field: { value, onChange } }: { field: { value: string[]; onChange: (v: string[]) => void } }) => (
                     <div className="flex flex-col gap-2">
                       {category.options.map((option) => (
                         <div key={option} className="flex items-center">
                           <Checkbox
-                            id={`${category_index}-${option}`}
+                            id={`${category}-${option}`}
                             checked={value.includes(option)}
                             onCheckedChange={(checked) => {
                               if (checked) {
@@ -120,7 +129,7 @@ export function FilterForm() {
                             }}
                           />
                           <Label
-                            htmlFor={`${category_index}-${option}`}
+                            htmlFor={`${category}-${option}`}
                             className="ml-2 text-sm cursor-pointer"
                           >
                             {option}

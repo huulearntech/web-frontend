@@ -7,13 +7,15 @@ import { PATHS } from '@/lib/constants'
 import { tvlk_logo_text_dark } from "@/public/logos"
 import { HeartIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { auth } from '@/auth';
+import { user_getInfoById } from "@/lib/actions/user-account";
 
 import HeaderAvatar from './header-avatar';
+import { auth } from '@/auth';
 
 
 export default async function Header({ className }: { className?: string }) {
   const session = await auth();
+  const user = await user_getInfoById(session?.user.id ?? null);
 
   return (
     <header className={cn("w-full flex items-center bg-white shadow-md z-10 h-20", className)}>
@@ -26,16 +28,12 @@ export default async function Header({ className }: { className?: string }) {
           />
         </Link>
         <div className="flex items-center gap-16">
-          {session?.user ? (
+          {user ? (
             <>
               <Link href={PATHS.favorites}>
                 <HeartIcon className="size-6" strokeWidth={2} />
               </Link>
-              <HeaderAvatar
-                userName={session.user.name || ""}
-                userEmail={session.user.email || ""}
-                userImageSrc={session.user.image || ""}
-              />
+              <HeaderAvatar {...user} />
             </>
           ) : (
             <div className="flex items-center gap-2">

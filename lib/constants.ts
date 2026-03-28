@@ -7,6 +7,14 @@ export const MAX_ROOMS = 10;
 
 export const MAX_HOTELS_ON_MAP_VIEW = 50;
 
+export const FILTER_MIN_PRICE = 100_000;
+export const FILTER_MAX_PRICE = 20_000_000;
+export const FILTER_PRICE_STEP = 100_000;
+
+export const CACHE_TAGS = {
+  userInfo: "user_info",
+}
+
 export const PATHS = {
   home: '/',
   signIn: '/sign-in',

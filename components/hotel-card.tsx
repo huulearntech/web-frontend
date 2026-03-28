@@ -3,24 +3,35 @@
 import Image from "next/image";
 
 import { cn } from "@/lib/utils";
-import { hotel as hotelIcon } from "@/public/icons/index";
+import { HotelCardProps } from "@/app/search/(root)/tmp-action";
 
+import { hotel as hotelIcon } from "@/public/icons/index";
 import { MapPin, Heart, Percent } from "lucide-react";
-import { PATHS } from "@/lib/constants";
-import { HotelCardProps } from "@/lib/definitions";
 
 export default function HotelCard({
   hotel,
-  className
+  className,
+  href,
 }: {
   hotel: HotelCardProps;
   className?: string
+  href: string;
 }) {
-  const { id, name, thumbUrl, reviewPoint, numberOfReviews, wardName, price, facilities, type } = hotel;
+  const {
+    id,
+    name,
+    imageUrls: [thumbUrl],
+    reviewPoints,
+    numberOfReviews,
+    ward: { name: wardName },
+    rooms: [{ price }],
+    facilities,
+    type
+  } = hotel;
 
   return (
     <a
-      href={`${PATHS.hotels}/${id}`}
+      href={href}
       target="_blank"
       rel="noreferrer"
       className={cn("w-full h-fit flex flex-col rounded-lg shadow-md overflow-hidden hover:shadow-primary/50 hover:shadow-md", className)}
@@ -38,7 +49,7 @@ export default function HotelCard({
           {wardName}
         </div>
         <button
-          className="absolute top-1 right-1 p-2 rounded-full bg-black/40 z-10 cursor-pointer"
+          className="absolute top-1 right-1 p-2 rounded-full bg-black/40 cursor-pointer"
           onClick={(e) => {
             e.preventDefault();
             console.log("Add to favorites ", id);
@@ -53,7 +64,7 @@ export default function HotelCard({
           <div className="flex gap-x-1">
             <h3 role="heading" className="grow font-bold line-clamp-2 overflow-hidden overflow-ellipsis">{name}</h3>
             <div className="flex flex-col items-end">
-              <span className="text-xs font-black text-blue-950">{reviewPoint}</span>
+              <span className="text-xs font-black text-blue-950">{reviewPoints}</span>
               <span className="text-xs font-semibold">({numberOfReviews})</span>
             </div>
           </div>
@@ -73,7 +84,7 @@ export default function HotelCard({
               <span key={facility} className="shrink-0 text-[10px] font-semibold px-1 py-0.75 rounded-lg bg-gray-50 whitespace-nowrap overflow-hidden overflow-ellipsis wrap-break-word">{facility}</span>
             ))}
           </div> */}
-          <FacilityBadges facilities={facilities} />
+          <FacilityBadges facilities={facilities.map(f => f.name)} />
         </div>
 
         <div className="flex justify-between items-end">

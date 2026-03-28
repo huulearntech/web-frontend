@@ -3,7 +3,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import { DataTable } from "@/components/data-table";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
-import { type RecentBookingType } from "@/lib/actions/user-history";
+import { type RecentBookingType } from "@/lib/actions/user-account";
 
 function StatusBadge({ status }: { status: string }) {
   const map: Record<string, { text: string; variant: string }> = {

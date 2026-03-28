@@ -1,6 +1,18 @@
 import Link from 'next/link';
 import Image, { StaticImageData } from 'next/image';
-import * as logos from '@/public/logos';
+import * as payment_partners from "@/public/logos/payment-partners";
+import {
+  iata,
+  bst,
+  bct,
+  tvlk_logo_text_light,
+  facebook,
+  instagram,
+  tiktok,
+  youtube,
+  telegram,
+} from '@/public/logos';
+
 
 export default function Footer () {
   return (
@@ -9,38 +21,38 @@ export default function Footer () {
         <div className="flex flex-col space-y-4 lg:w-[35%]">
           {/* Website Logo */}
           <div>
-            <Image src={logos.tvlk_logo_text_light} alt="Traveloka Logo" loading="lazy" />
+            <Image src={tvlk_logo_text_light} alt="Traveloka Logo" loading="lazy" />
             <ul className="inline-flex space-x-4">
-              <li><Image src={logos.iata} alt="IATA Logo" loading="lazy" /> </li>
-              <li><Image src={logos.bst} alt="BST Logo" loading="lazy" /></li>
-              <li><Image src={logos.bct} alt="BCT Logo" loading="lazy" /></li>
+              <li><Image src={iata} alt="IATA Logo" loading="lazy" /> </li>
+              <li><Image src={bst} alt="BST Logo" loading="lazy" /></li>
+              <li><Image src={bct} alt="BCT Logo" loading="lazy" /></li>
             </ul>
           </div>
 
           {/* Payment Partners */}
           <div>
             <h3 className="font-bold mb-2">Đối tác thanh toán</h3>
-            <ul className="grid grid-cols-5 md:grid-cols-7 lg:grid-cols-4 gap-2">
-              <LiPaymentPartner logoSrc={logos.mastercard}/>
-              <LiPaymentPartner logoSrc={logos.visa}/>
-              <LiPaymentPartner logoSrc={logos.jcb}/>
-              <LiPaymentPartner logoSrc={logos.amex}/>
-              <LiPaymentPartner logoSrc={logos.vietqr}/>
-              <LiPaymentPartner logoSrc={logos.momo}/>
-              <LiPaymentPartner logoSrc={logos.techcombank}/>
-              <LiPaymentPartner logoSrc={logos.vp}/>
-              <LiPaymentPartner logoSrc={logos.vib}/>
-              <LiPaymentPartner logoSrc={logos.vietcombank}/>
-              <LiPaymentPartner logoSrc={logos.onepay}/>
-              <LiPaymentPartner logoSrc={logos.mb}/>
-              <LiPaymentPartner logoSrc={logos.hsbc}/>
-              <LiPaymentPartner logoSrc={logos.sacombank}/>
-              <LiPaymentPartner logoSrc={logos.acb}/>
-              <LiPaymentPartner logoSrc={logos.tpbank}/>
-              <LiPaymentPartner logoSrc={logos.vietinbank}/>
-              <LiPaymentPartner logoSrc={logos.bidv}/>
-              <LiPaymentPartner logoSrc={logos.citibank}/>
-              <LiPaymentPartner logoSrc={logos.alepay}/>
+            <ul className="grid grid-cols-4 sm:grid-cols-5 lg:grid-cols-4 gap-2">
+              <LiPaymentPartner logoSrc={payment_partners.mastercard}/>
+              <LiPaymentPartner logoSrc={payment_partners.visa}/>
+              <LiPaymentPartner logoSrc={payment_partners.jcb}/>
+              <LiPaymentPartner logoSrc={payment_partners.amex}/>
+              <LiPaymentPartner logoSrc={payment_partners.vietqr}/>
+              <LiPaymentPartner logoSrc={payment_partners.momo}/>
+              <LiPaymentPartner logoSrc={payment_partners.techcombank}/>
+              <LiPaymentPartner logoSrc={payment_partners.vp}/>
+              <LiPaymentPartner logoSrc={payment_partners.vib}/>
+              <LiPaymentPartner logoSrc={payment_partners.vietcombank}/>
+              <LiPaymentPartner logoSrc={payment_partners.onepay}/>
+              <LiPaymentPartner logoSrc={payment_partners.mb}/>
+              <LiPaymentPartner logoSrc={payment_partners.hsbc}/>
+              <LiPaymentPartner logoSrc={payment_partners.sacombank}/>
+              <LiPaymentPartner logoSrc={payment_partners.acb}/>
+              <LiPaymentPartner logoSrc={payment_partners.tpbank}/>
+              <LiPaymentPartner logoSrc={payment_partners.vietinbank}/>
+              <LiPaymentPartner logoSrc={payment_partners.bidv}/>
+              <LiPaymentPartner logoSrc={payment_partners.citibank}/>
+              <LiPaymentPartner logoSrc={payment_partners.alepay}/>
             </ul>
           </div>
         </div>
@@ -48,7 +60,7 @@ export default function Footer () {
         {/* About Us Section */}
         <div className="mt-8">
           <h3 className="font-bold mb-2 justify-between">Về Traveloka</h3>
-          <ul className="grid grid-cols-5 gap-2 lg:flex lg:flex-col lg:space-y-3 text-sm text-gray-300">
+          <ul className="grid gap-2 grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:flex lg:flex-col lg:space-y-3 text-sm text-gray-300">
             <LiLink text={"Cách đặt chỗ"} />
             <LiLink text={"Liên hệ chúng tôi"} />
             <LiLink text={"Trợ giúp"} />
@@ -60,7 +72,7 @@ export default function Footer () {
         {/* Our productions */}
         <div className="mt-8">
           <h3 className="font-bold mb-2 justify-between">Sản phẩm</h3>
-          <ul className="grid grid-cols-5 gap-2 lg:flex lg:flex-col lg:space-y-3 text-sm text-gray-300">
+          <ul className="grid gap-2 grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:flex lg:flex-col lg:space-y-3 text-sm text-gray-300">
             <LiLink text={"Khách sạn"}/>
             <LiLink text={"Vé máy bay"}/>
             <LiLink text={"Vé xe khách"}/>
@@ -77,12 +89,12 @@ export default function Footer () {
         {/* Social Media Links */}
         <div className="mt-8">
           <h3 className="font-bold mb-2 justify-between">Theo dõi chúng tôi trên</h3>
-            <ul className="grid grid-cols-5 gap-2 lg:flex lg:flex-col lg:space-y-3 text-sm text-gray-300">
-              <LiLink text='Facebook' logoSrc={logos.facebook} />
-              <LiLink text='Instagram' logoSrc={logos.instagram} />
-              <LiLink text='Tiktok' logoSrc={logos.tiktok} />
-              <LiLink text='Youtube' logoSrc={logos.youtube} />
-              <LiLink text='Telegram' logoSrc={logos.telegram} />
+            <ul className="grid gap-2 grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:flex lg:flex-col lg:space-y-3 text-sm text-gray-300">
+              <LiLink text='Facebook' logoSrc={facebook} />
+              <LiLink text='Instagram' logoSrc={instagram} />
+              <LiLink text='Tiktok' logoSrc={tiktok} />
+              <LiLink text='Youtube' logoSrc={youtube} />
+              <LiLink text='Telegram' logoSrc={telegram} />
             </ul>
         </div>
       </div>

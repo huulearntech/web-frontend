@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import * as hotel_partner_logos from "@/public/logos/hotel-partners";
-import * as payment_partner_logos from "@/public/logos";
+import * as payment_partner_logos from "@/public/logos/payment-partners";
 
 import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
 import Autoscroll from "embla-carousel-auto-scroll";
@@ -31,7 +31,7 @@ export default function PartnersSection() {
         >
           <CarouselContent>
             {Object.values(hotel_partner_logos).map((logo, index) => (
-              <CarouselItem key={index} className="basis-1/8 h-10 w-full">
+              <CarouselItem key={index} className="basis-1/8 h-10 w-full flex items-center">
                 <Image
                   src={logo} alt=""
                   className="object-contain m-auto max-w-full max-h-full"
@@ -60,10 +60,10 @@ export default function PartnersSection() {
         >
           <CarouselContent>
             {Object.values(payment_partner_logos).map((logo, index) => (
-              <CarouselItem key={index} className="basis-1/8 w-fit flex justify-center items-center">
+              <CarouselItem key={index} className="basis-1/8 h-10 w-full flex items-center">
                 <Image
                   src={logo} alt=""
-                  className="h-10 w-auto object-contain"
+                  className="object-contain m-auto max-w-full max-h-full"
                 />
               </CarouselItem>
             ))}

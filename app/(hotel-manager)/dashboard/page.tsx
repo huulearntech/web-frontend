@@ -14,12 +14,13 @@ export default function DashboardPage() {
       <DashboardMetricCards />
 
       <section className="flex flex-col gap-y-4" >
-        <div className="bg-white p-3 rounded-lg shadow-sm">
+
+        <RevenueChart />
+
+        <div className="flex flex-col gap-y-4">
           <h2>Upcoming Bookings</h2>
           <UpcomingBooking />
         </div>
-
-        <RevenueChart />
 
         {/** May show occupancy? How? */}
 

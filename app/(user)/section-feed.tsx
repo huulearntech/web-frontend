@@ -47,9 +47,13 @@ export default async function Feed () {
                 {hotels.map((hotel) => (
                   <CarouselItem
                     key={hotel.id}
-                    className="basis-1/2 md:basis-1/3 xl:basis-1/4"
+                    className="min-[512px]:basis-1/2 md:basis-1/3 xl:basis-1/4"
                   >
-                    <HotelCard hotel={hotel} />
+                    <HotelCard
+                      hotel={hotel}
+                      // TODO
+                      href="#"
+                    />
                   </CarouselItem>
                 ))}
               </CarouselContent>

@@ -45,7 +45,7 @@ export default function SearchMapPage() {
           <SearchBarWithFilterTrigger defaultValues={defaultSearchBarValues} />
           <MapClient />
         </div>
-        <FilterSheet hideOverlayOnLg={false} />
+        <FilterSheet data-responsive={false}/>
       </FilterSheetProvider>
     </FilterFormProvider>
   );

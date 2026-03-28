@@ -1,82 +1,74 @@
+// TODO: limiting the number of change name/image attempts within a certain time frame could be a good anti-abuse measure, but for now we'll keep it simple.
+
+import type { Metadata } from "next";
+import Link from "next/link";
+
+import { PATHS } from "@/lib/constants";
+import { user_getInfoById } from "@/lib/actions/user-account";
 import { auth } from "@/auth";
-import { Avatar as AvatarPrimitive } from "radix-ui"
-import { CameraIcon } from "lucide-react";
-import { cn } from "@/lib/utils";
+
+import ChangeNameDialog from "./dialog-change-name";
+import ChangeImageDialog from "./dialog-change-image";
+import { ChevronRightIcon } from "lucide-react";
 
 export default async function AccountPage() {
   const session = await auth();
 
-  if (!session || !session.user) {
-    return null;
-  }
+  const user = await user_getInfoById(session?.user.id ?? null);
+  if (!user) { return null; } // NOTE: redirecting is already handled by proxy.
 
   return (
-    <main className="flex-1">
+    <main>
       <div className="mx-auto flex flex-col items-center gap-y-4 mt-13 px-4 py-3">
-        {/** Shadcn avatar sucks */}
-        <AvatarPrimitive.Root
-          data-slot ="avatar"
-          className= "relative flex size-25 shrink-0 rounded-full select-none"
-        >
-          <AvatarPrimitive.Image
-            data-slot="avatar-image"
-            src={session.user.image || undefined} alt={session.user.name || "User Avatar"}
-            className="aspect-square size-full"
-          />
-          <AvatarPrimitive.Fallback
-            data-slot="avatar-fallback"
-            className="bg-muted text-muted-foreground flex size-full items-center justify-center rounded-full text-sm"
-          >
-            {session.user.name ? session.user.name.toUpperCase() : "U"}
-          </AvatarPrimitive.Fallback>
-          <AvatarBadge
-            data-slot="avatar-badge"
-            // fix right-0 bottom-0 issue
-            className="size-6 //bg-primary-foreground bg-accent text-primary ring-background absolute right-1 bottom-1 z-10 inline-flex items-center justify-center rounded-full ring-2 select-none"
-          >
-            <CameraIcon className="size-4"/>
-          </AvatarBadge>
-        </AvatarPrimitive.Root>
-        {/* <div className="flex flex-col items-center gap-y-1">
-          <h1 className="text-3xl font-medium">{session.user.name}</h1>
-          <p className="font-medium">{session.user.email}</p>
-        </div> */}
+        <ChangeImageDialog name={user.name ?? ""} profileImageUrl={user.profileImageUrl ?? undefined} />
       </div>
-      <div className="flex flex-col items-center gap-y-4 mt-13 px-4 py-3 max-w-xl mx-auto">
-        <div className="flex items-center justify-between w-full rounded-full py-4 px-6 bg-blue-50">
-          <div className="font-semibold">Email</div>
-          <div className="font-medium">{session.user.email}</div>
-        </div>
-        <div className="flex items-center justify-between w-full rounded-full py-4 px-6 bg-blue-50">
-          <div className="font-semibold">Full name</div>
-          <div className="font-medium">{session.user.name}</div>
-        </div>
-        <div className="flex items-center justify-between w-full rounded-full py-4 px-6 bg-blue-50">
-          <div className="font-semibold">Language</div>
-          <div className="font-medium">English</div> {/* Placeholder value */}
-        </div>
-        <div className="flex items-center justify-between w-full rounded-full py-4 px-6 bg-blue-50">
-          <div className="font-semibold">Currency</div>
-          <div className="font-medium">VND</div>
-        </div>
-      </div>
+
+      <ul className="grid w-full max-w-xl gap-3 mx-auto mt-8 px-4">
+        <li>
+          <div
+            className="flex items-center justify-between w-full rounded-lg border bg-card px-4 py-3 shadow-sm transition-colors hover:bg-accent/5"
+            role="group"
+          >
+            <div className="flex flex-col">
+              <span className="text-sm font-medium">Email</span>
+              <span className="text-sm text-muted-foreground">{user.email}</span>
+            </div>
+          </div>
+        </li>
+
+        <ChangeNameDialog originalName={user.name ?? ""} />
+
+        <li>
+          <Link
+            href={PATHS.accountHistory}
+            className="group flex items-center justify-between w-full rounded-lg border bg-card px-4 py-3 shadow-sm transition-colors hover:bg-accent/5"
+          >
+            <div className="flex flex-col">
+              <span className="text-sm font-medium">Booking History</span>
+              <span className="text-sm text-muted-foreground">View your past bookings</span>
+            </div>
+            <ChevronRightIcon className="h-5 w-5 text-muted-foreground transition-transform group-hover:translate-x-1" />
+          </Link>
+        </li>
+
+        <li>
+          <Link
+            href={PATHS.accountRecentlyViewed}
+            className="group flex items-center justify-between w-full rounded-lg border bg-card px-4 py-3 shadow-sm transition-colors hover:bg-accent/5"
+          >
+            <div className="flex flex-col">
+              <span className="text-sm font-medium">Watched Recently</span>
+              <span className="text-sm text-muted-foreground">Quick access to recently viewed items</span>
+            </div>
+            <ChevronRightIcon className="h-5 w-5 text-muted-foreground transition-transform group-hover:translate-x-1" />
+          </Link>
+        </li>
+      </ul>
     </main>
   );
 }
 
-
-function AvatarBadge({ className, ...props }: React.ComponentProps<"span">) {
-  return (
-    <span
-      data-slot="avatar-badge"
-      className={cn(
-        "bg-primary text-primary-foreground ring-background absolute right-0 bottom-0 z-10 inline-flex items-center justify-center rounded-full ring-2 select-none",
-        "group-data-[size=sm]/avatar:size-2 group-data-[size=sm]/avatar:[&>svg]:hidden",
-        "group-data-[size=default]/avatar:size-2.5 group-data-[size=default]/avatar:[&>svg]:size-2",
-        "group-data-[size=lg]/avatar:size-3 group-data-[size=lg]/avatar:[&>svg]:size-2",
-        className
-      )}
-      {...props}
-    />
-  )
+export const metadata: Metadata = {
+  title: 'Account Settings',
+  description: 'Manage your account settings and preferences.',
 }

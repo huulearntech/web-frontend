@@ -268,7 +268,7 @@ export function SearchBarImpl({
                         </FormControl>
                         <Button
                           onClick={() => setGuests({ numRooms: field.value.numRooms + 1 })}
-                          disabled={field.value.numRooms >= Math.max(field.value.numAdults, MAX_ROOMS)}
+                          disabled={field.value.numRooms >= Math.min(field.value.numAdults, MAX_ROOMS)}
                           className="flex size-6 items-center justify-center rounded-full"
                         >
                           <Plus className="size-4" />

@@ -30,19 +30,14 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar"
 
-import { signOut } from "next-auth/react"
+import { signOut, useSession } from "next-auth/react"
 import { PATHS } from "@/lib/constants"
 
-import type { User } from "next-auth"
-
-export function NavUser({
-  user,
-}: {
-  user: User
-}) {
+export function NavUser() {
   const { isMobile } = useSidebar()
-  
-  if (!user) return null;
+  const { data: session } = useSession();
+  if (!session?.user) return null; // proxy already handled this.
+  const user = session.user;
 
   return (
     <SidebarMenu>

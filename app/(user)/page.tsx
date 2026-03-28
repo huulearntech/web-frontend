@@ -1,7 +1,6 @@
 import HeroSection from "./section-hero";
 import WhyUsSection from "./section-why-us";
 import Feed from "./section-feed";
-import CouponSection from "./section-coupon";
 import PartnersSection from "./section-partner";
 import TopDestinationsSection from "./section-top-destinations";
 
@@ -11,7 +10,6 @@ export default function Home() {
       <HeroSection />
       <WhyUsSection />
       <Feed />
-      <CouponSection />
       <PartnersSection />
       <TopDestinationsSection />
     </main>

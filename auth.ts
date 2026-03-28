@@ -5,10 +5,8 @@ import { schemaSignIn } from "@/lib/zod_schemas/auth";
 import { PATHS } from './lib/constants';
 
 import NextAuth, { type NextAuthConfig } from "next-auth";
-import { PrismaAdapter } from "@auth/prisma-adapter";
 
 export const nextAuthConfig = {
-  // adapter: PrismaAdapter(prisma),
   session: { strategy: "jwt" },
   providers: [
     Credentials({
@@ -52,16 +50,22 @@ export const nextAuthConfig = {
     }),
   ],
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user, trigger, session }) {
       if (user) {
-        token.id = user.id!;
+        token.id = user.id;
         token.role = user.role;
+      }
+      if (trigger === "update" && session?.name) {
+        token.name = session.name;
       }
       return token;
     },
     async session({ session, token }) {
-      session.user.id = token.id;
-      session.user.role = token.role;
+      if (session.user) {
+        session.user.id = token.id;
+        session.user.role = token.role;
+        session.user.name = token.name;
+      }
       return session;
     },
 

@@ -19,7 +19,7 @@ export default function Filter() {
   return (
     <FilterFormProvider>
       <Filter__Desktop />
-      <Filter__Mobile className='overflow-y-auto lg:hidden' hideOverlayOnLg/>
+      <Filter__Mobile />
     </FilterFormProvider>
   );
 };
@@ -39,16 +39,19 @@ export function Filter__Mobile({
   side = 'left',
   children,
   showCloseButton = false,
-  hideOverlayOnLg = true,
+  'data-responsive': dataResponsive = true,
   ...props
 }: React.ComponentProps<typeof SheetContent> & {
   side?: "top" | "right" | "bottom" | "left"
   showCloseButton?: boolean
-  hideOverlayOnLg?: boolean
+  'data-responsive'?: boolean
 }) {
   return (
     <SheetPortal>
-      <SheetOverlay className={cn("z-1001", hideOverlayOnLg && "lg:hidden" )} />
+      <SheetOverlay
+        data-responsive={dataResponsive}
+        className={cn("z-1001 data-[responsive=true]:lg:hidden")}
+      />
       <SheetContent
         data-slot="sheet-content"
         className={cn(
@@ -61,7 +64,7 @@ export function Filter__Mobile({
           "data-[state=closed]:slide-out-to-top data-[state=open]:slide-in-from-top inset-x-0 top-0 h-auto border-b",
           side === "bottom" &&
           "data-[state=closed]:slide-out-to-bottom data-[state=open]:slide-in-from-bottom inset-x-0 bottom-0 h-auto border-t",
-          "z-1002",
+          "z-1002 data-[responsive=true]:lg:hidden",
           className
         )}
         {...props}
@@ -74,7 +77,7 @@ export function Filter__Mobile({
           <SheetDescription className='sr-only' > Tuỳ chỉnh bộ lọc tìm kiếm của bạn </SheetDescription>
         </SheetHeader>
 
-        <FilterForm />
+        <FilterForm data-issheet={true} />
 
         <SheetFooter className='sticky bottom-0 left-0 right-0 backdrop-blur-md bg-white/20 z-10'>
           <FilterForm__Reset_and_Apply_Buttons />

@@ -1,5 +1,5 @@
 import BookingsTable from "./bookings-table";
-import { fetchRecentBookings } from "@/lib/actions/user-history";
+import { fetchRecentBookings } from "@/lib/actions/user-account";
 
 
 export default async function AccountHistoryPage() {

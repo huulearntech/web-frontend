@@ -1,5 +1,5 @@
 import HotelCard from "@/components/hotel-card";
-import { fetchHotelsRecentlyViewedByUser } from "@/lib/actions/user-recently-viewed";
+import { fetchHotelsRecentlyViewedByUser } from "@/lib/actions/user-account/recently-viewed";
 
 // TODO: Replace hotelcard with hotelcard copy
 export default async function AccountRecentlyViewedPage() {
@@ -17,7 +17,8 @@ export default async function AccountRecentlyViewedPage() {
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {hotelsRecentlyViewedByUser.map(hotel => <HotelCard key={hotel.id} hotel={hotel} />)}
+            { // TODO: href
+            hotelsRecentlyViewedByUser.map(hotel => <HotelCard key={hotel.id} hotel={hotel} href="#"/>)}
           </div>
         )}
       </div>

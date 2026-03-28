@@ -1,3 +1,7 @@
+// Shadcn's sidebar will flicker if I call setOpenMobile(false)
+// onClick of the SidebarMenuButton. Typical cucky javashit library.
+// So don't bother do that.
+
 "use client"
 
 import { ComponentProps } from "react"
@@ -5,7 +9,6 @@ import {
   BarChartBigIcon,
   LayoutDashboardIcon,
   TicketsIcon,
-  UsersIcon,
   DoorOpenIcon as RoomIcon,
 } from "lucide-react"
 
@@ -22,7 +25,6 @@ import {
 import { NavMain } from "./nav-main"
 import { NavUser } from "./nav-user"
 
-import { useSession } from "next-auth/react"
 import { PATHS } from "@/lib/constants"
 import Image from "next/image"
 import { tvlk_favicon, tvlk_logo_text_dark } from "@/public/logos"
@@ -51,24 +53,14 @@ const navMain = [
   },
 ];
 
-// TODO: use user from serverside session.
-export default function DashboardSidebar({
-  ...props
-}: ComponentProps<typeof Sidebar>) {
-
-  const { data: session } = useSession();
-  if (!session?.user) {
-    return null; // or a loading state, or a redirect to login
-  }
-  const user = session.user;
-
+export default function DashboardSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton
-              asChild
+              // asChild
               className="data-[slot=sidebar-menu-button]:py-0! group-data-[collapsible=icon]:p-0! flex items-center h-8"
             >
               <Link href={PATHS.hotelDashboard}>
@@ -86,7 +78,7 @@ export default function DashboardSidebar({
         <NavMain items={navMain} />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={user} />
+        <NavUser />
       </SidebarFooter>
     </Sidebar>
   );

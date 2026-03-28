@@ -16,9 +16,6 @@ model Booking {
   bookingRooms BookingRoom[]
   review      Review?        // optional review for this booking (one review per booking)
 
-  // TODO: add coupon(s)
-  // coupons     Coupon[]       @relation("BookingCoupons", references: [id])
-
   createdAt   DateTime       @default(now())
   updatedAt   DateTime       @updatedAt
 
@@ -67,21 +64,4 @@ enum BookingStatus {
   CONFIRMED
   CANCELLED
   COMPLETED
-}
-
-// TODO: consider remove this to reduce complexity of this project.
-model Coupon {
-  id          String   @id @default(cuid())
-  code        String   @unique
-  description String?
-  discountPct Int
-  validFrom   DateTime
-  validTo     DateTime
-  usageLimit  Int?     // null means unlimited
-  usedCount   Int      @default(0)
-
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  @@map("coupons")
 }

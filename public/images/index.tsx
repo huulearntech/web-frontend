@@ -1,6 +1,3 @@
-import check_list from './check-list.webp';
-import luggage from './luggage.webp';
-import shield from './shield.webp';
 import hero_image from './hero-image.jpeg';
 
 import bg_dalat from './bg-dalat.jpeg';
@@ -18,9 +15,6 @@ import bg_vungtau from './bg-vungtau.jpeg';
 
 
 export {
-  check_list,
-  luggage,
-  shield,
   hero_image,
   bg_dalat,
   bg_danang,
