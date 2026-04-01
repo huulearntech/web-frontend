@@ -10,6 +10,7 @@ import {
   LayoutDashboardIcon,
   TicketsIcon,
   DoorOpenIcon as RoomIcon,
+  CircleStarIcon
 } from "lucide-react"
 
 import {
@@ -51,6 +52,11 @@ const navMain = [
     url: PATHS.hotelBookings,
     icon: TicketsIcon,
   },
+  {
+    title: "Reviews",
+    url: PATHS.hotelReviews,
+    icon: CircleStarIcon,
+  }
 ];
 
 export default function DashboardSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
@@ -60,7 +66,7 @@ export default function DashboardSidebar({ ...props }: ComponentProps<typeof Sid
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton
-              // asChild
+              asChild
               className="data-[slot=sidebar-menu-button]:py-0! group-data-[collapsible=icon]:p-0! flex items-center h-8"
             >
               <Link href={PATHS.hotelDashboard}>

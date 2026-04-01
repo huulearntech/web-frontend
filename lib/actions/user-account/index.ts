@@ -1,3 +1,4 @@
+// FIXME: There is a lot of ambiguity in naming.
 "use server";
 
 import prisma from "@/lib/prisma";
@@ -68,7 +69,7 @@ export async function updateUserName(newName: string): Promise<UpdateUserNameRes
 }
 
 import { revalidatePath, revalidateTag, unstable_cache } from "next/cache";
-import { CACHE_TAGS, PATHS } from "../../constants";
+import { CACHE_TAGS, PATHS } from "@/lib/constants";
 
 export const user_getInfoById = unstable_cache(
   async (userId: string | null) => {
@@ -82,3 +83,20 @@ export const user_getInfoById = unstable_cache(
   [],
   { tags: [CACHE_TAGS.userInfo] }
 );
+
+export async function user_createOrUpdateAvatarUrl(avatarUrl: string) {
+  const session = await auth();
+  if (!session?.user) {
+    throw new Error("Unauthorized");
+  }
+
+  return prisma.user.update({
+    where: { id: session.user.id },
+    data: { profileImageUrl: avatarUrl },
+    select: { profileImageUrl: true },
+  }).then(result => {
+    revalidateTag(CACHE_TAGS.userInfo, 'max');
+    revalidatePath(PATHS.account);
+    return result;
+  });
+}

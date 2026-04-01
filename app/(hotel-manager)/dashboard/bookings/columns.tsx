@@ -30,15 +30,13 @@ export const columns: ColumnDef<BookingSerialized>[] = [
     header: () => <div className="inline-flex gap-1 items-center">Check-in <ArrowRight className="size-4" /> Check-out</div>,
     cell: ({ row }) => {
       const { startDate, endDate } = row.original;
-      const start = new Date(startDate);
-      const end = new Date(endDate);
       const opts: Intl.DateTimeFormatOptions = {
         year: "numeric",
         month: "short",
         day: "numeric",
       };
-      const formattedStart = start.toLocaleDateString("en-US", opts);
-      const formattedEnd = end.toLocaleDateString("en-US", opts);
+      const formattedStart = startDate.toLocaleDateString("en-US", opts);
+      const formattedEnd = endDate.toLocaleDateString("en-US", opts);
       return <div className="inline-flex gap-1 items-center">
         {formattedStart}
         <ArrowRight className="size-4" />
@@ -79,9 +77,9 @@ export const columns: ColumnDef<BookingSerialized>[] = [
     cell: ({ row }) => {
       const colorForStatus: Record<BookingStatus, string> = {
         PENDING: "bg-yellow-100 text-yellow-700",
-        COMPLETED: "bg-green-100 text-green-700",
+        COMPLETED: "bg-blue-100 text-blue-700",
         CANCELLED: "bg-red-100 text-red-700",
-        CONFIRMED: "bg-blue-100 text-blue-700",
+        CONFIRMED: "bg-green-100 text-green-700",
       } as const;
       const status = row.original.status;
       const cls = colorForStatus[status] || "bg-gray-100 text-gray-700";
@@ -121,40 +119,3 @@ export const columns: ColumnDef<BookingSerialized>[] = [
     },
   }
 ]
-
-// {
-//   id: "actions",
-//   header: "Actions",
-//   cell: ({ row }) => (
-//     <DropdownMenu modal={false}>
-//       <DropdownMenuTrigger asChild>
-//         <Button size="sm" variant="ghost" aria-label="Open actions">
-//           <MoreHorizontal className="h-4 w-4" />
-//         </Button>
-//       </DropdownMenuTrigger>
-//       <DropdownMenuContent align="end">
-//         <DropdownMenuItem onClick={() => console.log("check-in", row.original.id)}>
-//           <Check className="mr-2 h-4 w-4" />
-//           Check-in
-//         </DropdownMenuItem>
-//         <DropdownMenuItem onClick={() => console.log("cancel", row.original.id)}>
-//           <X className="mr-2 h-4 w-4" />
-//           Cancel
-//         </DropdownMenuItem>
-//         <DropdownMenuItem
-//           onClick={async () => {
-//             try {
-//               await navigator.clipboard.writeText(row.original.id);
-//               console.log("copied", row.original.id);
-//             } catch (e) {
-//               console.error(e);
-//             }
-//           }}
-//         >
-//           <Copy className="mr-2 h-4 w-4" />
-//           Copy ID
-//         </DropdownMenuItem>
-//       </DropdownMenuContent>
-//     </DropdownMenu>
-//   ),
-// },

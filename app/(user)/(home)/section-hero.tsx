@@ -1,5 +1,6 @@
 import Image from "next/image"
-import { SearchBarImpl } from "@/components/search-bar"
+// TODO: clean up the search bar
+import { SearchBar__NonCollapsible } from "@/components/search-bar"
 import { hero_image } from "@/public/images"
 import beach from "@/public/images/beach.webp"
 
@@ -31,8 +32,8 @@ export default function HeroSection() {
           </h1> <h2 className="text-white">
             Khám phá nhiều lựa chọn từ khách sạn, biệt thự, resort và hơn thế nữa
           </h2>
-          {/** fix always true isDesktop -> dual calendar */}
-          <SearchBarImpl isDesktop className="w-full bg-white text-primary placeholder:text-secondary p-6 rounded-4xl border mt-4 lg:absolute lg:inset-x-0" />
+          {/* <SearchBarImpl isDesktop className="w-full bg-white text-primary placeholder:text-secondary p-6 rounded-4xl border mt-4 lg:absolute lg:inset-x-0" /> */}
+          <SearchBar__NonCollapsible className="bg-white text-primary placeholder:text-secondary p-6 rounded-4xl border mt-4 lg:absolute lg:inset-x-0" />
         </div>
       </div>
     </section>

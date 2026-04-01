@@ -3,12 +3,11 @@
 import { auth } from "@/auth";
 import prisma from "@/lib/prisma";
 
-export async function fetchHotelsRecentlyViewedByUser() {
+import { HotelCardProps } from "@/app/search/(root)/tmp-action";
+
+export async function user_getRecentlyViewedHotels() {
   const session = await auth();
-  if (session?.user.role !== "USER") {
-    // TODO: could show a "not authorized" message instead of just hiding the component
-    return [];
-  }
+  if (session?.user.role !== "USER") return [];
 
   return prisma.recentlyViewed.findMany({
     where: { userId: session.user.id },
@@ -21,7 +20,7 @@ export async function fetchHotelsRecentlyViewedByUser() {
           imageUrls: true,
           reviewPoints: true,
           numberOfReviews: true,
-          ward: { select: { name: true } },
+          ward: { select: { name: true, district: { select: { province: { select: { name: true } } } } } },
           facilities: { select: { name: true } },
           rooms: { select: { price: true }, orderBy: { price: "asc" }, take: 1 },
           type: true,
@@ -32,5 +31,5 @@ export async function fetchHotelsRecentlyViewedByUser() {
   }).then(recentlyViewedEntries => recentlyViewedEntries.map(entry => ({
     ...entry.hotel,
     rooms: entry.hotel.rooms.map(r => ({ ...r, price: r.price.toString() })),
-  })));
+  } as HotelCardProps)));
 }

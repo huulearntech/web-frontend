@@ -6,16 +6,18 @@ import { cn } from "@/lib/utils";
 import { HotelCardProps } from "@/app/search/(root)/tmp-action";
 
 import { hotel as hotelIcon } from "@/public/icons/index";
-import { MapPin, Heart, Percent } from "lucide-react";
+import { MapPin, Heart } from "lucide-react";
 
 export default function HotelCard({
   hotel,
   className,
   href,
+  showWardAtTopLeft = true,
 }: {
   hotel: HotelCardProps;
   className?: string
   href: string;
+  showWardAtTopLeft?: boolean;
 }) {
   const {
     id,
@@ -23,7 +25,7 @@ export default function HotelCard({
     imageUrls: [thumbUrl],
     reviewPoints,
     numberOfReviews,
-    ward: { name: wardName },
+    ward: { name: wardName, district: { province: { name: provinceName } } },
     rooms: [{ price }],
     facilities,
     type
@@ -34,20 +36,22 @@ export default function HotelCard({
       href={href}
       target="_blank"
       rel="noreferrer"
-      className={cn("w-full h-fit flex flex-col rounded-lg shadow-md overflow-hidden hover:shadow-primary/50 hover:shadow-md", className)}
+      className={cn("w-full min-h-106 flex flex-col rounded-lg shadow-md overflow-hidden hover:shadow-primary/50 hover:shadow-md", className)}
     >
       <div className="relative h-50 overflow-hidden">
         <Image
           src={thumbUrl}
           alt={name}
-          className="absolute object-cover w-100 h-75"
+          className="absolute object-cover w-100 h-75 inset-0"
           fill
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
         />
-        <div className="absolute top-0 left-0 bg-black/40 text-primary-foreground inline-flex rounded-br-lg items-center px-2 py-1 text-sm font-semibold">
-          <MapPin className="size-4 mr-1" />
-          {wardName}
-        </div>
+        {showWardAtTopLeft &&
+          <div className="absolute top-0 left-0 bg-black/40 text-primary-foreground inline-flex rounded-br-lg items-center px-2 py-1 text-sm font-semibold">
+            <MapPin className="size-4 mr-1" />
+            {wardName}
+          </div>
+        }
         <button
           className="absolute top-1 right-1 p-2 rounded-full bg-black/40 cursor-pointer"
           onClick={(e) => {
@@ -76,23 +80,16 @@ export default function HotelCard({
 
           <div className='flex items-center space-x-1 ml-1'>
             <MapPin className="size-3" strokeWidth={3} />
-            <span className="text-xs font-semibold whitespace-nowrap overflow-hidden overflow-ellipsis flex-1">{wardName}</span>
+            <span className="text-xs font-semibold whitespace-nowrap overflow-hidden overflow-ellipsis flex-1">
+              {(!showWardAtTopLeft ? (wardName + ", ") : "") + provinceName}
+            </span>
           </div>
 
-          {/* <div className='flex items-center space-x-2 overflow-clip'>
-            {facilities.map(facility => (
-              <span key={facility} className="shrink-0 text-[10px] font-semibold px-1 py-0.75 rounded-lg bg-gray-50 whitespace-nowrap overflow-hidden overflow-ellipsis wrap-break-word">{facility}</span>
-            ))}
-          </div> */}
           <FacilityBadges facilities={facilities.map(f => f.name)} />
         </div>
 
         <div className="flex justify-between items-end">
           <div className="flex flex-col w-full gap-y-1">
-            <div className="max-w-fit flex gap-1 rounded-full py-1 px-1.5 bg-primary text-primary-foreground items-center">
-              <Percent className="size-3.5" aria-hidden />
-              <span className="overflow-hidden overflow-ellipsis whitespace-nowrap text-xs">Sale cuoi nam</span>
-            </div>
             <div className="text-sm line-through">{price} VND</div>
             <div className="font-bold text-orange-600">{price} VND</div>
 
@@ -106,7 +103,7 @@ export default function HotelCard({
             </div>
           </div>
           <button className="font-bold bg-orange-600 text-primary-foreground px-3 py-2 rounded-[0.375rem] text-sm">
-            Select
+            Xem
           </button>
         </div>
       </div>
@@ -173,8 +170,8 @@ function FacilityBadges({ facilities }: { facilities: string[] }) {
 
   return (
     <Tooltip>
-      {/* Visible */}
-      <div ref={containerRef} className="flex items-center space-x-2 overflow-clip">
+      {/** Hiển thị */}
+      <div ref={containerRef} aria-hidden className="flex items-center space-x-2 overflow-clip">
         {facilities.slice(0, visibleCount).map((facility) => (
           <span key={facility} className="shrink-0 text-[10px] font-semibold px-1 py-0.75 rounded-lg bg-gray-50">
             {facility}
@@ -190,9 +187,8 @@ function FacilityBadges({ facilities }: { facilities: string[] }) {
         )}
       </div>
 
-      {/* Hidden measurement layer */}
-      {/** Lieu co the tan dung cai nay cho screen reader ko? */}
-      <div ref={measureRef} className="absolute invisible h-0 overflow-hidden whitespace-nowrap">
+      {/** Ẩn, tận dụng cho screen reader luôn */}
+      <div ref={measureRef} className="absolute sr-only h-0 overflow-hidden whitespace-nowrap">
         {facilities.map((facility, i) => (
           <span key={i} className="shrink-0 text-[10px] font-semibold px-1 py-0.75 rounded-lg bg-gray-50">
             {facility}
@@ -200,8 +196,7 @@ function FacilityBadges({ facilities }: { facilities: string[] }) {
         ))}
       </div>
 
-      {/* Tooltip content */}
-      <TooltipContent>
+      <TooltipContent aria-hidden>
         <div className="flex flex-col space-y-1">
           {facilities.map((facility, i) => (
             <span key={i} className="text-sm font-medium">

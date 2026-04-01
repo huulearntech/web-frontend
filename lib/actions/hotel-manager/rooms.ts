@@ -4,11 +4,17 @@ import prisma from "@/lib/prisma";
 import { auth } from "@/auth";
 import { z } from "zod";
 
-import { RoomFormOutput, RoomFormSchema, MultiRoomFormOutput, MultiRoomFormSchema } from "@/lib/zod_schemas/create-room";
+import { RoomFormSchema, MultiRoomFormOutput } from "@/lib/zod_schemas/create-room";
 
-export async function deleteRoomAction(id: string) {
+export async function hotelowner_deleteRoomById(id: string) {
+  const session = await auth();
+  if (session?.user.role !== "HOTEL_OWNER") {
+    throw new Error("Unauthorized");
+  }
+
+  // TODO: handle errors properly.
   const res = await prisma.room.delete({
-    where: { id },
+    where: { id, hotel: { ownerId: session.user.id } },
   }).then(() => ({ ok: true, message: null })).catch((err) => ({ ok: false, message: err.message }));
   
   if (!res.ok) {
@@ -17,7 +23,12 @@ export async function deleteRoomAction(id: string) {
   return;
 }
 
-export async function updateRoomAction(id: string, data: any) {
+export async function hotelowner_updateRoomById(id: string, data: any) {
+  const session = await auth();
+  if (!session?.user) {
+    throw new Error("Unauthorized");
+  }
+
   const parsedData = RoomFormSchema.safeParse(data);
   if (!parsedData.success) {
     console.error("Validation errors:", z.treeifyError(parsedData.error));
@@ -33,30 +44,7 @@ export async function updateRoomAction(id: string, data: any) {
 }
 
 // TODO: Handle errors properly, do not throw because it makes DX bad.
-export async function createRoomAction(formData: RoomFormOutput) {
-  const session = await auth();
-  if (!session?.user) {
-    throw new Error("Unauthorized");
-  }
-  const hotel = await prisma.hotel.findUnique({
-    where: { ownerId: session.user.id },
-    select: { id: true },
-  });
-  if (!hotel) {
-    throw new Error("Hotel not found for the current user");
-  }
-
-  // TODO: Handle errors + Revalidate rooms page after creation.
-  await prisma.room.create({
-    data: {
-      ...formData,
-      hotelId: hotel.id,
-    },
-  });
-}
-
-// TODO: Handle errors properly, do not throw because it makes DX bad.
-export async function createManyRoomsAction(formData: MultiRoomFormOutput) {
+export async function hotelowner_createManyRooms(formData: MultiRoomFormOutput) {
   const session = await auth();
   if (!session?.user) {
     throw new Error("Unauthorized");
@@ -79,7 +67,7 @@ export async function createManyRoomsAction(formData: MultiRoomFormOutput) {
 }
 
 
-export async function getRoomById(roomId: string) {
+export async function hotelowner_getRoomById(roomId: string) {
   const session = await auth();
 
   // TODO: handle
@@ -96,7 +84,7 @@ export async function getRoomById(roomId: string) {
   });
 }
 
-export async function fetchRoomsForHotelManager() {
+export async function hotelowner_getRooms() {
   const session = await auth();
   if (session?.user?.role !== "HOTEL_OWNER") {
     throw new Error("Unauthorized");
@@ -124,4 +112,4 @@ export async function fetchRoomsForHotelManager() {
 }
 
 // TODO: clean up
-export type RoomSerialized = Omit<NonNullable<Awaited<ReturnType<typeof fetchRoomsForHotelManager>>[number]>, "price"> & { price: string };
+export type RoomSerialized = Omit<NonNullable<Awaited<ReturnType<typeof hotelowner_getRooms>>[number]>, "price"> & { price: string };

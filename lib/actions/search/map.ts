@@ -1,20 +1,5 @@
 "use server";
 import prisma from "@/lib/prisma";
-import type { Prisma } from "@/lib/generated/prisma/client";
-
-const defaultSearchHotelsByBBoxParams = {
-  select: {
-    id: true,
-    name: true,
-    rooms: { select: { price: true }, take: 1, orderBy: { price: "asc" } },
-    reviewPoints: true,
-    numberOfReviews: true,
-    imageUrls: true,
-    latitude: true,
-    longitude: true,
-  },
-  take: 50,
-} as const;
 
 export type BBox = {
   west: number;
@@ -22,22 +7,8 @@ export type BBox = {
   east: number;
   north: number;
 }
-type SearchHotelsByBBoxRow = Prisma.HotelGetPayload<typeof defaultSearchHotelsByBBoxParams>;
 
-function serializeSearchHotelsByBBoxResult(hotel: SearchHotelsByBBoxRow) {
-  return {
-    id: hotel.id,
-    name: hotel.name,
-    price: hotel.rooms[0]?.price.toNumber() ?? null, // price of the cheapest room or null if no rooms
-    reviewPoints: hotel.reviewPoints,
-    numberOfReviews: hotel.numberOfReviews,
-    imageUrl: hotel.imageUrls[0] ?? null, // use the first image as thumbnail
-    latitude: hotel.latitude,
-    longitude: hotel.longitude,
-  }
-}
-
-export async function searchHotelsByBBox(bbox: BBox) {
+export async function getHotelsByBoundingBox(bbox: BBox) {
   const { west, south, east, north } = bbox;
 
   const where =
@@ -52,11 +23,27 @@ export async function searchHotelsByBBox(bbox: BBox) {
           OR: [{ longitude: { gte: west } }, { longitude: { lte: east } }],
         };
 
-  const hotels = await prisma.hotel
-    .findMany(defaultSearchHotelsByBBoxParams)
-    .then(hotels => hotels.map(serializeSearchHotelsByBBoxResult));
+  const hotels = await prisma.hotel.findMany({
+    take: 50,
+    where,
+    select: {
+      id: true,
+      name: true,
+      rooms: { select: { price: true }, take: 1, orderBy: { price: "asc" } },
+      reviewPoints: true,
+      numberOfReviews: true,
+      imageUrls: true,
+      latitude: true,
+      longitude: true,
+    },
+  }).then(hotels => hotels.map(hotel => ({
+    ...hotel,
+    price: hotel.rooms[0].price.toString() ?? "",
+    thumbnailUrl: hotel.imageUrls[0] ?? null,
+    rooms: undefined, // remove rooms from the result since we only needed the price
+  })));
 
   return hotels;
 }
 
-export type SearchHotelsByBBoxResult = Awaited<ReturnType<typeof searchHotelsByBBox>>[number];
+export type Map_HotelCardProps = Awaited<ReturnType<typeof getHotelsByBoundingBox>>[number];

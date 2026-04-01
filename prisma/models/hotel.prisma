@@ -24,6 +24,8 @@ model Hotel {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
+  status      HotelStatus @default(ACTIVE)
+
   rooms            Room[]
   facilities       Facility[]
   favoritedBy      Favorite[]
@@ -43,6 +45,14 @@ enum HotelType {
   APARTMENT
   HOSTEL
   OTHER
+}
+
+// FIXME: may need more statuses (e.g., PENDING_APPROVAL, SUSPENDED, etc.)
+enum HotelStatus {
+  ACTIVE
+  INACTIVE
+  UNDER_REVIEW
+  REJECTED
 }
 
 enum FacilityType {

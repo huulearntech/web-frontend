@@ -1,4 +1,3 @@
-// TODO: read check log
 'use client';
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -19,40 +18,41 @@ import { Input } from "@/components/ui/input";
 import { updateUserName } from "@/lib/actions/user-account";
 import { useTransition } from "react";
 import { toast } from "sonner";
+import { zodResolver } from "@hookform/resolvers/zod";
+import z from "zod";
 
 export default function ChangeNameDialog({ originalName }: { originalName: string }) {
   const [name, setName] = useState(originalName);
   const [open, setOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
 
-  const { register, handleSubmit, formState: { errors } } = useForm<{ name: string }>({
-    defaultValues: { name: originalName },
+  const { register, handleSubmit, formState: { errors } } = useForm<{ newName: string }>({
+    resolver: zodResolver(z.object({
+      newName: z.string().trim().min(1, "Name cannot be empty").max(100, "Name is too long"),
+    })),
+    defaultValues: { newName: originalName },
   });
 
-  const onSubmit = (data: { name: string }) => {
-    const newName = data.name.trim();
-    if (!newName) {
-      toast.error("Name cannot be empty");
-      return;
-    }
-
+  const onSubmit = ({ newName }: { newName: string }) => {
     const previousName = name;
+
     // Optimistically update UI
     setName(newName);
     setOpen(false);
 
-    // Perform async update in a transition
     startTransition(async () => {
       try {
         const res = await updateUserName(newName);
-        if (!res.success) {
+        if (!res?.success) {
+          // rollback on failure
           setName(previousName);
-          toast.error(res.error);
+          toast.error(res?.error ?? "Failed to update name");
           return;
         }
 
         toast.success("Name updated");
-      } catch (err) { // Network/unexpected errors
+      } catch {
+        // rollback on network/unexpected errors
         setName(previousName);
         toast.error("Failed to update name");
       }
@@ -64,7 +64,7 @@ export default function ChangeNameDialog({ originalName }: { originalName: strin
       <DialogTrigger asChild>
         <li>
           <div
-           className="group flex items-center justify-between w-full rounded-lg border bg-card px-4 py-3 shadow-sm transition-colors hover:bg-accent/5"
+           className="group flex items-center justify-between w-full rounded-lg border bg-card px-4 py-3 shadow-sm transition-colors hover:bg-accent/5 cursor-pointer"
            role="group"
            >
             <div className="flex flex-col">
@@ -84,10 +84,10 @@ export default function ChangeNameDialog({ originalName }: { originalName: strin
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <Input
-            {...register("name", { required: true })}
+            {...register("newName", { required: true })}
             placeholder="Enter your full name"
           />
-          {errors.name && (
+          {errors.newName && (
             <p className="text-sm text-red-500">Name is required</p>
           )}
 

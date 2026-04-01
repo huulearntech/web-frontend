@@ -1,4 +1,4 @@
-import { formSchema } from "@/lib/zod_schemas/search-bar";
+import { SearchBarFormSchema } from "@/lib/zod_schemas/search-bar";
 import z from "zod";
 
 export type SearchParams = {
@@ -23,9 +23,9 @@ export const SearchParamsCodec = z.codec(
     numChildren: z.string(),
     numRooms: z.string(),
   }),
-  formSchema,
+  SearchBarFormSchema,
   {
-  encode(data: z.infer<typeof formSchema>) {
+  encode(data: z.infer<typeof SearchBarFormSchema>) {
     return {
       location: data.location,
       fromDate: data.inOutDates.from.toISOString(),
@@ -36,7 +36,7 @@ export const SearchParamsCodec = z.codec(
     };
   },
 
-  decode(input: SearchParams): z.infer<typeof formSchema> {
+  decode(input: SearchParams): z.infer<typeof SearchBarFormSchema> {
     const {
       location,
       fromDate,
@@ -46,7 +46,7 @@ export const SearchParamsCodec = z.codec(
       numRooms,
     } = input;
 
-    return formSchema.parse({
+    return SearchBarFormSchema.parse({
       location,
       inOutDates: {
         from: new Date(fromDate),

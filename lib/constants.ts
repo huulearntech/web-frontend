@@ -34,6 +34,7 @@ export const PATHS = {
   hotelRooms: '/dashboard/rooms',
   hotelStatistics: '/dashboard/analytics',
   hotelBookings: '/dashboard/bookings',
+  hotelReviews: '/dashboard/reviews',
 
   signUpHotel: '/sign-up/hotel',
   unauthorized: '/unauthorized',

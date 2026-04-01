@@ -1,4 +1,4 @@
-// FIXME: Cant open the dialog
+// FIXME: This component is very inefficient. Optimize it.
 "use client";
 
 import { createContext, useContext, useEffect, useState, useCallback } from "react";
@@ -82,13 +82,23 @@ function ImagePresentation({
     setSelectedIndex(index);
   }, [mainApi, thumbsApi]);
 
-  //=======================================================
-
+  // When openAtIndex is called before the carousels initialize, just open and set the desired index.
+  // scrolling will be performed once APIs are available by the effect below.
   const openAtIndex = useCallback((index: number) => {
-    if (!mainApi || !thumbsApi) return;
     setSelectedIndex(index);
     setIsOpen(true);
-  }, [isOpen, mainApi, thumbsApi]);
+  }, []);
+
+  // When dialog is open and carousel APIs become available (or selectedIndex changes),
+  // ensure the main and thumbs carousels scroll to the desired index.
+  useEffect(() => {
+    if (!isOpen || !mainApi) return;
+    // scroll main; thumbs if available
+    mainApi.scrollTo(selectedIndex, true);
+    if (thumbsApi) thumbsApi.scrollTo(selectedIndex, true);
+  }, [isOpen, mainApi, thumbsApi, selectedIndex]);
+
+  //=======================================================
 
   return (
     <ImagePresentationContext.Provider value={{ openAtIndex }}>

@@ -2,31 +2,40 @@
 import prisma from "@/lib/prisma";
 import { auth } from "@/auth";
 
-export async function fetchBookingsSerialized() {
+// Not sure if this should be paginated on server or client.
+export async function hotelowner_getBookings() {
   const session = await auth();
   // TODO: Clarify this
   if (session?.user?.role !== "HOTEL_OWNER") {
     throw new Error("Unauthorized");
   }
-	const bookings = await prisma.booking.findMany({
-		where: { hotel: { ownerId: session.user.id } },
-		orderBy: { startDate: "desc" },
-		include: {
-			user: { select: { name: true } },
-		},
-	});
+	const [bookings, total] = await prisma.$transaction([
+    prisma.booking.findMany({
+      where: { hotel: { ownerId: session.user.id } },
+      orderBy: { startDate: "desc" },
+      include: {
+        user: { select: { name: true } },
+      },
+    }),
+    prisma.booking.count({
+      where: { hotel: { ownerId: session.user.id } },
+    }),
+  ]);
 
-	return bookings.map((booking) => ({
-		...booking,
-		totalPrice: booking.totalPrice.toString(),
-	}));
+  return {
+    bookings: bookings.map((booking) => ({
+      ...booking,
+      totalPrice: booking.totalPrice.toString()
+    })),
+    total,
+  };
 };
 
-export type BookingSerialized = Awaited<ReturnType<typeof fetchBookingsSerialized>>[number];
+export type BookingSerialized = Awaited<ReturnType<typeof hotelowner_getBookings>>['bookings'][number];
 
 
 // TODO: Rename and make a consistent output shape, so that the table columns can be shared
-export async function fetchUpcomingBookings() {
+export async function hotelowner_getUpcomingBookings() {
   const session = await auth();
   // TODO: Clarify this
   if (session?.user?.role !== "HOTEL_OWNER") {
@@ -60,4 +69,4 @@ export async function fetchUpcomingBookings() {
   );
 }
 
-export type UpcomingBooking = Awaited<ReturnType<typeof fetchUpcomingBookings>>[number];
+export type UpcomingBooking = Awaited<ReturnType<typeof hotelowner_getUpcomingBookings>>[number];

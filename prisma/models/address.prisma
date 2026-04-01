@@ -1,3 +1,5 @@
+// May need to denormalize hotel for better perf.
+
 model Country {
   id        String   @id @default(cuid())
   name      String   @unique

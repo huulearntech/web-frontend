@@ -23,7 +23,7 @@ export default function SearchStatusBar({ location, total }: { location: string;
   const setFilterSheetOpen = useFilterSheetSetOpen();
 
   return (
-    <div className="flex items-center justify-between sticky top-15 md:top-20.5 border-b p-3 -mt-3 z-10 bg-background shadow-md">
+    <div className="flex items-center justify-between sticky top-21.5 border-b p-3 -mt-3 z-10 bg-background shadow-md">
       <div className="flex gap-x-4 items-center">
         <Button
           onClick={() => setFilterSheetOpen(true)}
@@ -72,7 +72,7 @@ export default function SearchStatusBar({ location, total }: { location: string;
 
 export function SearchStatusBarSkeleton() {
   return (
-    <div className="flex items-center justify-between sticky top-15 md:top-20.5 border-b p-3 -mt-3 z-10 bg-background shadow-md">
+    <div className="flex items-center justify-between sticky top-21.5 border-b p-3 -mt-3 z-10 bg-background shadow-md">
       <div className="flex flex-col text-sm gap-2">
         <Skeleton className="w-24 h-4 rounded-md" />
         <Skeleton className="w-40 h-3 rounded-md" />

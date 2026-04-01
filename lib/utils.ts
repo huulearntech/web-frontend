@@ -1,4 +1,3 @@
-import { fake_locations } from "@/old/mock_data";
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
 
@@ -24,14 +23,25 @@ export function debounce<T extends (...args: any[]) => void>(fn: T, wait = 300) 
   return debounced as T & { cancel: () => void };
 }
 
-// TODO: Handle vietnamese accents properly in search (e.g. "Ha Noi" should match "Hà Nội")
-export function simulateFetchLocations(query: string, delay = 400): Promise<string[]> {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      const filtered = fake_locations.filter((loc) =>
-        loc.toLowerCase().includes(query.toLowerCase())
-      );
-      resolve(filtered);
-    }, delay);
-  });
+export function haversineMeters([lat1, lon1]: [number, number], [lat2, lon2]: [number, number]) {
+  const toRad = (d: number) => (d * Math.PI) / 180;
+  const R = 6371000;
+  const phi1 = toRad(lat1);
+  const phi2 = toRad(lat2);
+  const d_phi = toRad(lat2 - lat1);
+  const dl = toRad(lon2 - lon1);
+  const a = Math.sin(d_phi / 2) ** 2 + Math.cos(phi1) * Math.cos(phi2) * Math.sin(dl / 2) ** 2;
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 }
+
+// TODO: Handle vietnamese accents properly in search (e.g. "Ha Noi" should match "Hà Nội")
+// export function simulateFetchLocations(query: string, delay = 400): Promise<string[]> {
+//   return new Promise((resolve) => {
+//     setTimeout(() => {
+//       const filtered = fake_locations.filter((loc) =>
+//         loc.toLowerCase().includes(query.toLowerCase())
+//       );
+//       resolve(filtered);
+//     }, delay);
+//   });
+// }

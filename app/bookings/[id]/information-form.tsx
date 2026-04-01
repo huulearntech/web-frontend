@@ -2,14 +2,11 @@
 // TODO: Change to newer Shadcn Forms when available
 
 import { Checkbox } from "@/components/ui/checkbox";
-import { Command, CommandEmpty, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import {
   CheckCircle2Icon,
-  ChevronDownIcon,
   MailIcon,
   UserIcon,
 } from "lucide-react";
@@ -54,29 +51,6 @@ export default function InformationForm () {
           <div className="w-full flex flex-col gap-y-1">
             <Label htmlFor="phone-number" className="text-xs font-semibold ml-1">Số điện thoại</Label>
             <div className="flex gap-x-1">
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button variant="outline" className="h-10 group">
-                    bla bla
-                    <ChevronDownIcon className="size-4 transition-transform group-data-[state=open]:rotate-180" />
-                  </Button>
-                </PopoverTrigger>
-
-                <PopoverContent align="start">
-                  <Command>
-                    <CommandInput>
-                    </CommandInput>
-                    <CommandList className="max-h-60 overflow-y-auto text-sm">
-                      <CommandEmpty>No results found</CommandEmpty>
-                      {Array.from({ length: 5 }).map((_, index) => (
-                        <CommandItem key={index}>
-                          {index}
-                        </CommandItem>
-                      ))}
-                    </CommandList>
-                  </Command>
-                </PopoverContent>
-              </Popover>
               <Input
                 type="tel"
                 id="phone-number"

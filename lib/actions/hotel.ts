@@ -26,8 +26,41 @@ export const fetchHotel = async (hotelId: string) => {
         },
       },
       rooms: {
-        include: {
+        select: {
+          id: true,
+          name: true,
+          type: true,
+          areaM2: true,
+          bedType: true,
+          adultCapacity: true,
+          childrenCapacity: true,
+          price: true,
+          imageUrls: true,
           facilities: true,
+        },
+        orderBy: { price: "asc" },
+      },
+      // TODO: handle pagination or separate the query for fetching reviews
+      // This following is for overview section.
+      bookings: {
+        take: 5,
+        orderBy: { createdAt: "desc" },
+        where: { review: { isNot: null } },
+        select: {
+          id: true,
+          review: {
+            select: {
+              rating: true,
+              comment: true,
+              createdAt: true,
+            }
+          },
+          user: {
+            select: {
+              name: true,
+              profileImageUrl: true,
+            }
+          }
         }
       },
     },

@@ -1,11 +1,14 @@
 import { notFound } from "next/navigation";
-import { getRoomById } from "@/lib/actions/hotel-manager/rooms";
+import {
+  hotelowner_getRoomById,
+  //  hotelowner_updateRoomById
+} from "@/lib/actions/hotel-manager/rooms";
 
 import { Separator } from "@/components/ui/separator";
 
 export default async function Page({ params }: { params: Promise<{ id: string }> }) {
   const { id: roomId } = await params;
-  const room = await getRoomById(roomId);
+  const room = await hotelowner_getRoomById(roomId);
 
   // TODO: Handle this.
   if (!room) return notFound();
@@ -16,7 +19,11 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
         <h1 className="text-2xl font-semibold">{room.name}</h1>
         <h2 className="text-xl font-semibold">{room.type}</h2>
         <p className="text-sm text-muted-foreground">
-          {`Hotel: ${room.hotel?.name ?? "Unknown"} • Created ${room.createdAt.toString()}`}
+          {`Hotel: ${room.hotel?.name ?? "Unknown"} • Created ${new Intl.DateTimeFormat("en-US", {
+            year: "numeric",
+            month: "short",
+            day: "numeric",
+          }).format(new Date(room.createdAt))}`}
         </p>
       </header>
 
@@ -40,12 +47,6 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
               <dt className="text-xs text-muted-foreground">Beds</dt>
               <dd className="font-medium">{room.bedType}</dd>
             </div>
-            {/* <div>
-              <dt className="text-xs text-muted-foreground">Description</dt>
-              <dd className="mt-1 text-sm text-foreground/90">
-                {room.description ?? "—"}
-              </dd>
-            </div> */}
             <div>
               <dt className="text-xs text-muted-foreground">Images</dt>
               <dd className="mt-2">
@@ -68,7 +69,7 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
 
         <aside className="bg-card p-4 rounded-lg shadow-sm">
           <h3 className="text-sm font-medium mb-3">Manage Room</h3>
-          {/* <RoomForm room={roomSerialized} onSubmit={updateRoomAction}/> */}
+          {/* <RoomForm room={roomSerialized} onSubmit={hotelowner_updateRoomById}/> */}
 
           <Separator />
           <div className="text-xs text-muted-foreground">
@@ -79,4 +80,22 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
       </section>
     </div>
   );
+}
+
+// TODO: auth guard
+import type { Metadata } from "next";
+import prisma from "@/lib/prisma";
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}): Promise<Metadata> {
+  const { id: roomId } = await params;
+  const room = await prisma.room.findUnique({
+    where: { id: roomId },
+    select: { name: true },
+  });
+  return {
+    title: room?.name ? `Chi tiết phòng - ${room.name}`: "Không tìm thấy phòng",
+  };
 }

@@ -21,7 +21,7 @@ export function createColumns(handleDelete: (id: string) => void): ColumnDef<Roo
     {
       accessorKey: "name",
       header: "Name",
-      cell: ({ row }) => row.original.name ?? "Untitled",
+      cell: ({ row }) => row.original.name,
     },
     {
       accessorKey: "type",

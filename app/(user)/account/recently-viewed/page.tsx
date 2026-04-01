@@ -1,9 +1,9 @@
 import HotelCard from "@/components/hotel-card";
-import { fetchHotelsRecentlyViewedByUser } from "@/lib/actions/user-account/recently-viewed";
+import { user_getRecentlyViewedHotels } from "@/lib/actions/user-account/recently-viewed";
 
 // TODO: Replace hotelcard with hotelcard copy
 export default async function AccountRecentlyViewedPage() {
-  const hotelsRecentlyViewedByUser = await fetchHotelsRecentlyViewedByUser();
+  const hotelsRecentlyViewedByUser = await user_getRecentlyViewedHotels();
 
   return (
     <main className="flex-1 p-6">

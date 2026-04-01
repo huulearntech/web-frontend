@@ -26,24 +26,23 @@ import { PATHS } from './lib/constants';
 // };
 
 export const proxy = auth(async function handleProxy(request) {
-  if (!request.auth && ![PATHS.signIn, PATHS.signUp].includes(request.nextUrl.pathname)) {
-    const signInUrl = new URL(PATHS.signIn, request.nextUrl.origin);
-    signInUrl.searchParams.set('callbackUrl', request.nextUrl.pathname);
+  const { pathname, origin } = request.nextUrl;
+  const isAuthenticated = Boolean(request.auth);
+
+  const isSignInOrSignUp = [PATHS.signIn, PATHS.signUp].some(
+    (p) => pathname === p || pathname.startsWith(p + '/')
+  );
+
+  if (!isAuthenticated && !isSignInOrSignUp) {
+    const signInUrl = new URL(PATHS.signIn, origin);
+    signInUrl.searchParams.set('callbackUrl', pathname);
     return NextResponse.redirect(signInUrl);
   }
 
-  if (request.auth && [PATHS.signIn, PATHS.signUp].includes(request.nextUrl.pathname)) {
-    return NextResponse.redirect(new URL(PATHS.home, request.nextUrl.origin));
+  if (isAuthenticated && isSignInOrSignUp) {
+    return NextResponse.redirect(new URL(PATHS.home, origin));
+  }
 
-    // const role: UserRoleOrUnauth = request.auth.user.role ?? "UNAUTH";
-    // if (pathsRequiringRole[request.nextUrl.pathname]?.includes(role)) {
-    //   return NextResponse.next();
-    // }
-  } // else resolve access based on role requirements for the path
-
-  // return NextResponse.redirect(
-  //   new URL(PATHS.notFound, request.nextUrl.origin)
-  // );
   return NextResponse.next();
 });
 

@@ -19,7 +19,8 @@ type Response__SignUp = {
   };
 }
 
-export async function signUpUser(userData: SignUpData): Promise<Response__SignUp> {
+// May leverage this function for hotel owner with an optional argument for role.
+export async function signUpUser(userData: SignUpData, isSigningUpForHotelOwner = false): Promise<Response__SignUp> {
   const safeParsedUserData = schemaSignUp.safeParse(userData);
 
   if (!safeParsedUserData.success) {
@@ -44,6 +45,9 @@ export async function signUpUser(userData: SignUpData): Promise<Response__SignUp
       data: {
         ...safeParsedUserData.data,
         password: hashedPassword,
+
+        // TODO: Be cautious with this approach. If we want to allow users to sign up as hotel owners, we should have a separate flow or an admin approval process. For now, we can use the isSigningUpForHotelOwner flag to determine the role, but in a real application, this should be handled more securely.
+        role: isSigningUpForHotelOwner ? "HOTEL_OWNER" : "USER",
       },
     });
     return {

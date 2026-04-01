@@ -123,7 +123,7 @@ export const fake_facility_categories: FacilityCategory[] = [
 
 export default function FacilitiesSection({ hotel }: { hotel: Hotel }) {
   return (
-    <section id="facilities" className="w-full flex flex-col scroll-mt-24 md:scroll-mt-30">
+    <section id="facilities" className="w-full flex flex-col">
       <div className="rounded-4xl px-4 py-5 flex flex-col gap-y-5 shadow-xl">
         <h2 className="font-bold text-[1.25rem]"> Tất cả những tiện ích tại {hotel.name} </h2>
         <div className="grid grid-cols-3 gap-4">

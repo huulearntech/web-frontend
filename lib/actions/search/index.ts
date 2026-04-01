@@ -26,7 +26,7 @@ export async function fetchSearchResult(
       imageUrls: true,
       reviewPoints: true,
       numberOfReviews: true,
-      ward: { select: { name: true } },
+      ward: { select: { name: true, district: { select: { province: { select: { name: true } } } } } },
       facilities: { select: { name: true } },
       rooms: { select: { price: true }, orderBy: { price: 'asc' }, take: 1, },
       type: true,

@@ -1,37 +1,26 @@
 import Image from "next/image";
 
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow
-} from "@/components/ui/table";
-
-import {
-  UserRound,
   ExternalLink,
   RulerDimensionLineIcon,
-  PercentIcon,
-  BedDoubleIcon
+  BedDoubleIcon,
+  DoorOpenIcon,
+  UserIcon,
+  MilkOffIcon,
+  Milk
 } from "lucide-react";
 
 import { PATHS } from "@/lib/constants";
 import { fetchHotel } from "@/lib/actions/hotel";
 
-type RoomWithFacilities = NonNullable<Awaited<ReturnType<typeof fetchHotel>>>["rooms"][number];
-
 export default async function AvailableRoomsSection({
   hotel
 }: {
-  hotel: Awaited<ReturnType<typeof fetchHotel>>
+  hotel: NonNullable<Awaited<ReturnType<typeof fetchHotel>>>
 }) {
-  if (!hotel) return null;
-
-  const rooms = hotel.rooms;
+  const { rooms } = hotel;
   return (
-    <section id="available-rooms" className="w-full flex flex-col scroll-mt-24 md:scroll-mt-30">
+    <section id="available_rooms" className="w-full flex flex-col">
       <div className="rounded-4xl px-4 py-5 flex flex-col gap-y-5 shadow-xl">
         <h2 className="font-bold text-[1.25rem]">Những phòng còn trống tại {hotel.name}</h2>
         {rooms.length === 0 && (
@@ -47,174 +36,138 @@ export default async function AvailableRoomsSection({
   )
 };
 
-function RoomCard({ room, breakfastAvailability }: { room: RoomWithFacilities, breakfastAvailability: boolean }) {
+// There should be more arguments to this.
+// E.g.: number of rooms,...
+function RoomCard({
+  room,
+  breakfastAvailability
+}: {
+  room: NonNullable<Awaited<ReturnType<typeof fetchHotel>>>["rooms"][number];
+  breakfastAvailability: boolean
+}) {
   return (
-    <div className="flex flex-col space-y-4 w-full max-w-7xl bg-white rounded-lg p-4 shadow-md overflow-hidden"
+    <div
+      className="flex flex-col md:flex-row lg:flex-row bg-white rounded-xl p-4 shadow-md overflow-hidden"
       style={{
         backgroundImage: "url('/images/bg-room-card.svg')",
         backgroundRepeat: "no-repeat",
-        objectFit: "cover"
+        backgroundPosition: "right top",
+        backgroundSize: "220px"
       }}
     >
-      <h2 className="text-[1.25rem] font-bold line-clamp-2">{room.type}</h2>
-      <div className="flex w-full space-x-4">
-        <div className="flex flex-col w-full max-w-74 space-y-2">
-          <Image
-            src={
-              Array.isArray(room.imageUrls) && room.imageUrls.length > 0
-                ? room.imageUrls[0]
-                : "/images/default-room.jpg"
-            }
-            alt={room.type}
-            width={296}
-            height={222}
-            className="w-full h-auto rounded-3xl object-cover"
-            loading="lazy"
-          />
-          <div className="flex flex-col space-y-3 p-2">
-            <div className="flex items-center space-x-2">
-              <RulerDimensionLineIcon className="size-4" />
-              <span className="text-sm">{room.areaM2} m²</span>
-            </div>
+      {/* Image column */}
+      <div className="w-full md:w-2/5 lg:w-1/3 shrink-0">
+        <Image
+          src={room.imageUrls.length > 0 ? room.imageUrls[0] : "/images/default-room.jpg"}
+          alt={room.type}
+          width={496}
+          height={372}
+          className="w-full h-64 lg:h-full rounded-lg object-cover"
+          loading="lazy"
+        />
+      </div>
 
-            <ul className="grid grid-cols-2 gap-2">
-              {room.facilities.map(facility => (
-                <li key={facility.id} className="flex items-center text-sm">
+      {/* Details column */}
+      <div className="w-full md:w-3/5 lg:w-2/3 flex flex-col justify-between gap-y-4 mt-4 md:mt-0 md:ml-4 lg:ml-6">
+        <header className="flex items-start justify-between gap-x-4">
+          <div className="min-w-0">
+            <h2 className="text-lg lg:text-xl font-bold line-clamp-2">
+              {room.type}
+            </h2>
+          </div>
+
+          <div className="flex items-center gap-x-2 text-sm text-primary font-bold">
+            <ExternalLink className="size-4 shrink-0" aria-hidden />
+            <span>Xem chi tiết phòng</span>
+          </div>
+        </header>
+
+        <section className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 gap-3 mt-2">
+          <div className="flex items-center gap-x-2 text-sm">
+            <RulerDimensionLineIcon className="size-4" />
+            <span>{room.areaM2} m²</span>
+          </div>
+
+          <div className="flex items-center gap-x-2 text-sm">
+            <DoorOpenIcon className="size-4" />
+            <span>1 phòng</span>
+          </div>
+
+          {room.adultCapacity > 0 && (
+            <div className="flex items-center gap-x-2 text-sm">
+              <UserIcon className="size-4" />
+              <span>{room.adultCapacity} người lớn</span>
+            </div>
+          )}
+
+          {room.childrenCapacity > 0 && (
+            <div className="flex items-center gap-x-2 text-sm">
+              <UserIcon className="size-4" />
+              <span>{room.childrenCapacity} trẻ em</span>
+            </div>
+          )}
+
+          <div className="flex items-center gap-x-2 text-sm">
+            {breakfastAvailability ? (
+              <>
+                <Milk className="size-4 shrink-0" />
+                <span>Bao gồm bữa sáng</span>
+              </>
+            ) : (
+              <>
+                <MilkOffIcon className="size-4 shrink-0" />
+                <span>Không bao gồm bữa sáng</span>
+              </>
+            )}
+          </div>
+
+        </section>
+
+        <section className="mt-3">
+          <h3 className="text-sm font-semibold mb-2">Tiện nghi</h3>
+          <ul className="flex flex-wrap gap-2">
+            <li className="flex items-center gap-x-2 text-sm">
+              <BedDoubleIcon className="size-4" />
+              <span className="lowercase first-letter:capitalize">Giường {room.bedType}</span>
+            </li>
+            {room.facilities.map((facility) => (
+              <li
+                key={facility.id}
+                className="flex items-center gap-x-2 text-sm"
+              >
+                {facility.iconUrl ? (
                   <Image
-                    src={facility.iconUrl ?? "/images/default-facility-icon.svg"
-                      // TODO: handle missing icon
-                    }
+                    src={facility.iconUrl}
                     alt={facility.name}
                     width={16}
                     height={16}
-                    className="size-4 object-contain"
+                    className="object-contain"
                   />
-                  <span>{facility.name}</span>
-                </li>
-              ))}
-            </ul>
-            <div className="flex items-center space-x-1 text-sm text-primary font-bold">
-              <ExternalLink className="size-4" />
-              <span>
-                See room details
-              </span>
-            </div>
+                ) : null}
+                <span>{facility.name}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+
+        <footer className="mt-4 flex items-center justify-between">
+          <div className="text-base lg:text-lg font-extrabold text-orange-600">
+            {room.price.toLocaleString()} VND
           </div>
-        </div>
 
-        <div className="w-full h-fit bg-white border rounded-lg overflow-hidden">
-          <Table>
-            <TableHeader className="bg-muted/50">
-              <TableRow className="hover:bg-inherit data-[state=selected]:bg-inherit rounded-t-[0.375rem] [&>th]:border-r [&>th]:px-3 [&>th]:py-2 [&>th]:last:border-r-0">
-                <TableHead className="text-sm font-bold"> Lựa chọn phòng </TableHead>
-                <TableHead className="text-sm font-bold"> Khách </TableHead>
-                <TableHead className="text-sm font-bold"> Giá/phòng/đêm </TableHead>
-                <TableHead className="text-sm font-bold"> Phòng </TableHead>
-                <TableHead> </TableHead>
-              </TableRow>
-            </TableHeader>
-
-            <TableBody>
-              <TableRow className="hover:bg-inherit data-[state=selected]:bg-inherit [&>td]:border-r [&>td]:last:border-r-0 [&>td]:p-3">
-                <TableCell>
-                  <p>{room.type}</p>
-                  <p>{breakfastAvailability ? "Bao gồm bữa sáng" : "Không gồm bữa sáng"}</p>
-                  <div className="flex items-center space-x-2">
-                    <BedDoubleIcon className="size-4" />
-                    <span className="lowercase first-letter:capitalize">{room.bedType}</span>
-                  </div>
-                  <p>{/** room.policy: smoking,... */}</p>
-                </TableCell>
-                <TableCell>
-                  <div className="flex flex-col justify-center items-center">
-                    <div className="flex space-x-2">
-                      <UserRound className="size-4" />
-                      <span>x{room.adultCapacity}</span>
-                    </div>
-                    <div className="flex space-x-2">
-                      <UserRound className="size-4" />
-                      <span>x{room.childrenCapacity}</span>
-                    </div>
-                  </div>
-                </TableCell>
-                <TableCell>
-                  <div className="flex flex-col w-full gap-y-1 items-end justify-center">
-                    <div className="max-w-fit flex gap-1 rounded-full p-1 bg-primary text-primary-foreground">
-                      <PercentIcon className="size-4" aria-hidden />
-                      <span className="overflow-hidden overflow-ellipsis whitespace-nowrap text-xs mr-1">Sale cuoi nam</span>
-                    </div>
-                    <div className="text-xs line-through">123.456 VND</div>
-                    <div className="font-bold text-base text-orange-600">{room.price.toString()} VND</div>
-                    <div className="h-8 flex flex-col text-xs font-medium">
-                      Exclude taxes and fees
-                    </div>
-                  </div>
-                </TableCell>
-                <TableCell>
-                  <div className="flex justify-center">
-                    x1
-                  </div>
-                </TableCell>
-                <TableCell>
-                  <div className="flex justify-center items-center">
-                    <a
-                      href={PATHS.bookings + "/1"} // Example booking id
-                      target="_blank"
-                      rel="noreferrer"
-                      className="bg-primary text-white text-sm font-bold px-3 py-2 rounded-[0.375rem]"
-                    >
-                      Chọn
-                    </a>
-                  </div>
-                </TableCell>
-              </TableRow>
-
-              <TableRow className="hover:bg-inherit data-[state=selected]:bg-inherit [&>td]:border-r [&>td]:last:border-r-0 [&>td]:p-3">
-                <TableCell>
-                  <p>{room.type}</p>
-                  <p>Không gồm bữa sáng</p>
-                </TableCell>
-                <TableCell>
-                  <div className="flex justify-center">
-                    <UserRound className="size-4" />
-                    x{room.adultCapacity}
-                  </div>
-                </TableCell>
-                <TableCell>
-                  <div className="flex flex-col w-full gap-y-1 items-end justify-center">
-                    <div className="max-w-fit flex gap-1 rounded-full p-1 bg-primary text-primary-foreground">
-                      <PercentIcon className="size-4" aria-hidden />
-                      <span className="overflow-hidden overflow-ellipsis whitespace-nowrap text-xs mr-1">Sale cuoi nam</span>
-                    </div>
-                    <div className="text-xs line-through">123.456 VND</div>
-                    <div className="font-bold text-base text-orange-600">{room.price.toString()} VND</div>
-                    <div className="h-8 flex flex-col text-xs font-medium">
-                      Exclude taxes and fees
-                    </div>
-                  </div>
-                </TableCell>
-                <TableCell>
-                  <div className="flex justify-center">
-                    x1
-                  </div>
-                </TableCell>
-                <TableCell>
-                  <div className="flex justify-center items-center">
-                    <a
-                      href={PATHS.bookings + "/1"} // Example booking id
-                      target="_blank"
-                      rel="noreferrer"
-                      className="bg-primary text-white text-sm font-bold px-3 py-2 rounded-[0.375rem]"
-                    >
-                      Chọn
-                    </a>
-                  </div>
-                </TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
-        </div>
+          <div>
+            <a
+              href={PATHS.bookings + "/1"}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center justify-center bg-primary text-white text-sm font-bold px-4 py-2 rounded-md"
+              aria-label={`Đặt phòng ${room.type}`}
+            >
+              Chọn
+            </a>
+          </div>
+        </footer>
       </div>
     </div>
-  )
+  );
 }

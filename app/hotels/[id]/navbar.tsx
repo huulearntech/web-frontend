@@ -1,108 +1,78 @@
-// TODO: Clean up
+// FIXME: There is a bug where sometime the active section is set to "overview",
+// seems to be related to window.
 "use client";
 
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 
-export default function Navbar() {
-  const items = [
-    { id: "overview", label: "Tổng quan" },
-    { id: "available-rooms", label: "Phòng" },
-    { id: "location", label: "Vị trí" },
-    { id: "facilities", label: "Tiện ích" },
-    { id: "policy", label: "Chính sách" },
-    { id: "review", label: "Đánh giá" },
-  ];
+const sections = {
+  overview: "Tổng quan",
+  available_rooms: "Phòng",
+  location: "Vị trí",
+  facilities: "Tiện ích",
+  policy: "Chính sách",
+  review: "Đánh giá",
+};
 
-  const [active, setActive] = useState<string>(() =>
-    typeof window !== "undefined" && window.location.hash ? window.location.hash.slice(1) : "overview"
-  );
+type Section = keyof typeof sections;
+
+export default function Navbar() {
+  const [active, setActive] = useState<Section>("overview");
 
   useEffect(() => {
     if (typeof window === "undefined") return;
+    setActive(window.location.hash?.slice(1) as Section || "overview");
 
-    const handleHash = () =>
-      setActive(window.location.hash ? window.location.hash.slice(1) : "overview");
+    const handleHash = () => setActive(window.location.hash?.slice(1) as Section || "overview");
     window.addEventListener("hashchange", handleHash);
 
-    const sectionIds = items.map((i) => i.id);
-    const sections = sectionIds
+    const anchorElements = Object.keys(sections)
       .map((id) => document.getElementById(id))
       .filter(Boolean) as HTMLElement[];
 
-    if (sections.length === 0) {
-      // no sections on the page: keep hash handling only
-      handleHash();
-      return () => window.removeEventListener("hashchange", handleHash);
-    }
-
-    // Use midpoint logic: mark the section whose top is above (<=) half the viewport height,
-    // choosing the one closest to the midpoint from above; if none, choose the closest to midpoint.
     const observer = new IntersectionObserver(
       () => {
         if (typeof window === "undefined") return;
-        const mid = window.innerHeight / 2;
-        const candidates = sections.map((s) => ({ el: s, top: s.getBoundingClientRect().top }));
+        const candidates = anchorElements
+          .map((el) => ({ el, top: el.getBoundingClientRect().top }))
+          .filter((c) => c.top <= window.innerHeight / 2);
 
-        // Pick sections whose top is above or equal to midpoint
-        const aboveMid = candidates.filter((c) => c.top <= mid);
-        if (aboveMid.length > 0) {
-          // choose the one closest to mid from above (largest top)
-          aboveMid.sort((a, b) => b.top - a.top);
-          setActive(aboveMid[0].el.id);
-          return;
+        if (candidates.length > 0) {
+          candidates.sort((a, b) => b.top - a.top);
+          setActive(candidates[0].el.id as Section);
+        } else {
+          setActive("overview");
         }
-
-        // If none are above mid, pick the section closest to mid (either below or above)
-        candidates.sort((a, b) => Math.abs(a.top - mid) - Math.abs(b.top - mid));
-        setActive(candidates[0].el.id);
       },
       {
-        root: null,
         rootMargin: "0px",
         threshold: [0, 0.1, 0.25, 0.5, 0.75, 1],
       }
     );
 
-    sections.forEach((s) => observer.observe(s));
-
-    // initial selection based on midpoint
-    {
-      const mid = window.innerHeight / 2;
-      const candidates = sections.map((s) => ({ el: s, top: s.getBoundingClientRect().top }));
-      const aboveMid = candidates.filter((c) => c.top <= mid);
-      if (aboveMid.length > 0) {
-        aboveMid.sort((a, b) => b.top - a.top);
-        setActive(aboveMid[0].el.id);
-      } else {
-        candidates.sort((a, b) => Math.abs(a.top - mid) - Math.abs(b.top - mid));
-        setActive(candidates[0].el.id);
-      }
-    }
+    anchorElements.forEach((el) => observer.observe(el));
 
     return () => {
       observer.disconnect();
       window.removeEventListener("hashchange", handleHash);
     };
-    // items are static here; join id list to satisfy exhaustive-deps behavior if needed
-  }, [items.map((i) => i.id).join(",")]);
+  }, []);
 
   return (
     <nav className="content">
-      <ul className="flex space-x-3 font-bold text-sm">
-        {items.map((it) => (
-          <li key={it.id} className="px-4 pt-4">
+      <ul className="w-full flex gap-x-5 font-bold text-sm">
+        {Object.entries(sections).map(([id, label]) => (
+          <li key={id} className={cn(
+            "pb-1 border-b-2 hover:text-primary hover:border-primary",
+            active === id
+              ? "text-primary border-primary"
+              : "text-gray-500 border-none"
+          )}>
             <a
-              href={`#${it.id}`}
-              className={cn(
-                "pb-2 border-b-2 hover:text-primary hover:border-primary",
-                active === it.id
-                  ? "text-primary border-primary"
-                  : "text-gray-600 border-transparent"
-              )}
-              aria-current={active === it.id ? "page" : undefined}
+              href={`#${id}`}
+              aria-current={active === id ? "page" : undefined}
             >
-              {it.label}
+              {label}
             </a>
           </li>
         ))}

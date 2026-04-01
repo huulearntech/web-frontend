@@ -29,6 +29,10 @@ const nextConfig: NextConfig = {
         hostname: 'maps.geoapify.com',
         pathname: '/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'res.cloudinary.com',
+      },
     ]
   }
 };

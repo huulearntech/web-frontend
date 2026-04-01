@@ -1,3 +1,5 @@
+import LocationSelect from "./location-select";
+
 export default function PartnershipSignUpPage() {
   return (
     <div className="max-w-6xl mx-auto py-10 px-4">
@@ -6,6 +8,7 @@ export default function PartnershipSignUpPage() {
         Join our partnership program to access exclusive benefits and grow your business with us.
       </p>
       {/* Partnership sign-up form goes here */}
+      <LocationSelect />
     </div>
   );
 }

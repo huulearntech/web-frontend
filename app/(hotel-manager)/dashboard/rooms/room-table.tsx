@@ -5,7 +5,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { DataTable } from "@/components/data-table";
 import { createColumns } from "./columns";
-import { deleteRoomAction } from "@/lib/actions/hotel-manager/rooms";
+import { hotelowner_deleteRoomById } from "@/lib/actions/hotel-manager/rooms";
 
 import type { RoomSerialized } from "@/lib/actions/hotel-manager/rooms";
 
@@ -27,7 +27,7 @@ export default function RoomTable({ rooms }: { rooms: RoomSerialized[] }) {
     const DELETE_DELAY = 5000;
     const timer = window.setTimeout(async () => {
       try {
-        await deleteRoomAction(id);
+        await hotelowner_deleteRoomById(id);
       } catch (error) {
         // If server delete failed, restore the room and show an error
         setRoomsSerialized((prev) => {

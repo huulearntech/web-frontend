@@ -15,16 +15,12 @@ import {
 
 import { FILTER_MAX_PRICE, FILTER_MIN_PRICE, FILTER_PRICE_STEP } from '@/lib/constants';
 
-export function FilterForm({
-  'data-issheet': dataIsSheet = false,
-}: {
-  'data-issheet'?: boolean
-}) {
+export function FilterForm({ isSheet = false }: { isSheet?: boolean }) {
   const { control } = useFilterForm();
 
   return (
     <div
-      data-issheet={dataIsSheet}
+      data-issheet={isSheet}
       className="flex flex-col space-y-3 w-full max-w-sm overflow-y-auto data-[issheet=true]:px-3"
     >
       <Controller
@@ -157,10 +153,14 @@ export function FilterForm__Reset_and_Apply_Buttons() {
         variant='outline'
         className="flex-1"
         onClick={() => {
-          reset();
-          console.log("filters reset to default values");
-          // also call server action
-          // Or just set the search params and call router.push() or some kind
+          if (filterHasChanged) {
+            reset();
+            // also call server action
+            // Or just set the search params and call router.push() or some kind
+            console.log("filters reset to default values");
+          } else {
+            console.log("filters are already at default values, no need to reset");
+          }
         }}
       >
         Đặt lại

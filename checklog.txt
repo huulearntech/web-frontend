@@ -6,4 +6,14 @@ filter: onsubmit need to somehow capture the search spec to call server action, 
 
 proxy: handle redirecting.
 
-server actions: merge server actions for user: account, recently viewed, booking history, favorites.
+filter: cleanup className
+
+search bar form: merge adult and children capacity into only one capacity
+
+// TODO: Flow
+// 1. Basic info (name, email, phone) -> sign up for account
+// 1.1. verify email/phone with OTP -> after verification, we can create the account and sign in the user immediately
+// 2. auto sign in -> server sends jwt, create a session id, redirect to that id (timed session).
+// 3. After sign in, show partnership application form (business details, tax info, etc) -> submit to server
+// 3.1. if user exit without submitting, they can come back to the form and continue where they left off (fetch saved data from server)
+// but if the session is expired, they need to sign in again first, then we can give another session id and fetch the saved form data with that session id.

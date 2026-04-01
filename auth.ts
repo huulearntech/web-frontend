@@ -22,7 +22,7 @@ export const nextAuthConfig = {
         }
         const { email, password } = parsedCredentials.data;
         const user = await prisma.user.findUnique({
-          where: { email: email as string },
+          where: { email },
           select: {
             id: true,
             name: true,
@@ -34,10 +34,10 @@ export const nextAuthConfig = {
         if (!user) return null;
         
 
-        // Remove this on production
+        // FIXME: Remove this on production
         const isDevelopment = process.env.NODE_ENV === "development";
         let passwordMatch = false;
-        if (isDevelopment) passwordMatch = (password === (user.password as string));
+        if (isDevelopment) passwordMatch = (password === user.password);
         else passwordMatch = await bcrypt.compare(
           password,
           user.password as string
@@ -50,13 +50,10 @@ export const nextAuthConfig = {
     }),
   ],
   callbacks: {
-    async jwt({ token, user, trigger, session }) {
+    async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
         token.role = user.role;
-      }
-      if (trigger === "update" && session?.name) {
-        token.name = session.name;
       }
       return token;
     },
@@ -64,7 +61,6 @@ export const nextAuthConfig = {
       if (session.user) {
         session.user.id = token.id;
         session.user.role = token.role;
-        session.user.name = token.name;
       }
       return session;
     },

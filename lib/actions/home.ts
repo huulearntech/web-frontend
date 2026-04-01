@@ -15,6 +15,7 @@ export async function fetchFeed(): Promise<FeedProps> {
     },
   });
 
+  // FIXME: Error prone, must match the HotelCardProps.
   const provincesWithHotels = await Promise.all(provinceIds.map(({ id, name }) =>
     prisma.hotel.findMany({
       take: 10,
@@ -26,7 +27,7 @@ export async function fetchFeed(): Promise<FeedProps> {
         reviewPoints: true,
         numberOfReviews: true,
         type: true,
-        ward: { select: { name: true } },
+        ward: { select: { name: true, district: { select: { province: { select: { name: true } } } } }, },
         facilities: { select: { name: true, iconUrl: true }},
         rooms: {
           select: {
@@ -51,4 +52,3 @@ export async function fetchFeed(): Promise<FeedProps> {
     locations: provincesWithHotels,
   };
 }
-

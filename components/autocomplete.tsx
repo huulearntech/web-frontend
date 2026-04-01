@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import { Autocomplete as AutocompletePrimitive } from "@base-ui/react"
-import { /**CheckIcon,*/ ChevronDownIcon, XIcon } from "lucide-react"
+import { ChevronDownIcon, XIcon } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 import {
@@ -62,7 +62,6 @@ function AutocompleteInput({
   showTrigger?: boolean
   showClear?: boolean
 }) {
-  console.log("bla");
   return (
     <InputGroup className={cn("w-auto", className)}>
       <AutocompletePrimitive.Input
@@ -110,7 +109,7 @@ function AutocompleteContent({
         align={align}
         alignOffset={alignOffset}
         anchor={anchor}
-        className="isolate z-50"
+        className="isolate z-1000" // NOTE: this ensures the content is above map in react-leaflet.
       >
         <AutocompletePrimitive.Popup
           data-slot="autocomplete-content"
