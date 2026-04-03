@@ -26,13 +26,13 @@ export default async function Page(props: {
   const safeDecodedParams = SearchParamsCodec.safeDecode(searchParams);
   if (!safeDecodedParams.success) {
     // TODO: change search params to default values instead of showing 404 page
-    return notFound();
+    notFound();
   }
 
   // TODO: there should be query with search params to fetch hotel data.
   const hotel = await fetchHotel(hotelId);
   if (!hotel) {
-    return notFound();
+    notFound();
   }
 
   const {

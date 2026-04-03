@@ -11,7 +11,7 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
   const room = await hotelowner_getRoomById(roomId);
 
   // TODO: Handle this.
-  if (!room) return notFound();
+  if (!room) notFound();
 
   return (
     <div className="p-6 max-w-4xl mx-auto">

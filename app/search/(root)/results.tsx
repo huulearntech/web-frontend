@@ -1,10 +1,11 @@
+// TODO: Pagination
 "use client";
 
 import { useLayoutEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 
-import { fetchPage } from "./tmp-action";
+import { fetchSearchResult } from "@/lib/actions/search";
 import SearchStatusBar, { SearchStatusBarSkeleton } from "./search-status-bar";
 
 
@@ -16,11 +17,31 @@ export default function Results({ initialPage = 1, location }: { initialPage?: n
   }, [page]);
 
   const searchParams = useSearchParams();
+  const locationFromParams = searchParams.get("location") ?? "";
+  const checkInDateFromParams = searchParams.get("fromDate") ?? new Date().toISOString();
+  const checkOutDateFromParams = searchParams.get("toDate") ?? new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
+  const numAdultsFromParams = searchParams.get("numAdults") ?? "0";
+  const numChildrenFromParams = searchParams.get("numChildren") ?? "0";
+  const numRoomsFromParams = searchParams.get("numRooms") ?? "1";
 
   const { data, isLoading, isError } = useQuery({
     queryKey: ["hotels", page],
     queryFn: async () => {
-      return fetchPage(page, pageSize);
+      console.log(data);
+      return fetchSearchResult(
+        {
+          location: locationFromParams,
+          inOutDates: {
+            from: new Date(checkInDateFromParams),
+            to: new Date(checkOutDateFromParams)
+          },
+          guestsAndRooms: {
+            numAdults: parseInt(numAdultsFromParams, 10) || 0,
+            numChildren: parseInt(numChildrenFromParams, 10) || 0,
+            numRooms: parseInt(numRoomsFromParams, 10) || 0,
+          }
+        },
+      );
     },
     placeholderData: keepPreviousData
   });
@@ -29,13 +50,15 @@ export default function Results({ initialPage = 1, location }: { initialPage?: n
   // TODO: proper onRetry
   if (isError) return <ResultsError onRetry={() => setPage(1)} />;
 
-  const totalPages = Math.ceil((data?.total ?? 0) / pageSize);
-  const hotelsSerialized = data?.items ?? [];
+  // const totalPages = Math.ceil((data?.total ?? 0) / pageSize);
+
+  const totalPages = 1;
+  const hotelsSerialized = data ?? [];
 
   return ( hotelsSerialized.length === 0 ? <NoResult /> :
     // TODO: location
     <div className="w-full flex flex-col space-y-3">
-      <SearchStatusBar location={location} total={data?.total ?? 0} />
+      <SearchStatusBar location={location} total={data?.length ?? 0} />
 
       <PaginationBar
         currentPage={page}
@@ -107,10 +130,12 @@ export function ResultsSkeleton() {
 
 function NoResult() {
   return (
-    <div className="flex flex-col items-center gap-y-4 py-10">
-      <Image src={noResultImage} alt="No result found" className="w-48 h-48 object-contain"/>
-      <h2 className="text-2xl font-semibold">No hotels found</h2>
-      <p className="text-sm text-muted-foreground">Try adjusting your search criteria to find what you're looking for.</p>
+    <div className="w-full h-[calc(100vh-15rem)] flex flex-col gap-y-2 items-center justify-center overflow-hidden">
+      <Image src={noResultImage} alt="No result found" className="w-48 h-48 object-contain" />
+      <h2 className="text-2xl font-semibold">Không tìm thấy kết quả nào</h2>
+      <p className="text-sm text-muted-foreground">
+        Bạn có thể điều chỉnh bộ lọc để tìm kiếm kết quả khác.
+      </p>
     </div>
   )
 }
@@ -123,11 +148,13 @@ function ResultsError({ onRetry }: { onRetry?: () => void }) {
       <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-destructive/10 text-destructive">
         <AlertCircle className="w-8 h-8" />
       </div>
-      <h2 className="text-2xl font-semibold">Something went wrong</h2>
+      <h2 className="text-2xl font-semibold">
+        Có lỗi xảy ra khi tải kết quả tìm kiếm
+      </h2>
       <p className="text-sm text-muted-foreground text-center">
-        We couldn't load the search results. Please try again or refresh the page.
+        Vui lòng thử lại hoặc tải lại trang.
       </p>
-      <Button onClick={onRetry}> Retry </Button>
+      <Button onClick={onRetry}> Thử lại </Button>
     </div>
   );
 }

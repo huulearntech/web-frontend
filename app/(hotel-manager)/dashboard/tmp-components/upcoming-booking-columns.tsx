@@ -25,7 +25,7 @@ export const columns: ColumnDef<UpcomingBooking>[] = [
     header: "Room",
   },
   {
-    accessorKey: "startDate",
+    accessorKey: "checkInDate",
     header: "Check-in",
     cell: ({ row }) => (
       <div className="text-sm">{new Intl.DateTimeFormat(
@@ -35,12 +35,12 @@ export const columns: ColumnDef<UpcomingBooking>[] = [
           day: 'numeric',
           year: 'numeric',
         }
-      ).format(row.original.startDate)}
+      ).format(row.original.checkInDate)}
       </div>
     ),
   },
   {
-    accessorKey: "endDate",
+    accessorKey: "checkOutDate",
     header: "Check-out",
     cell: ({ row }) => (
       <div className="text-sm">{new Intl.DateTimeFormat(
@@ -50,7 +50,7 @@ export const columns: ColumnDef<UpcomingBooking>[] = [
           day: 'numeric',
           year: 'numeric',
         }
-      ).format(row.original.endDate)}
+      ).format(row.original.checkOutDate)}
       </div>
     ),
   },

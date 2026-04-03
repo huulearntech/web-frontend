@@ -1,37 +1,54 @@
 "use server";
 
 import prisma from "@/lib/prisma";
-import { HotelCardProps } from "@/app/search/(root)/tmp-action";
-import { PaginationState } from "@tanstack/react-table";
+import { type PaginationState } from "@tanstack/react-table";
+import { type SearchBarFormData } from "@/lib/zod_schemas/search-bar";
 
-// TODO: Clean up this type
-type SortType = "price-asc" | "price-desc" | "reviewPoint-asc" | "numberOfReviews-desc";
+import { getHotelsBySearchBarForm } from "@/lib/generated/prisma/sql";
+import { HotelCardProps } from "@/app/search/(root)/tmp-action";
+
+type SortType = "price-asc" | "price-desc" | "reviewPoints-desc";
 
 export async function fetchSearchResult(
+  filter: SearchBarFormData,
   pagination?: PaginationState,
-  // filter: { },
   sort?: SortType
 ): Promise<HotelCardProps[]> {
   if (!pagination) pagination = { pageIndex: 0, pageSize: 10 };
 
-  return prisma.hotel.findMany({
-    take: pagination.pageSize,
-    // cursor: {
-    //   id: pagination.pageIndex * pagination.pageSize,
-    // },
+  const {
+    location,
+    inOutDates: { from, to },
+    guestsAndRooms: { numAdults, numChildren, numRooms }
+  } = filter;
 
-    select: {
-      id: true,
-      name: true,
-      imageUrls: true,
-      reviewPoints: true,
-      numberOfReviews: true,
-      ward: { select: { name: true, district: { select: { province: { select: { name: true } } } } } },
-      facilities: { select: { name: true } },
-      rooms: { select: { price: true }, orderBy: { price: 'asc' }, take: 1, },
-      type: true,
+  // const pageIndex = pagination.pageIndex ?? 0;
+  // const pageSize = pagination.pageSize ?? 10;
+  // const offset = pageIndex * pageSize;
+  // const limit = pageSize;
+
+  // TODO: Pagination, sort, facilities
+  return prisma.$queryRawTyped(getHotelsBySearchBarForm(
+    location,
+    from,
+    to,
+    numAdults,
+    numRooms,
+    sort as string
+  )).then((hotels) => hotels.map((hotel) => {
+    console.log(hotel);
+    return {
+    id: hotel.id,
+    type: hotel.type,
+    name: hotel.name,
+    reviewPoints: hotel.reviewPoints,
+    numberOfReviews: hotel.numberOfReviews,
+    roomTypes: [{ price: hotel.minPrice?.toString() ?? "N/A" }],
+    ward: {
+      name: hotel.wardName,
+      district: { province: { name: hotel.provinceName } }
     },
-  }).then(hotels => hotels.map(hotel => ({ ...hotel,
-    rooms: hotel.rooms.map(r => ({ ...r, price: r.price.toString() })),
-  })));
-};
+    imageUrls: hotel.imageUrls ?? [],
+    facilities: hotel.facilities?.map(facilityName => ({ name: facilityName })) ?? []
+  }}));
+}

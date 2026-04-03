@@ -4,6 +4,7 @@ import { DataTable } from "@/components/data-table";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 import { type RecentBookingType } from "@/lib/actions/user-account";
+import { ArrowRightIcon } from "lucide-react";
 
 function StatusBadge({ status }: { status: string }) {
   const map: Record<string, { text: string; variant: string }> = {
@@ -38,10 +39,12 @@ const columns: ColumnDef<RecentBookingType>[] = [
   {
     id: "dates",
     header: "Dates",
-    accessorFn: (row) => `${row.startDate}—${row.endDate}`,
+    accessorFn: (row) => `${row.checkInDate}—${row.checkOutDate}`,
     cell: ({ row }) => (
       <div className="text-sm">
-        {new Date(row.original.startDate).toLocaleDateString()} — {new Date(row.original.endDate).toLocaleDateString()}
+        {new Date(row.original.checkInDate).toLocaleDateString()}
+        <ArrowRightIcon />
+        {new Date(row.original.checkOutDate).toLocaleDateString()}
       </div>
     ),
   },

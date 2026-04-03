@@ -6,8 +6,8 @@ model Booking {
   hotel       Hotel          @relation(fields: [hotelId], references: [id], onDelete: Cascade)
 
   // should rename to checkInDate and checkOutDate
-  startDate   DateTime
-  endDate     DateTime
+  checkInDate   DateTime       @db.Date
+  checkOutDate     DateTime       @db.Date
   status      BookingStatus  @default(DRAFT)
   totalPrice  Decimal
   notes       String?
@@ -20,7 +20,7 @@ model Booking {
 
   @@index([userId])
   @@index([hotelId])
-  @@index([startDate, endDate])
+  @@index([checkInDate, checkOutDate])
   @@map("bookings")
 }
 

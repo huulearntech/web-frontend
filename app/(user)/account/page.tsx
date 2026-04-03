@@ -22,7 +22,7 @@ export default async function AccountPage() {
     <main>
       <div className="mx-auto flex flex-col items-center gap-y-4 mt-13 px-4 py-3">
         <AvatarWithCloudinaryUploader
-          name={user.name ?? ""}
+          name={user.name}
           profileImageUrl={user.profileImageUrl ?? undefined}
         />
       </div>

@@ -11,24 +11,30 @@ import {
 } from "lucide-react";
 
 import { PATHS } from "@/lib/constants";
-import { fetchHotel } from "@/lib/actions/hotel";
+import { getRoomsByHotelIdGroupedByType, type FetchAvailableRoomsResult } from "@/lib/actions/hotel";
 
 export default async function AvailableRoomsSection({
-  hotel
+  hotelId
 }: {
-  hotel: NonNullable<Awaited<ReturnType<typeof fetchHotel>>>
+  hotelId: string
 }) {
-  const { rooms } = hotel;
+  const roomsByType = await getRoomsByHotelIdGroupedByType(
+    hotelId,
+    new Date(), // TODO: get from search params
+    new Date(Date.now() + 2 * 24 * 60 * 60 * 1000), // TODO: get from search params
+    1, // TODO: get from search params
+    2, // TODO: get from search params
+  );
   return (
     <section id="available_rooms" className="w-full flex flex-col">
       <div className="rounded-4xl px-4 py-5 flex flex-col gap-y-5 shadow-xl">
         <h2 className="font-bold text-[1.25rem]">Những phòng còn trống tại {hotel.name}</h2>
-        {rooms.length === 0 && (
+        {roomsByType.length === 0 && (
           <div className="w-full h-48 flex items-center justify-center bg-muted rounded-lg">
             <span className="text-sm text-muted-foreground">Không có phòng nào còn trống cho khoảng thời gian này</span>
           </div>
         )}
-        {rooms.length > 0 && rooms.map((room) => (
+        {roomsByType.length > 0 && rooms.map((room) => (
           <RoomCard key={room.id} room={room} breakfastAvailability={hotel.breakfastAvailability} />
         ))}
       </div>
@@ -42,7 +48,7 @@ function RoomCard({
   room,
   breakfastAvailability
 }: {
-  room: NonNullable<Awaited<ReturnType<typeof fetchHotel>>>["rooms"][number];
+  room: Omit<FetchAvailableRoomsResult, "rooms">[number];
   breakfastAvailability: boolean
 }) {
   return (
@@ -57,14 +63,22 @@ function RoomCard({
     >
       {/* Image column */}
       <div className="w-full md:w-2/5 lg:w-1/3 shrink-0">
-        <Image
-          src={room.imageUrls.length > 0 ? room.imageUrls[0] : "/images/default-room.jpg"}
-          alt={room.type}
-          width={496}
-          height={372}
-          className="w-full h-64 lg:h-full rounded-lg object-cover"
-          loading="lazy"
-        />
+        {room.imageUrls.length > 0
+          ? (
+            <Image
+              src={room.imageUrls[0]}
+              alt={room.type}
+              width={400}
+              height={300}
+              className="w-full h-64 lg:h-full rounded-lg object-cover"
+              loading="lazy"
+            />
+          ) : (
+            <div className="w-full h-64 lg:h-full bg-muted rounded-lg flex items-center justify-center">
+              <span className="text-sm text-muted-foreground">Không có hình ảnh cho phòng này</span>
+            </div>
+          )
+        }
       </div>
 
       {/* Details column */}
@@ -157,6 +171,7 @@ function RoomCard({
 
           <div>
             <a
+            // TODO: link to booking page
               href={PATHS.bookings + "/1"}
               target="_blank"
               rel="noreferrer"

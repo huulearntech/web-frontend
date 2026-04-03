@@ -1,4 +1,9 @@
+// TODO: use fakerVI for more authentic Vietnamese names
+// import { fakerVI as faker } from "@faker-js/faker";
+
+// But we not support search in Vietnamese yet, so use this
 import { faker } from "@faker-js/faker";
+
 import prisma from "@/lib/prisma";
 import { Country, District, Province } from "@/lib/generated/prisma/client";
 

@@ -29,14 +29,14 @@ export const columns: ColumnDef<BookingSerialized>[] = [
     id: "checkInOut",
     header: () => <div className="inline-flex gap-1 items-center">Check-in <ArrowRight className="size-4" /> Check-out</div>,
     cell: ({ row }) => {
-      const { startDate, endDate } = row.original;
+      const { checkInDate, checkOutDate } = row.original;
       const opts: Intl.DateTimeFormatOptions = {
         year: "numeric",
         month: "short",
         day: "numeric",
       };
-      const formattedStart = startDate.toLocaleDateString("en-US", opts);
-      const formattedEnd = endDate.toLocaleDateString("en-US", opts);
+      const formattedStart = checkInDate.toLocaleDateString("en-US", opts);
+      const formattedEnd = checkOutDate.toLocaleDateString("en-US", opts);
       return <div className="inline-flex gap-1 items-center">
         {formattedStart}
         <ArrowRight className="size-4" />
@@ -75,7 +75,7 @@ export const columns: ColumnDef<BookingSerialized>[] = [
     accessorKey: "status",
     header: "Status",
     cell: ({ row }) => {
-      const colorForStatus: Record<BookingStatus, string> = {
+      const colorForStatus: Record<Exclude<BookingStatus, "DRAFT">, string> = {
         PENDING: "bg-yellow-100 text-yellow-700",
         COMPLETED: "bg-blue-100 text-blue-700",
         CANCELLED: "bg-red-100 text-red-700",

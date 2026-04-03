@@ -26,7 +26,7 @@ export default function HotelCard({
     reviewPoints,
     numberOfReviews,
     ward: { name: wardName, district: { province: { name: provinceName } } },
-    rooms: [{ price }],
+    roomTypes: [{ price }],
     facilities,
     type
   } = hotel;

@@ -35,12 +35,12 @@ export default function SearchStatusBar({ location, total }: { location: string;
         </Button>
         <div className="flex flex-col text-sm">
           <span className="font-bold"> {location} </span>
-          <span> {total} noi luu tru duoc tim thay </span>
+          <span> {total} nơi lưu trú được tìm thấy </span>
         </div>
       </div>
       <div className="flex gap-x-4 items-center">
         <div className="flex gap-x-2">
-          <Label htmlFor="sort-by-select" className="text-xs font-semibold" >Sort by:</Label>
+          <Label htmlFor="sort-by-select" className="text-xs font-semibold" >Sắp xếp theo:</Label>
           <Select defaultValue="price-desc">
             <SelectTrigger id="sort-by-select" className="text-xs font-semibold py-2 px-3 rounded-full">
               <SelectValue placeholder="Sắp xếp theo" />

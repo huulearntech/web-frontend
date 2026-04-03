@@ -2,7 +2,7 @@ import prisma from "@/lib/prisma";
 
 import { seedCountryVietnam, seedProvinces, seedDistricts, seedWards } from "./address";
 import { seedHotelOwners, seedRegularUsers } from "./user";
-import { seedConnectionHotelsOnFacilities, seedFacilities, seedHotels, seedRooms } from "./hotel";
+import { seedConnectionHotelsOnFacilities, seedConnectionRoomTypesOnFacilities, seedFacilities, seedHotels, seedRooms, seedRoomTypes } from "./hotel";
 import { seedBookings } from "./booking";
 
 import { faker } from "@faker-js/faker";
@@ -31,7 +31,8 @@ async function main() {
   await seedFacilities();
 
   const hotels = await seedHotels(hotelData);
-  await seedRooms(hotels);
+  const roomTypes = await seedRoomTypes(hotels);
+  await seedRooms(roomTypes);
   const users = await seedRegularUsers(10);
   const bookingData = users.flatMap((user) =>
     hotels.map((hotel) => ({
@@ -41,6 +42,7 @@ async function main() {
   );
 
   await seedConnectionHotelsOnFacilities(hotels);
+  await seedConnectionRoomTypesOnFacilities(roomTypes);
   await seedBookings(bookingData);
 
   console.log("Database seeded successfully!");

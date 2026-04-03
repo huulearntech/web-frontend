@@ -2,8 +2,8 @@
 
 import prisma from "@/lib/prisma";
 
-export const fetchHotel = async (hotelId: string) => {
-  const hotel = await prisma.hotel.findUnique({
+export async function fetchHotel(hotelId: string) {
+  return prisma.hotel.findUnique({
     where: { id: hotelId },
     include: {
       ward: {
@@ -24,21 +24,6 @@ export const fetchHotel = async (hotelId: string) => {
           name: true,
           iconUrl: true,
         },
-      },
-      rooms: {
-        select: {
-          id: true,
-          name: true,
-          type: true,
-          areaM2: true,
-          bedType: true,
-          adultCapacity: true,
-          childrenCapacity: true,
-          price: true,
-          imageUrls: true,
-          facilities: true,
-        },
-        orderBy: { price: "asc" },
       },
       // TODO: handle pagination or separate the query for fetching reviews
       // This following is for overview section.
@@ -65,7 +50,62 @@ export const fetchHotel = async (hotelId: string) => {
       },
     },
   });
-  return hotel;
+}
+
+export async function getRoomsByHotelIdGroupedByType(
+  hotelId: string,
+  fromDate: Date,
+  toDate: Date,
+  numRooms: number,
+  numAdults: number
+) {
+
+  return prisma.roomType.findMany({
+    where: {
+      hotelId,
+      rooms: {
+        none: {
+          bookingRooms: {
+            some: {
+              booking: {
+                AND: [
+                  { checkInDate: { lt: toDate } },
+                  { checkOutDate: { gt: fromDate } },
+                  { status: { in: ["CONFIRMED", "PENDING"] } }, // be cautious!
+                ],
+              },
+            },
+          },
+        },  
+      },
+    },
+    include: {
+      rooms: {
+        where: {
+          bookingRooms: {
+            none: {
+              booking: {
+                AND: [
+                  { checkInDate: { lt: toDate } },
+                  { checkOutDate: { gt: fromDate } },
+                  { status: { in: ["CONFIRMED", "PENDING"] } }, // be cautious!
+                ],
+              },
+            },
+          },
+        },
+        select: {
+          _count: {
+            select: { bookingRooms: true },
+          },
+          imageUrls: true,
+        },
+      },
+    },
+    orderBy: { price: "asc" }, // optional: sort cheapest first within each type
+  });
 }
 
 export type FetchHotelResult = Awaited<ReturnType<typeof fetchHotel>>;
+
+export type FetchAvailableRoomsResult = Awaited<ReturnType<typeof getRoomsByHotelIdGroupedByType>>;

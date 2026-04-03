@@ -119,8 +119,8 @@ export default async function OverviewSection({
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
-          <div className="bg-white border border-gray-200 rounded-[0.625rem] p-3 flex-1 flex-col space-y-3">
-            <div className="flex gap-x-2">
+          <div className="bg-white border border-gray-200 rounded-[0.625rem] px-4 pt-2 pb-4 flex-1 flex-col space-y-3">
+            <div className="flex justify-between">
               <div className="flex items-center p-1">
                 <Image src={tvlk_favicon} alt="" className="mr-2" />
                 <div className="flex items-end text-primary">
@@ -129,13 +129,10 @@ export default async function OverviewSection({
                 </div>
               </div>
 
-              <div className="flex flex-col font-bold">
-                <span>Rất tốt</span>
-                <a href="#review" className="text-sm text-primary flex gap-x-1">
-                  {hotel.numberOfReviews} đánh giá
-                  <ChevronRight className="size-5" />
-                </a>
-              </div>
+              <a href="#review" className="text-sm text-primary flex gap-x-1 font-bold mt-2">
+                Xem {hotel.numberOfReviews} đánh giá
+                <ChevronRight className="size-5" />
+              </a>
             </div>
             <h2 className="font-semibold">Khách nói gì về kỳ nghỉ của họ</h2>
             <div className="flex flex-col overflow-y-auto max-h-32 space-y-2">

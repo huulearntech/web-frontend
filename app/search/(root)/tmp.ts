@@ -53,9 +53,9 @@ export const SearchParamsCodec = z.codec(
         to: new Date(toDate),
       },
       guestsAndRooms: {
-        numAdults: parseInt(numAdults, 10) || 0,
+        numAdults: parseInt(numAdults, 10) || 2,
         numChildren: parseInt(numChildren, 10) || 0,
-        numRooms: parseInt(numRooms, 10) || 0,
+        numRooms: parseInt(numRooms, 10) || 1,
       },
     });
   },

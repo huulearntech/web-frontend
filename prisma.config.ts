@@ -12,6 +12,10 @@ export default defineConfig({
 
   schema: "prisma/schema.prisma", // Uncomment when need to use Prisma extension for syntax highlighting
   // schema: "prisma", // Uncomment when need to generate types
+
+  typedSql: {
+    path: "prisma/sql"
+  },
   migrations: {
     path: "prisma/migrations",
     seed: "tsx prisma/seed"

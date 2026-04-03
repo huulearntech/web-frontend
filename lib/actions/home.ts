@@ -29,7 +29,7 @@ export async function fetchFeed(): Promise<FeedProps> {
         type: true,
         ward: { select: { name: true, district: { select: { province: { select: { name: true } } } } }, },
         facilities: { select: { name: true, iconUrl: true }},
-        rooms: {
+        roomTypes: {
           select: {
             price: true,
           },
@@ -42,7 +42,7 @@ export async function fetchFeed(): Promise<FeedProps> {
     }).then(hotels => ({
       provinceName: name, hotels: hotels.map(hotel => ({
         ...hotel,
-        rooms: hotel.rooms.map(r => ({ ...r, price: r.price.toString() })),
+        roomTypes: hotel.roomTypes.length > 0 ? hotel.roomTypes.map(r => ({ price: r.price.toString() })) : [{ price: "N/A" }],
       }))
     }))
   ));

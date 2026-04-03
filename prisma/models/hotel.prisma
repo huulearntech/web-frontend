@@ -12,8 +12,8 @@ model Hotel {
 
   type        HotelType
   description String?
-  reviewPoints Float    @map("review_points")
-  numberOfReviews Int    @map("number_of_reviews")
+  reviewPoints Float     @map("review_points")      // NOTE: this is a denormalized field and must be updated via triggers.
+  numberOfReviews Int    @map("number_of_reviews") // NOTE: this is a denormalized field and must be updated via triggers. 
 
   checkInTime  DateTime @db.Time  @map("check_in_time")
   checkOutTime DateTime @db.Time  @map("check_out_time")
@@ -24,9 +24,10 @@ model Hotel {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  status      HotelStatus @default(ACTIVE)
+  status           HotelStatus @default(ACTIVE)
 
-  rooms            Room[]
+  roomTypes        RoomType[]
+
   facilities       Facility[]
   favoritedBy      Favorite[]
   recentlyViewedBy RecentlyViewed[]
@@ -47,12 +48,12 @@ enum HotelType {
   OTHER
 }
 
-// FIXME: may need more statuses (e.g., PENDING_APPROVAL, SUSPENDED, etc.)
 enum HotelStatus {
+  PENDING_APPROVAL
+  REJECTED
   ACTIVE
   INACTIVE
-  UNDER_REVIEW
-  REJECTED
+  SUSPENDED
 }
 
 enum FacilityType {
@@ -67,11 +68,12 @@ enum FacilityType {
 model Facility {
   id        String   @id @default(cuid())
   name      String   @unique
+  // TODO: consider forcing iconUrl to be non-nullable and providing a default icon for each type, to ensure consistent UI/UX.
   iconUrl   String?  @map("icon_url") // optional icon URL for the facility
   type      FacilityType
 
   hotels    Hotel[]
-  rooms     Room[]
+  roomTypes RoomType[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -81,25 +83,16 @@ model Facility {
 
 model Room {
   id               String   @id @default(cuid())
-  hotelId          String   @map("hotel_id")
-  hotel            Hotel    @relation(fields: [hotelId], references: [id], onDelete: Cascade)
-
   name             String   @unique
-  type             String
-  adultCapacity    Int      @map("adult_capacity")
-  childrenCapacity Int      @map("children_capacity")
-  price            Decimal
-  areaM2           Float
-  bedType          BedType  @map("bed_type")
+  typeId           String   @map("type_id")
+  type             RoomType @relation(fields: [typeId], references: [id], onDelete: Cascade)
   imageUrls        String[]
 
   bookingRooms     BookingRoom[]
-  facilities       Facility[]
 
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
 
-  @@index([hotelId])
   @@map("rooms")
 }
 
@@ -110,4 +103,29 @@ enum BedType {
   KING
   TWIN
   OTHER
+}
+
+model RoomType {
+  id        String   @id @default(cuid())
+  hotelId          String   @map("hotel_id")
+  hotel            Hotel    @relation(fields: [hotelId], references: [id], onDelete: Cascade)
+
+  name      String   @unique
+  description String?
+
+  rooms     Room[]
+
+  adultCapacity    Int      @map("adult_capacity")
+  childrenCapacity Int      @map("children_capacity")
+  price            Decimal
+  areaM2           Float
+  bedType          BedType  @map("bed_type")
+
+  facilities Facility[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("room_types")
+  @@index([hotelId])
 }

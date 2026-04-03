@@ -12,7 +12,7 @@ export async function hotelowner_getBookings() {
 	const [bookings, total] = await prisma.$transaction([
     prisma.booking.findMany({
       where: { hotel: { ownerId: session.user.id } },
-      orderBy: { startDate: "desc" },
+      orderBy: { checkInDate: "desc" },
       include: {
         user: { select: { name: true } },
       },
@@ -46,12 +46,12 @@ export async function hotelowner_getUpcomingBookings() {
   return await prisma.booking.findMany({
     where: {
       hotel: { ownerId: session.user.id },
-      startDate: {
+      checkInDate: {
         gte: today,
       },
     },
     orderBy: {
-      startDate: "desc",
+      checkOutDate: "desc",
     },
     take: 10, // limit to 10 upcoming bookings
     include: {

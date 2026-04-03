@@ -345,7 +345,7 @@ function LocationAutocomplete({
   const { data, isLoading, error } = useSWR(
     value && value.trim() !== "" ? ["locations", value] : null,
     async ([, q]) => user_getLocationOrHotelByQueryString(q),
-    { dedupingInterval: 500 }
+    { dedupingInterval: 800 }
   );
 
   const suggestedLocations = Array.isArray(data) ? data : [];
@@ -380,7 +380,7 @@ function LocationAutocomplete({
 
         {!isLoading && !error && items.length > 0 && (
           <AutocompleteList>
-            {items.map(item => (
+            {items.filter(item => item.id).map(item => (
               <AutocompleteItem key={item.id} value={item.name}>
                 {item.name}
               </AutocompleteItem>

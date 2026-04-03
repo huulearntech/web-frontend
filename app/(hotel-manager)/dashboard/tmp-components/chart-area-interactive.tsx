@@ -76,13 +76,7 @@ export function ChartAreaInteractive() {
     }
   }, [isMobile])
 
-  // const filteredData = chartData.filter((item) => {
-  //   const date = new Date(item.date)
-  //   const referenceDate = new Date()
-  //   const startDate = new Date(referenceDate)
-  //   startDate.setDate(startDate.getDate() - timeRangeValues[timeRange])
-  //   return date >= startDate
-  // })
+  // TODO: filter data.
 
   return (
     <Card className="@container/card">
