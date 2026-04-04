@@ -11,6 +11,9 @@ export const FILTER_MIN_PRICE = 100_000;
 export const FILTER_MAX_PRICE = 20_000_000;
 export const FILTER_PRICE_STEP = 100_000;
 
+export const MAX_REVIEW_POINTS = 5;
+export const MAX_LOCATION_AUTOCOMPLETE_RESULTS = 10;
+
 export const CACHE_TAGS = {
   userInfo: "user_info",
 }

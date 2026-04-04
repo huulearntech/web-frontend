@@ -25,4 +25,3 @@ export const MultiRoomFormSchema = z.object({
 
 export type MultiRoomFormInput = z.input<typeof MultiRoomFormSchema>;
 export type MultiRoomFormOutput = z.output<typeof MultiRoomFormSchema>;
-export type MultiRoomFormValues = z.infer<typeof MultiRoomFormSchema>;

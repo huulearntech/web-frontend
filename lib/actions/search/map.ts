@@ -29,7 +29,7 @@ export async function getHotelsByBoundingBox(bbox: BBox) {
     select: {
       id: true,
       name: true,
-      rooms: { select: { price: true }, take: 1, orderBy: { price: "asc" } },
+      roomTypes: { select: { price: true }, take: 1, orderBy: { price: "asc" } },
       reviewPoints: true,
       numberOfReviews: true,
       imageUrls: true,
@@ -38,7 +38,7 @@ export async function getHotelsByBoundingBox(bbox: BBox) {
     },
   }).then(hotels => hotels.map(hotel => ({
     ...hotel,
-    price: hotel.rooms[0].price.toString() ?? "",
+    price: hotel.roomTypes[0].price.toNumber() || 0, // convert Decimal to number, default to 0 if no room types
     thumbnailUrl: hotel.imageUrls[0] ?? null,
     rooms: undefined, // remove rooms from the result since we only needed the price
   })));

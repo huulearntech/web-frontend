@@ -18,10 +18,15 @@ import {
   getWardsByDistrictId,
 } from "@/lib/actions/hotel-manager/register";
 
-export default function LocationSelect() {
+export default function LocationSelect({
+  wardId,
+  onWardIdChange,
+}: {
+  wardId: string;
+  onWardIdChange: (wardId: string) => void;
+}) {
   const [provinceId, setProvinceId] = useState<string>("");
   const [districtId, setDistrictId] = useState<string>("");
-  const [wardId, setWardId] = useState<string>("");
 
   const {
     data: provinces = [],
@@ -56,14 +61,14 @@ export default function LocationSelect() {
     startTransition(() => {
       setProvinceId(v);
       setDistrictId("");
-      setWardId("");
+      onWardIdChange("");
     });
   };
 
   const onDistrictChange = (v: string) => {
     startTransition(() => {
       setDistrictId(v);
-      setWardId("");
+      onWardIdChange("");
     });
   };
 
@@ -73,7 +78,7 @@ export default function LocationSelect() {
       {/* Province */}
       <Select value={provinceId} onValueChange={onProvinceChange}>
         <SelectTrigger className="w-full" aria-busy={provincesValidating || isPending}>
-          <SelectValue placeholder={provincesValidating ? "Loading provinces..." : "Chọn tỉnh/thành phố"} />
+          <SelectValue placeholder={provincesValidating ? "Đang tải..." : "Chọn tỉnh/thành phố"} />
         </SelectTrigger>
         <SelectContent>
           <SelectGroup>
@@ -93,7 +98,7 @@ export default function LocationSelect() {
         disabled={!provinceId || districtsValidating || isPending}
       >
         <SelectTrigger className="w-full" aria-busy={districtsValidating || isPending}>
-          <SelectValue placeholder={!provinceId ? "Chọn tỉnh trước" : districtsValidating ? "Loading districts..." : "Chọn quận/huyện"} />
+          <SelectValue placeholder={!provinceId ? "Chọn tỉnh trước" : districtsValidating ? "Đang tải..." : "Chọn quận/huyện"} />
         </SelectTrigger>
         <SelectContent>
           <SelectGroup>
@@ -107,9 +112,9 @@ export default function LocationSelect() {
       </Select>
 
       {/* Ward */}
-      <Select value={wardId} onValueChange={(v) => setWardId(v)} disabled={!districtId || wardsValidating || isPending}>
+      <Select value={wardId} onValueChange={onWardIdChange} disabled={!districtId || wardsValidating || isPending}>
         <SelectTrigger className="w-full" aria-busy={wardsValidating || isPending}>
-          <SelectValue placeholder={!districtId ? "Chọn quận trước" : wardsValidating ? "Loading wards..." : "Chọn phường/xã"} />
+          <SelectValue placeholder={!districtId ? "Chọn quận trước" : wardsValidating ? "Đang tải..." : "Chọn phường/xã"} />
         </SelectTrigger>
         <SelectContent>
           <SelectGroup>

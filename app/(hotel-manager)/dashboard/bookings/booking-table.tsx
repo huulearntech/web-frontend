@@ -22,14 +22,12 @@ export default function BookingsTable() {
     from: new Date(Date.now() - 24 * 60 * 60 * 1000), // Default to a range of 1 day
     to: new Date(),
   });
-  const { data, isLoading, isError } = useQuery({
+  const { data = { bookings: [], total: 0 }, isLoading, isError } = useQuery({
     queryKey: ["hotelowner_bookings"],
     queryFn: async () => {
       return hotelowner_getBookings();
     },
   });
-
-  const bookings = data?.bookings ?? [];
 
   if (isLoading) return <div>Loading...</div>;
   if (isError) return <div>Error loading bookings.</div>;
@@ -64,7 +62,7 @@ export default function BookingsTable() {
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-      <DataTable columns={columns} data={bookings} />
+      <DataTable columns={columns} data={data.bookings} />
     </div>
   );
 }

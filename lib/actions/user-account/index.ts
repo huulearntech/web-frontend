@@ -22,7 +22,7 @@ export async function fetchRecentBookings() {
     }
   }).then(bookings => bookings.map(booking => ({
     ...booking,
-    totalPrice: booking.totalPrice.toString(),
+    totalPrice: booking.totalPrice.toNumber(),
   })));
 }
 

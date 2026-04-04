@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 import { Toaster } from "@/components/ui/sonner";
 import { TanstackQueryProvider } from "./tanstack-query-provider";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import DisclaimerAlertDialog, { DisclaimerAlertDialogProvider } from "@/components/disclaimer-alert-dialog";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -41,7 +42,10 @@ export default function RootLayout({
         <SessionProvider>
           <TanstackQueryProvider>
             <TooltipProvider>
-              {children}
+              <DisclaimerAlertDialogProvider>
+                {children}
+                <DisclaimerAlertDialog />
+              </DisclaimerAlertDialogProvider>
             </TooltipProvider>
           </TanstackQueryProvider>
         </SessionProvider>

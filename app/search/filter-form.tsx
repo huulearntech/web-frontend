@@ -9,6 +9,7 @@ import { Accordion, AccordionContent, AccordionTrigger, AccordionItem } from '@/
 
 import { Controller } from 'react-hook-form';
 import {
+  defaultFilterValues,
   FILTER_CATEGORIES,
   useFilterForm
 } from './filter-form-context';
@@ -147,33 +148,31 @@ export function FilterForm({ isSheet = false }: { isSheet?: boolean }) {
 export function FilterForm__Reset_and_Apply_Buttons() {
   const { reset, getValues, formState } = useFilterForm();
   const filterHasChanged = formState.isDirty;
+  const formValues = getValues();
+  const isDefault = (
+    formValues.priceRange[0] === defaultFilterValues.priceRange[0] &&
+    formValues.priceRange[1] === defaultFilterValues.priceRange[1] &&
+    formValues.sortBy === defaultFilterValues.sortBy &&
+    formValues.amenities.length === 0 &&
+    formValues.propertyTypes.length === 0 &&
+    formValues.ratings.length === 0
+  )
+  
   return (
     <div className="flex gap-2">
       <Button
         variant='outline'
         className="flex-1"
-        onClick={() => {
-          if (filterHasChanged) {
-            reset();
-            // also call server action
-            // Or just set the search params and call router.push() or some kind
-            console.log("filters reset to default values");
-          } else {
-            console.log("filters are already at default values, no need to reset");
-          }
-        }}
+        disabled={isDefault}
+        onClick={() => reset(defaultFilterValues)}
       >
         Đặt lại
       </Button>
 
       <Button
-        variant={filterHasChanged ? 'default' : 'outline'}
         className="flex-1"
+        disabled={!filterHasChanged}
         onClick={() => {
-          if (!filterHasChanged) {
-            console.log("filters are not dirty, no need to apply");
-            return;
-          }
           const values = getValues();
           console.log(values, "filter has changed: ", filterHasChanged); // call some server actions (only if filterHasChanged)
           reset(values);

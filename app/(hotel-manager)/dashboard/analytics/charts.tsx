@@ -28,7 +28,10 @@ export function OccupancyBarChart({ data = defaultOccupancy }: { data?: Occupanc
               <CartesianGrid strokeDasharray="3 3" strokeOpacity={0.06} />
               <XAxis dataKey="label" axisLine={false} tickLine={false} />
               <YAxis unit="%" />
-              <Tooltip formatter={(v: any) => `${v}%`} />
+              <Tooltip
+                // careful with any
+                formatter={(v: any) => `${v}%`}
+              />
               <Bar dataKey="occupancyPct" fill="#7c3aed" isAnimationActive={false}/>
             </BarChart>
           </ResponsiveContainer>

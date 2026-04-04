@@ -60,35 +60,45 @@ function ReviewCard({
   booking: Hotel["bookings"][number]
 }) {
   if (!booking.review) return null;
+  const today = new Date();
   return (
-    <div className="p-6 rounded-[0.375rem] border flex gap-x-12">
-      <div className="flex flex-col items-center gap-y-2">
-        <div className="size-16 rounded-full bg-primary text-white flex items-center justify-center text-[2rem] font-bold">A</div>
-        <div className="font-bold">{booking.user.name}</div>
+    <div className="px-6 py-4 rounded-xl border flex gap-x-12 h-40">
+      <div className="flex flex-col items-center gap-y-2 shrink-0 w-1/6">
+        <Image
+          src={booking.user.profileImageUrl ?? tvlk_favicon}
+          alt=""
+          className="rounded-full w-16 h-16 md:w-20 md:h-20 lg:w-24 lg:h-24"
+          width={64}
+          height={64}
+        />
+        <div className="font-bold text-center truncate w-full">{booking.user.name}</div>
       </div>
 
-      <div className="flex flex-col flex-1 gap-y-3">
-        <div className="flex space-x-4 items-center">
-          <div className="px-2.5 py-0.5 rounded-full bg-blue-50 flex items-center justify-center space-x-1">
-            <Image src={tvlk_favicon} alt="" aria-hidden className="size-4.5"/>
-            <div className="flex items-end gap-x-0.5">
-              <div className="text-primary font-bold">{booking.review.rating}</div>
-              <div className="text-sm font-medium">/</div>
-              <div className="text-sm font-medium">10</div>
+      <div className="flex flex-col justify-between">
+        <div className="flex flex-col gap-y-2">
+          <div className="flex gap-x-4 items-center">
+            <div className="px-2.5 py-0.5 rounded-full bg-blue-50 flex items-center justify-center space-x-1">
+              <Image src={tvlk_favicon} alt="" aria-hidden className="size-4.5" />
+              <div className="flex items-end gap-x-0.5">
+                <div className="text-primary font-bold">{booking.review.rating}</div>
+                <div className="text-sm font-medium">/</div>
+                <div className="text-sm font-medium">10</div>
+              </div>
+            </div>
+
+            <div className="text-sm font-bold mt-2 sm:mt-0">
+              Đánh giá cách đây {
+                // TODO: improve this logic
+                differenceInWeeks(today, booking.review.createdAt) >= 1
+                  ? `${differenceInWeeks(today, booking.review.createdAt)} tuần`
+                  : `${differenceInDays(today, booking.review.createdAt)} ngày`
+              }
             </div>
           </div>
 
-          <div className="text-sm font-bold">
-            Đánh giá cách đây {
-              // TODO: improve this logic
-              differenceInWeeks(new Date(), new Date(booking.review.createdAt)) >= 1
-                ? `${differenceInWeeks(new Date(), new Date(booking.review.createdAt))} tuần`
-                : `${differenceInDays(new Date(), new Date(booking.review.createdAt))} ngày`
-            } 
-          </div>
+          <p className="text-sm font-medium">{booking.review.comment}</p>
         </div>
 
-        <p className="text-sm font-medium">{booking.review.comment}</p>
         <div className="flex items-center space-x-2">
           <ThumbsUp className="size-5"/>
           <div className="text-sm font-bold text-primary">Đánh giá này hữu ích không?</div>

@@ -5,6 +5,7 @@ import { fetchHotel } from "@/lib/actions/hotel";
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
 import { ChevronRight, MapPin } from 'lucide-react';
 import { tvlk_favicon } from "@/public/logos";
+import { MAX_REVIEW_POINTS } from "@/lib/constants";
 
 const mock_nearby_locations = [
   {
@@ -26,9 +27,11 @@ const mock_nearby_locations = [
 
 
 export default async function OverviewSection({
-  hotel
+  hotel,
+  minPrice,
 }: {
   hotel: Awaited<ReturnType<typeof fetchHotel>>
+  minPrice: number;
 }) {
 
   if (!hotel) return null;
@@ -36,7 +39,6 @@ export default async function OverviewSection({
   const {
     bookings,
     imageUrls,
-    rooms: [{ price }],
     facilities,
     ward: { name: wardName, district: { name: districtName, province: { name: provinceName } } },
   } = hotel;
@@ -107,7 +109,7 @@ export default async function OverviewSection({
           <div className="flex gap-x-2 py-2">
             <div className="flex flex-col text-end">
               <span className="text-xs">Giá/phòng/đêm</span>
-              <span className="h-fit text-[1.25rem] font-bold text-orange-600">{price.toString()} VND</span>
+              <span className="h-fit text-[1.25rem] font-bold text-orange-600">{minPrice} VND</span>
             </div>
             <a
               href="#available_rooms"
@@ -124,8 +126,8 @@ export default async function OverviewSection({
               <div className="flex items-center p-1">
                 <Image src={tvlk_favicon} alt="" className="mr-2" />
                 <div className="flex items-end text-primary">
-                  <div className="text-[1.625rem] font-bold">{hotel.reviewPoints}</div>
-                  <div className="text-sm font-semibold"> /10 </div>
+                  <div className="text-[1.625rem] font-bold">{hotel.reviewPoints.toFixed(1)}</div>
+                  <div className="text-sm font-semibold"> {"/ " + MAX_REVIEW_POINTS} </div>
                 </div>
               </div>
 
@@ -139,7 +141,7 @@ export default async function OverviewSection({
               {bookings.map(({ id, user, review }) => review?.comment && (
                 <div key={id} className="flex items-start gap-x-2">
                   <Image
-                    src={user.profileImageUrl || tvlk_favicon}
+                    src={user.profileImageUrl ?? tvlk_favicon}
                     alt=""
                     className="size-6 rounded-full"
                     width={24}
@@ -148,7 +150,7 @@ export default async function OverviewSection({
                   <div>
                     <div className="flex items-center gap-x-2">
                       <div className="font-semibold">{user.name}</div>
-                      <div className="text-gray-500 text-sm">{review.rating}/10</div>
+                      <div className="text-gray-500 text-sm">{review.rating}/{MAX_REVIEW_POINTS}</div>
                     </div>
                     <p className="text-gray-500 text-sm max-h-12 overflow-hidden overflow-ellipsis">{review.comment}</p>
                   </div>

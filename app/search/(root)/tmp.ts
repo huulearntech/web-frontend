@@ -3,8 +3,8 @@ import z from "zod";
 
 export type SearchParams = {
   location: string,
-  fromDate: string,
-  toDate: string,
+  checkInDate: string,
+  checkOutDate: string,
   numAdults: string,
   numChildren: string,
   numRooms: string,
@@ -12,35 +12,31 @@ export type SearchParams = {
 
 export const SearchParamsCodec = z.codec(
   z.object({
-    location: z.string(),
-    fromDate: z.string().refine((dateStr) => !isNaN(Date.parse(dateStr)), {
-      message: "Invalid fromDate format",
-    }),
-    toDate: z.string().refine((dateStr) => !isNaN(Date.parse(dateStr)), {
-      message: "Invalid toDate format",
-    }),
-    numAdults: z.string(),
-    numChildren: z.string(),
-    numRooms: z.string(),
+    location:     z.string(),
+    checkInDate:  z.iso.date(),
+    checkOutDate: z.iso.date(),
+    numAdults:    z.string(),
+    numChildren:  z.string(),
+    numRooms:     z.string(),
   }),
   SearchBarFormSchema,
   {
   encode(data: z.infer<typeof SearchBarFormSchema>) {
     return {
-      location: data.location,
-      fromDate: data.inOutDates.from.toISOString(),
-      toDate: data.inOutDates.to.toISOString(),
-      numAdults: String(data.guestsAndRooms.numAdults),
-      numChildren: String(data.guestsAndRooms.numChildren),
-      numRooms: String(data.guestsAndRooms.numRooms),
+      location:     data.location,
+      checkInDate:  data.inOutDates.from.toISOString().split("T")[0],
+      checkOutDate: data.inOutDates.to.toISOString().split("T")[0],
+      numAdults:    data.guestsAndRooms.numAdults.toString(),
+      numChildren:  data.guestsAndRooms.numChildren.toString(),
+      numRooms:     data.guestsAndRooms.numRooms.toString(),
     };
   },
 
   decode(input: SearchParams): z.infer<typeof SearchBarFormSchema> {
     const {
       location,
-      fromDate,
-      toDate,
+      checkInDate,
+      checkOutDate,
       numAdults,
       numChildren,
       numRooms,
@@ -49,8 +45,8 @@ export const SearchParamsCodec = z.codec(
     return SearchBarFormSchema.parse({
       location,
       inOutDates: {
-        from: new Date(fromDate),
-        to: new Date(toDate),
+        from: new Date(checkInDate),
+        to: new Date(checkOutDate),
       },
       guestsAndRooms: {
         numAdults: parseInt(numAdults, 10) || 2,

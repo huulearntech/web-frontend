@@ -2,7 +2,8 @@ import { BedType, Hotel, HotelType, FacilityType, RoomType } from "@/lib/generat
 import prisma from "@/lib/prisma";
 import { Prisma } from "@/lib/generated/prisma/client";
 
-import { faker } from "@faker-js/faker";
+import { fakerVI as faker } from "@faker-js/faker";
+import { Decimal } from "@prisma/client/runtime/client";
 
 // if Hotel model has a field of Unsupported (geolocation), Prisma will not allow to use create
 
@@ -12,7 +13,7 @@ async function seedHotels(data: { wardId: string, ownerId: string }[]) {
     return [];
   }
 
-  const hotels = data.map(({ wardId, ownerId }) => {
+  const hotels: Prisma.HotelUncheckedCreateInput[] = data.map(({ wardId, ownerId }) => {
     // check-in between 10:00 and 12:00
     const checkInMinutes = faker.number.int({ min: 10 * 60, max: 12 * 60 });
     // check-out at least 1 hour before check-in, at most 2 hours before
@@ -46,7 +47,7 @@ async function seedHotels(data: { wardId: string, ownerId: string }[]) {
       checkOutTime,
       breakfastAvailability: faker.datatype.boolean(),
       imageUrls: faker.helpers.uniqueArray(() => faker.image.url({ width: 400, height: 300 }), 8),
-    } satisfies NonNullable<Parameters<typeof prisma.hotel.create>[0]["data"]>;
+    };
   }) ;
 
   return prisma.hotel.createManyAndReturn({
@@ -61,24 +62,26 @@ async function seedRoomTypes(hotels: Hotel[]) {
     return [];
   }
   const roomTypes: Prisma.RoomTypeUncheckedCreateInput[] = [];
-  const typeNames = ["Standard", "Deluxe", "Suite", "Twin", "King", "Queen"];
   for (const hotel of hotels) {
-    faker.helpers.arrayElements(
-      typeNames,
-      faker.number.int({ min: 3, max: typeNames.length }))
-      .forEach((type) => {
-        roomTypes.push({
-          hotelId: hotel.id,
-          name: type,
-          description: `A ${type.toLowerCase()} room at ${hotel.name}`,
-          adultCapacity: faker.number.int({ min: 1, max: 4 }),
-          childrenCapacity: faker.number.int({ min: 0, max: 4 }),
-          price: parseFloat(faker.commerce.price({ min: 100, max: 500 })),
-          areaM2: faker.number.int({ min: 20, max: 100 }),
-          bedType: faker.helpers.arrayElement(Object.values(BedType)),
-        });
-      }
+    // generate an array of distinct noun-based type names for this hotel
+    const typeCount = faker.number.int({ min: 3, max: 6 });
+    const typeNames = faker.helpers.uniqueArray(
+      () => faker.word.noun({ length: { min: 4, max: 10 } }),
+      typeCount
     );
+
+    typeNames.forEach((type) => {
+      roomTypes.push({
+      hotelId: hotel.id,
+      name: type,
+      description: `A ${type.toLowerCase()} room at ${hotel.name}`,
+      adultCapacity: faker.number.int({ min: 1, max: 4 }),
+      childrenCapacity: faker.number.int({ min: 0, max: 4 }),
+      price: new Decimal(faker.number.int({ min: 100_000, max: 500_000, multipleOf: 1_000 })),
+      areaM2: faker.number.int({ min: 20, max: 100 }),
+      bedType: faker.helpers.arrayElement(Object.values(BedType)),
+      });
+    });
   }
   return prisma.roomType.createManyAndReturn({
     data: roomTypes,

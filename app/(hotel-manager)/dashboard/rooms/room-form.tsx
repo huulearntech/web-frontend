@@ -1,7 +1,4 @@
-// TODO: Update images instead of just URLs. Maybe use Cloudinary
-// TODO: useSWR for image URLs so we can show previews and validate them before submission
-// TODO: handle image editing/deletion in the form (currently you can only add new ones, not remove or edit existing ones)
-// TODO: handle multiple room in one form (e.g. for bulk editing/creation) - this will require more significant changes to the form structure and API
+// Maybe useful for update
 
 "use client";
 
@@ -120,7 +117,7 @@ export default function RoomForm({ onSubmit }: { onSubmit: (data: RoomFormOutput
               Add image URL
             </Button>
 
-            {errors.imageUrls && <p className="text-xs text-destructive mt-1">{(errors.imageUrls as any).message ?? "Invalid image URLs"}</p>}
+            {errors.imageUrls && <p className="text-xs text-destructive mt-1">{errors.imageUrls.message ?? "Invalid image URLs"}</p>}
           </div>
 
           {/* {error && <div className="text-sm text-destructive">{error}</div>} */}

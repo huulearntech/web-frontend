@@ -68,7 +68,7 @@ export default function HotelCard({
           <div className="flex gap-x-1">
             <h3 role="heading" className="grow font-bold line-clamp-2 overflow-hidden overflow-ellipsis">{name}</h3>
             <div className="flex flex-col items-end">
-              <span className="text-xs font-black text-blue-950">{reviewPoints}</span>
+              <span className="text-xs font-black text-blue-950">{reviewPoints.toFixed(1)}</span>
               <span className="text-xs font-semibold">({numberOfReviews})</span>
             </div>
           </div>
@@ -140,7 +140,7 @@ function FacilityBadges({ facilities }: { facilities: string[] }) {
 
     // Measure "+X"
     const more = document.createElement("span");
-    more.className = "badge";
+    more.className = "px-1 text-10 font-semibold";
     more.textContent = "+0";
     measure.appendChild(more);
 
@@ -188,7 +188,7 @@ function FacilityBadges({ facilities }: { facilities: string[] }) {
       </div>
 
       {/** Ẩn, tận dụng cho screen reader luôn */}
-      <div ref={measureRef} className="absolute sr-only h-0 overflow-hidden whitespace-nowrap">
+      <div ref={measureRef} className="absolute invisible sr-only h-0 overflow-hidden whitespace-nowrap">
         {facilities.map((facility, i) => (
           <span key={i} className="shrink-0 text-[10px] font-semibold px-1 py-0.75 rounded-lg bg-gray-50">
             {facility}

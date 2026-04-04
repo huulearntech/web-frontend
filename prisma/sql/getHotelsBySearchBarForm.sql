@@ -31,9 +31,9 @@ JOIN LATERAL (
     AND rt."adult_capacity" >= CEIL($4::numeric / NULLIF($5::numeric, 0))
     AND NOT EXISTS (
       SELECT 1
-      FROM "booking_rooms" br
-      JOIN "bookings" b ON br."bookingId" = b.id
-      WHERE br."roomId" = r.id
+      FROM "_BookingToRoom" br
+      JOIN "bookings" b ON br."A" = b.id
+      WHERE br."B" = r.id
         -- overlap: booking.start < requested_to AND booking.end > requested_from
         AND b."checkInDate"  < $3
         AND b."checkOutDate" > $2

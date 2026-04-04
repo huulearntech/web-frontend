@@ -1,9 +1,9 @@
 import prisma from "@/lib/prisma";
 
 import { seedCountryVietnam, seedProvinces, seedDistricts, seedWards } from "./address";
-import { seedHotelOwners, seedRegularUsers } from "./user";
+import { seedAdmin, seedHotelOwners, seedRegularUsers } from "./user";
 import { seedConnectionHotelsOnFacilities, seedConnectionRoomTypesOnFacilities, seedFacilities, seedHotels, seedRooms, seedRoomTypes } from "./hotel";
-import { seedBookings } from "./booking";
+import { seedBookings, seedReviews } from "./booking";
 
 import { faker } from "@faker-js/faker";
 
@@ -17,10 +17,10 @@ async function main() {
 
   const Vietnam = await seedCountryVietnam();
   const provinces = await seedProvinces(Vietnam, 5);
-  const districts = await seedDistricts(provinces);
-  const wards = await seedWards(districts);
+  const districts = await seedDistricts(provinces, 5);
+  const wards = await seedWards(districts, 5);
   
-  const hotelOwners = await seedHotelOwners(10);
+  const hotelOwners = await seedHotelOwners(125);
 
   const shuffledWards = faker.helpers.shuffle(wards);
   const hotelData = hotelOwners.map((owner, idx) => ({
@@ -44,11 +44,46 @@ async function main() {
   await seedConnectionHotelsOnFacilities(hotels);
   await seedConnectionRoomTypesOnFacilities(roomTypes);
   await seedBookings(bookingData);
+  await seedReviews();
+  await seedAdmin();
 
   console.log("Database seeded successfully!");
 }
 
-main()
+// main()
+//   .catch((e) => {
+//     console.error(e);
+//     process.exit(1);
+//   })
+//   .finally(async () => {
+//     await prisma.$disconnect();
+//   });
+
+async function tmpSeed() {
+  const bookings = await prisma.booking.findMany({
+    where: {
+      status: "COMPLETED",
+      review: { is: null },
+    },
+    select: {
+      id: true,
+      hotelId: true,
+    },
+  });
+
+  const reviews = bookings.map(({ id }) => ({
+    bookingId: id,
+    rating: faker.number.int({ min: 1, max: 5 }),
+    comment: faker.lorem.sentences(2),
+    createdAt: faker.date.recent(),
+  }));
+
+  prisma.review.createMany({
+    data: reviews,
+  });
+}
+
+tmpSeed()
   .catch((e) => {
     console.error(e);
     process.exit(1);

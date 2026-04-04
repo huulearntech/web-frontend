@@ -14,6 +14,7 @@
   //   }
   // }, []);
 
+// TODO: Add a hidden field for "is hotel" -> if true -> redirect to hotel, else redirect to search result page with the location as keyword and hotel filter on. This is for the case when user select a hotel from the autocomplete suggestions, instead of a location.
 "use client";
 
 import { useForm } from "react-hook-form";
@@ -38,12 +39,13 @@ import {
   AutocompleteList
 } from "@/components/autocomplete";
 
-import { ArrowRight, ChevronDown, Minus, Plus, Search } from "lucide-react";
+import { ArrowRight, ChevronDown, Minus, Plus, Search, RotateCwIcon, LoaderCircleIcon } from "lucide-react";
 
 import { SearchBarFormSchema, type SearchBarFormData } from "@/lib/zod_schemas/search-bar";
 import {
   MAX_ADULTS,
   MAX_CHILDREN,
+  MAX_LOCATION_AUTOCOMPLETE_RESULTS,
   MAX_ROOMS,
   MIN_ADULTS,
   MIN_CHILDREN,
@@ -51,9 +53,9 @@ import {
   PATHS
 } from "@/lib/constants";
 
-import useSWR from "swr";
+import useSWR, { mutate } from "swr";
 import { SearchParamsCodec } from "@/app/search/(root)/tmp";
-import { ComponentProps, useState } from "react";
+import { ComponentProps, useState, useEffect } from "react";
 import { user_getLocationOrHotelByQueryString } from "@/lib/actions/search-bar";
 
 export default function SearchBar({
@@ -106,6 +108,7 @@ export default function SearchBar({
 }
 
 
+// TODO: clean up the code duplication between SearchBar and SearchBar__NonCollapsible
 export function SearchBar__NonCollapsible({
   defaultValues,
   className
@@ -212,6 +215,11 @@ export function SearchBarForm({
                     locale={vi}
                     selected={field.value}
                     onSelect={field.onChange}
+                    // FIXME: fix render mismatch between server and client due to new Date().
+                    disabled={{
+                      before: new Date(),
+                      after: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000)
+                    }}
                   />
                 </FormControl>
               </PopoverContent>
@@ -251,7 +259,7 @@ export function SearchBarForm({
                         <Minus className="size-4" />
                       </Button>
                       <FormControl>
-                        <Input value={field.value.numAdults} readOnly className="w-10 text-center" />
+                        <Input value={field.value.numAdults} readOnly className="w-12 text-center" />
                       </FormControl>
                       <Button
                         onClick={() => setGuests({ numAdults: field.value.numAdults + 1 })}
@@ -274,7 +282,7 @@ export function SearchBarForm({
                         <Minus className="size-4" />
                       </Button>
                       <FormControl>
-                        <Input value={field.value.numChildren} readOnly className="w-10 text-center" />
+                        <Input value={field.value.numChildren} readOnly className="w-12 text-center" />
                       </FormControl>
                       <Button
                         onClick={() => setGuests({ numChildren: field.value.numChildren + 1 })}
@@ -297,7 +305,7 @@ export function SearchBarForm({
                         <Minus className="size-4" />
                       </Button>
                       <FormControl>
-                        <Input value={field.value.numRooms} readOnly className="w-10 text-center" />
+                        <Input value={field.value.numRooms} readOnly className="w-12 text-center" />
                       </FormControl>
                       <Button
                         onClick={() => setGuests({ numRooms: field.value.numRooms + 1 })}
@@ -334,6 +342,15 @@ export function SearchBarSkeleton({ className }: { className?: string }) {
   );
 }
 
+function useDebounced<T>(value: T, delay: number) {
+  const [debounced, setDebounced] = useState<T>(value);
+  useEffect(() => {
+    const id = setTimeout(() => setDebounced(value), delay);
+    return () => clearTimeout(id);
+  }, [value, delay]);
+  return debounced;
+}
+
 function LocationAutocomplete({
   value,
   onValueChange,
@@ -341,15 +358,21 @@ function LocationAutocomplete({
   value: string;
   onValueChange: (value: string) => void;
 }) {
-  const maxSuggestions = 5;
-  const { data, isLoading, error } = useSWR(
-    value && value.trim() !== "" ? ["locations", value] : null,
+  const debouncedValue = useDebounced(value, 500);
+
+  const { data = [], isLoading, error } = useSWR(
+    debouncedValue && debouncedValue.trim() !== "" ? ["locations", debouncedValue] : null,
     async ([, q]) => user_getLocationOrHotelByQueryString(q),
-    { dedupingInterval: 800 }
+    { dedupingInterval: 10_000 }
   );
 
-  const suggestedLocations = Array.isArray(data) ? data : [];
-  const items = suggestedLocations.slice(0, maxSuggestions);
+  const isTypingOrLoading = (value.trim() !== "" && value !== debouncedValue) || isLoading;
+
+  const items = data.slice(0, MAX_LOCATION_AUTOCOMPLETE_RESULTS);
+
+  const handleRetry = () => {
+    mutate(["locations", value]);
+  };
 
   return (
     <Autocomplete
@@ -366,19 +389,36 @@ function LocationAutocomplete({
         className="w-full"
       />
       <AutocompleteContent>
-        {isLoading && (
-          <div className="px-2 py-1 text-sm text-gray-500">Đang tải...</div>
+        {isTypingOrLoading && (
+          <div className="w-full flex items-center justify-center px-2 py-3 text-sm text-gray-500">
+            <div className="flex items-center gap-x-2">
+              <LoaderCircleIcon className="size-4 animate-spin" />
+              <span>Đang tải...</span>
+            </div>
+          </div>
         )}
 
         {error && (
-          <div className="px-2 py-1 text-sm text-red-500">Tải địa điểm thất bại</div>
+          <div className="w-full flex items-center justify-center px-2 py-3">
+            <div className="flex flex-col items-center text-sm text-gray-500 gap-2">
+              <span>Tải địa điểm thất bại</span>
+              <Button
+                type="button"
+                onClick={handleRetry}
+                className="self-center flex items-center gap-x-1 text-sm"
+              >
+                <RotateCwIcon className="size-4" />
+                Thử lại
+              </Button>
+            </div>
+          </div>
         )}
 
-        {!isLoading && !error && items.length === 0 && (
+        {!isTypingOrLoading && !error && items.length === 0 && (
           <AutocompleteEmpty>Không tìm thấy địa điểm này.</AutocompleteEmpty>
         )}
 
-        {!isLoading && !error && items.length > 0 && (
+        {!isTypingOrLoading && !error && items.length > 0 && (
           <AutocompleteList>
             {items.filter(item => item.id).map(item => (
               <AutocompleteItem key={item.id} value={item.name}>

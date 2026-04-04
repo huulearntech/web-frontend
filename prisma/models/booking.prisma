@@ -1,48 +1,28 @@
 model Booking {
-  id          String         @id @default(cuid())
-  userId      String
-  user        User           @relation(fields: [userId], references: [id], onDelete: Cascade)
-  hotelId     String
-  hotel       Hotel          @relation(fields: [hotelId], references: [id], onDelete: Cascade)
+  id                String         @id @default(cuid())
+  userId            String
+  user              User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  hotelId           String
+  hotel             Hotel          @relation(fields: [hotelId], references: [id], onDelete: Cascade)
 
-  // should rename to checkInDate and checkOutDate
-  checkInDate   DateTime       @db.Date
-  checkOutDate     DateTime       @db.Date
-  status      BookingStatus  @default(DRAFT)
-  totalPrice  Decimal
-  notes       String?
+  checkInDate       DateTime       @db.Date
+  checkOutDate      DateTime       @db.Date
+
+  rooms             Room[]         
+  snapshotRoomPrice Decimal
+
+  status            BookingStatus  @default(DRAFT)
+  notes             String?
   
-  bookingRooms BookingRoom[]
-  review      Review?        // optional review for this booking (one review per booking)
+  review            Review?        // optional review for this booking (one review per booking)
 
-  createdAt   DateTime       @default(now())
-  updatedAt   DateTime       @updatedAt
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
 
   @@index([userId])
   @@index([hotelId])
   @@index([checkInDate, checkOutDate])
   @@map("bookings")
-}
-
-// This is a join table. Consider make it implicit.
-// But the BookingRoom implies that the price per night is snap-shot, because the price of the room may change in the future, but the booking should keep the original price.
-model BookingRoom {
-  id            String   @id @default(cuid())
-  bookingId     String
-  booking       Booking  @relation(fields: [bookingId], references: [id], onDelete: Cascade)
-  roomId        String
-  room          Room     @relation(fields: [roomId], references: [id], onDelete: Cascade)
-
-  pricePerNight Decimal
-  nights        Int
-
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-
-  @@unique([bookingId, roomId])
-  @@index([roomId])
-  @@index([bookingId])
-  @@map("booking_rooms")
 }
 
 model Review {

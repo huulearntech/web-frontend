@@ -1,8 +1,9 @@
+// TODO: Update images instead of just URLs. Use Cloudinary
 "use client";
 
 import { useTransition } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm, useFieldArray, FormProvider } from "react-hook-form";
+import { useForm, useFieldArray, FormProvider, FieldArrayWithId } from "react-hook-form";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -19,6 +20,8 @@ import {
 import { MultiRoomFormSchema, type MultiRoomFormInput, MultiRoomFormOutput } from "@/lib/zod_schemas/create-room";
 import { FormField, FormItem, FormLabel, FormControl } from "@/components/ui/form";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+
+type MultiRoomFormType = ReturnType<typeof useForm<MultiRoomFormInput, unknown, MultiRoomFormOutput>>;
 
 export default function RoomForm({ onSubmit }: { onSubmit: (data: MultiRoomFormOutput) => Promise<void> }) {
   const [isPending, startTransition] = useTransition();
@@ -115,10 +118,10 @@ function RoomFields({
   removeRoom,
 }: {
   index: number;
-  control: any;
-  register: any;
-  errors: any;
-  roomFields: any;
+  control: MultiRoomFormType["control"];
+  register: MultiRoomFormType["register"];
+  errors: MultiRoomFormType["formState"]["errors"];
+  roomFields: FieldArrayWithId<MultiRoomFormInput, "rooms", "id">[];
   removeRoom: (i: number) => void;
 }) {
   // Each room has its own imageUrls field array.
@@ -131,7 +134,7 @@ function RoomFields({
     name: `rooms.${index}.imageUrls` as const,
   });
 
-  const roomErrors = (errors.rooms && (errors.rooms as any)[index]) || {};
+  const roomErrors = (errors.rooms && errors.rooms[index]) ?? {};
 
   return (
     <Card key={roomFields[index].id} className="mb-4">
@@ -165,7 +168,7 @@ function RoomFields({
             type="number"
             step="0.01"
             className="w-full"
-            {...register(`rooms.${index}.price`, { valueAsNumber: true } as any)}
+            {...register(`rooms.${index}.price`, { valueAsNumber: true })}
           />
           {roomErrors?.price && <p className="text-xs text-destructive mt-1">{roomErrors.price.message}</p>}
         </div>
@@ -194,14 +197,7 @@ function RoomFields({
           {roomErrors?.areaM2 && <p className="text-xs text-destructive mt-1">{roomErrors.areaM2.message}</p>}
         </div>
 
-        {/** This should be select instead of input. But do we need addtional information for choice "OTHER"? */}
-        {/* <div className="flex flex-col gap-1">
-          <Label htmlFor={`rooms.${index}.bedType`} className="text-sm font-medium">
-            Bed Type
-          </Label>
-          <Input id={`rooms.${index}.bedType`} className="w-full" {...register(`rooms.${index}.bedType` as const)} />
-          {roomErrors?.bedType && <p className="text-xs text-destructive mt-1">{roomErrors.bedType.message}</p>}
-        </div> */}
+        {/** Addtional information for choice "OTHER"? */}
         <FormField
           control={control}
           name={`rooms.${index}.bedType` as const}
@@ -254,11 +250,11 @@ function RoomFields({
             </Button>
           </div>
 
-          {roomErrors?.imageUrls && <p className="text-xs text-destructive mt-1">{(roomErrors.imageUrls as any)?.message ?? "Invalid image URLs"}</p>}
+          {roomErrors?.imageUrls && <p className="text-xs text-destructive mt-1">{roomErrors.imageUrls?.message ?? "Invalid image URLs"}</p>}
         </div>
       </CardContent>
       <CardFooter className="flex justify-between items-center gap-4">
-        <div className="text-sm text-destructive">{(errors.rooms as any)?.[index]?.message}</div>
+        <div className="text-sm text-destructive">{errors.rooms?.[index]?.message}</div>
         <div className="flex items-center gap-2">
           <Button type="button" variant="destructive" onClick={() => removeRoom(index)}>
             Remove room

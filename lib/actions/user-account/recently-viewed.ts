@@ -22,7 +22,7 @@ export async function user_getRecentlyViewedHotels() {
           numberOfReviews: true,
           ward: { select: { name: true, district: { select: { province: { select: { name: true } } } } } },
           facilities: { select: { name: true } },
-          rooms: { select: { price: true }, orderBy: { price: "asc" }, take: 1 },
+          roomTypes: { select: { price: true }, orderBy: { price: "asc" }, take: 1 },
           type: true,
         }
       }
@@ -30,6 +30,6 @@ export async function user_getRecentlyViewedHotels() {
     take: 10, // TODO: pagination
   }).then(recentlyViewedEntries => recentlyViewedEntries.map(entry => ({
     ...entry.hotel,
-    rooms: entry.hotel.rooms.map(r => ({ ...r, price: r.price.toString() })),
+    roomTypes: entry.hotel.roomTypes.map(rt => ({ ...rt, price: rt.price.toNumber() })),
   } as HotelCardProps)));
 }

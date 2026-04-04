@@ -35,6 +35,8 @@ export default async function Page(props: {
     notFound();
   }
 
+  safeDecodedParams.data.location = hotel.name; // override the location in search params with hotel name
+
   const {
     name: hotelName,
     bookings,
@@ -49,8 +51,8 @@ export default async function Page(props: {
         <Navbar />
       </div>
       <main className="flex flex-col gap-y-4 content my-4 [&>section]:scroll-mt-35">
-        <OverviewSection hotel={hotel} />
-        <AvailableRoomsSection hotel={hotel} />
+        <OverviewSection hotel={hotel} minPrice={100} /> {/** TODO: */}
+        <AvailableRoomsSection hotelId={hotel.id} />
         <LocationSection hotel={hotel} />
         <FacilitiesSection hotel={hotel} />
         <PolicySection hotelName={hotelName} />

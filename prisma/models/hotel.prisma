@@ -1,37 +1,34 @@
 model Hotel {
-  id          String   @id @default(cuid())
-  name        String
-  ownerId     String   @unique @map("owner_id")
-  owner       User     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  id                    String      @id @default(cuid())
+  name                  String
+  ownerId               String      @unique @map("owner_id")
+  owner                 User        @relation(fields: [ownerId], references: [id], onDelete: Cascade)
 
-  wardId      String   @map("ward_id")
-  ward        Ward     @relation(fields: [wardId], references: [id], onDelete: Cascade)
+  wardId                String      @map("ward_id")
+  ward                  Ward        @relation(fields: [wardId], references: [id], onDelete: Cascade)
+  longitude             Float
+  latitude              Float
+
+  type                  HotelType
+  description           String?
+  reviewPoints          Float       @map("review_points")      // NOTE: this is a denormalized field and must be updated via triggers.
+  numberOfReviews       Int         @map("number_of_reviews") // NOTE: this is a denormalized field and must be updated via triggers. 
+
+  checkInTime           DateTime    @db.Time  @map("check_in_time")
+  checkOutTime          DateTime    @db.Time  @map("check_out_time")
+  breakfastAvailability Boolean     @map("breakfast_availability")
   
-  longitude   Float
-  latitude    Float
+  imageUrls             String[]    // TODO: should have videos
 
-  type        HotelType
-  description String?
-  reviewPoints Float     @map("review_points")      // NOTE: this is a denormalized field and must be updated via triggers.
-  numberOfReviews Int    @map("number_of_reviews") // NOTE: this is a denormalized field and must be updated via triggers. 
+  createdAt             DateTime    @default(now())
+  updatedAt             DateTime    @updatedAt
+  status                HotelStatus @default(ACTIVE)
 
-  checkInTime  DateTime @db.Time  @map("check_in_time")
-  checkOutTime DateTime @db.Time  @map("check_out_time")
-  breakfastAvailability Boolean @map("breakfast_availability")
-  // TODO: may have videos
-  imageUrls   String[]  // list of image URLs for the hotel
-
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  status           HotelStatus @default(ACTIVE)
-
-  roomTypes        RoomType[]
-
-  facilities       Facility[]
-  favoritedBy      Favorite[]
-  recentlyViewedBy RecentlyViewed[]
-  bookings         Booking[]
+  roomTypes             RoomType[]
+  facilities            Facility[]
+  favoritedBy           Favorite[]
+  recentlyViewedBy      RecentlyViewed[]
+  bookings              Booking[]
 
   @@map("hotels")
 
@@ -45,6 +42,7 @@ enum HotelType {
   RESORT
   APARTMENT
   HOSTEL
+  // TODO: Other must have name specified.
   OTHER
 }
 
@@ -82,17 +80,18 @@ model Facility {
 }
 
 model Room {
-  id               String   @id @default(cuid())
-  name             String   @unique
-  typeId           String   @map("type_id")
-  type             RoomType @relation(fields: [typeId], references: [id], onDelete: Cascade)
-  imageUrls        String[]
+  id         String   @id @default(cuid())
+  name       String   @unique
+  typeId     String   @map("type_id")
+  type       RoomType @relation(fields: [typeId], references: [id], onDelete: Cascade)
+  imageUrls  String[]
 
-  bookingRooms     BookingRoom[]
+  bookings   Booking[]
 
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @updatedAt
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
+  @@index([typeId])
   @@map("rooms")
 }
 
@@ -102,18 +101,15 @@ enum BedType {
   QUEEN
   KING
   TWIN
-  OTHER
 }
 
 model RoomType {
-  id        String   @id @default(cuid())
+  id               String   @id @default(cuid())
   hotelId          String   @map("hotel_id")
   hotel            Hotel    @relation(fields: [hotelId], references: [id], onDelete: Cascade)
 
-  name      String   @unique
-  description String?
-
-  rooms     Room[]
+  name             String   // Do NOT need to be unique, as different hotels can have room types with the same name
+  description      String?
 
   adultCapacity    Int      @map("adult_capacity")
   childrenCapacity Int      @map("children_capacity")
@@ -121,10 +117,11 @@ model RoomType {
   areaM2           Float
   bedType          BedType  @map("bed_type")
 
-  facilities Facility[]
+  rooms            Room[]
+  facilities       Facility[]
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
 
   @@map("room_types")
   @@index([hotelId])

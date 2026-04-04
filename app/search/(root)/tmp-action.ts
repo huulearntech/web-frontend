@@ -45,7 +45,7 @@ export async function fetchPage(page: number, pageSize = 12) {
   return {
     items: rawItems.map(hotel => ({
       ...hotel,
-      roomTypes: hotel.roomTypes.map(r => ({ ...r, price: r.price.toString() })),
+      roomTypes: hotel.roomTypes.map(r => ({ ...r, price: r.price.toNumber() })),
     })),
     total
   };

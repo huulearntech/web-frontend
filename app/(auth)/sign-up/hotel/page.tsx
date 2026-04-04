@@ -1,4 +1,3 @@
-import LocationSelect from "./location-select";
 import HotelSignUpForm from "./sign-up-form";
 
 export default function PartnershipSignUpPage() {
@@ -8,8 +7,6 @@ export default function PartnershipSignUpPage() {
       <p className="text-sm text-muted-foreground mb-6">
         Join our partnership program to access exclusive benefits and grow your business with us.
       </p>
-      {/* Partnership sign-up form goes here */}
-      <LocationSelect />
       <HotelSignUpForm />
     </div>
   );

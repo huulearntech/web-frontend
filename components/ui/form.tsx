@@ -32,9 +32,10 @@ const FormFieldContext = React.createContext<FormFieldContextValue>(
 const FormField = <
   TFieldValues extends FieldValues = FieldValues,
   TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
+  TTransformedValues = TFieldValues // Shadcn doesn't use this for some reason, but that makes me confused for so long.
 >({
   ...props
-}: ControllerProps<TFieldValues, TName>) => {
+}: ControllerProps<TFieldValues, TName, TTransformedValues>) => {
   return (
     <FormFieldContext.Provider value={{ name: props.name }}>
       <Controller {...props} />

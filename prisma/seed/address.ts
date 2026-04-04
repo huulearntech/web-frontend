@@ -1,8 +1,4 @@
-// TODO: use fakerVI for more authentic Vietnamese names
-// import { fakerVI as faker } from "@faker-js/faker";
-
-// But we not support search in Vietnamese yet, so use this
-import { faker } from "@faker-js/faker";
+import { fakerVI as faker } from "@faker-js/faker";
 
 import prisma from "@/lib/prisma";
 import { Country, District, Province } from "@/lib/generated/prisma/client";
@@ -21,7 +17,7 @@ async function seedCountryVietnam() {
 async function seedProvinces(country: Country, count = 5) {
   const provinces = Array.from({ length: count }, () => ({
     countryId: country.id,
-    name: faker.location.state(),
+    name: faker.location.city(),
   }));
   return await prisma.province.createManyAndReturn({
     data: provinces,
@@ -29,17 +25,17 @@ async function seedProvinces(country: Country, count = 5) {
   });
 }
 
-async function seedDistricts(provinces: Province[]) {
+async function seedDistricts(provinces: Province[], countPerProvince = 5) {
   if (provinces.length === 0) {
     // throw new Error("No provinces found. Please seed provinces before districts.");
     console.warn("No provinces found. Skipping district seeding.");
     return [];
   }
 
-  const districtNames = faker.helpers.uniqueArray(faker.location.county, provinces.length * 5);
+  const districtNames = faker.helpers.uniqueArray(faker.location.county, provinces.length * countPerProvince);
 
   const districts = provinces.flatMap((province) =>
-    Array.from({ length: 5 }, () => ({
+    Array.from({ length: countPerProvince }, () => ({
       provinceId: province.id,
       name: districtNames.pop() || faker.location.county(),
     }))
@@ -51,20 +47,20 @@ async function seedDistricts(provinces: Province[]) {
   });
 }
 
-async function seedWards(districts: District[]) {
+async function seedWards(districts: District[], countPerDistrict = 5) {
   if (districts.length === 0) {
     // throw new Error("No districts found. Please seed districts before wards.");
     console.warn("No districts found. Skipping ward seeding.");
     return [];
   }
 
-  const wardNames = faker.helpers.uniqueArray(faker.location.city, districts.length * 5);
+  const wardNames = faker.helpers.uniqueArray(faker.location.street, districts.length * countPerDistrict);
 
 
   const wards = districts.flatMap((district) =>
-    Array.from({ length: 5 }, () => ({
+    Array.from({ length: countPerDistrict }, () => ({
       districtId: district.id,
-      name: wardNames.pop() || faker.location.city(),
+      name: wardNames.pop() || faker.location.street(),
     }))
   );
 

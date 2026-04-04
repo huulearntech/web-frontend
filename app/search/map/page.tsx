@@ -10,16 +10,12 @@ import { Button } from "@/components/ui/button";
 import { ListFilter } from "lucide-react";
 import { SearchBarFormData, SearchBarFormSchema } from "@/lib/zod_schemas/search-bar";
 
-// Need to dynamically import the map component because it relies on Leaflet which uses browser-specific APIs
-// that are not available during server-side rendering.
-// By setting ssr: false, we ensure that the MapClient component is only rendered on the client side,
-// preventing any SSR-related issues.
+// Need to dynamically import to turn off ssr and render on client because it relies on Leaflet
 const MapClient = dynamic(() => import("./map-client"), { ssr: false });
 
 export default function SearchMapPage() {
   const searchParams = useSearchParams();
 
-  // TODO: handle error.
   const searchBarValuesFromSearchParams = {
     location: searchParams.get("location") || "",
     inOutDates: {
@@ -36,8 +32,9 @@ export default function SearchMapPage() {
   const { success, data: defaultSearchBarValues } = SearchBarFormSchema.safeParse(searchBarValuesFromSearchParams);
   if (!success) {
     return null;
-    // TODO: handle this case properly, maybe redirect back to search page with a toast notification?
+    // TODO: Default values.
   }
+  // TODO: Search on search bar should keep the map view.
   return (
     <FilterFormProvider>
       <FilterSheetProvider>

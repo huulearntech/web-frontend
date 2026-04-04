@@ -35,7 +35,7 @@ const poiCategoriesWithPlaces = {
 export default function LocationSection({
   hotel
 }: {
-  hotel: Awaited<ReturnType<typeof fetchHotel>>
+  hotel: NonNullable<Awaited<ReturnType<typeof fetchHotel>>>
 }) {
   if (!hotel) {
     return null;
@@ -52,13 +52,13 @@ export default function LocationSection({
   return (
     <section id="location" className="w-full flex flex-col">
       <div className="rounded-4xl px-4 py-5 flex flex-col gap-y-5 shadow-xl">
-        <h2 className="font-bold text-[1.25rem]">What's around {hotel?.name}</h2>
+        <h2 className="font-bold text-[1.25rem]">What's around {hotel.name}</h2>
         <div className="flex gap-x-2 text-sm items-center">
           <MapPin className="size-4"/>
           <div> {
-            hotel?.ward.name + ", "
-            + hotel?.ward.district.name + ", "
-            + hotel?.ward.district.province.name
+            hotel.ward.name + ", "
+            + hotel.ward.district.name + ", "
+            + hotel.ward.district.province.name
           } </div>
         </div>
 

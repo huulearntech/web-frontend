@@ -42,7 +42,7 @@ export async function fetchFeed(): Promise<FeedProps> {
     }).then(hotels => ({
       provinceName: name, hotels: hotels.map(hotel => ({
         ...hotel,
-        roomTypes: hotel.roomTypes.length > 0 ? hotel.roomTypes.map(r => ({ price: r.price.toString() })) : [{ price: "N/A" }],
+        roomTypes: hotel.roomTypes.length > 0 ? hotel.roomTypes.map(rt => ({ price: rt.price.toNumber() })) : [{ price: 0 }],
       }))
     }))
   ));

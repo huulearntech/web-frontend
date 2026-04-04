@@ -1,6 +1,3 @@
-search bar: using searchbarimpl directly temporarily, because somehow the props cant drill through
-  more than one layer of component.
-
 filter: onsubmit need to somehow capture the search spec to call server action, or set searchparams
   then router.push.
 
@@ -8,7 +5,7 @@ proxy: handle redirecting.
 
 filter: cleanup className
 
-search bar form: merge adult and children capacity into only one capacity
+search bar form: consider? merge adult and children capacity into only one capacity
 
 // TODO: Flow
 // 1. Basic info (name, email, phone) -> sign up for account
@@ -17,5 +14,3 @@ search bar form: merge adult and children capacity into only one capacity
 // 3. After sign in, show partnership application form (business details, tax info, etc) -> submit to server
 // 3.1. if user exit without submitting, they can come back to the form and continue where they left off (fetch saved data from server)
 // but if the session is expired, they need to sign in again first, then we can give another session id and fetch the saved form data with that session id.
-
-schema: Resolve name confusion: one thing be named differently in different places: checkInDate, checkOutDate

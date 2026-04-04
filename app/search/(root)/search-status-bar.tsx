@@ -23,7 +23,7 @@ export default function SearchStatusBar({ location, total }: { location: string;
   const setFilterSheetOpen = useFilterSheetSetOpen();
 
   return (
-    <div className="flex items-center justify-between sticky top-21.5 border-b p-3 -mt-3 z-10 bg-background shadow-md">
+    <div className="flex items-center justify-between sticky top-21.5 lg:top-20.5 border-b p-3 -mt-3 z-10 bg-background shadow-md">
       <div className="flex gap-x-4 items-center">
         <Button
           onClick={() => setFilterSheetOpen(true)}
@@ -50,8 +50,7 @@ export default function SearchStatusBar({ location, total }: { location: string;
               <SelectGroup>
                 <SelectItem value="price-desc">Giá cao nhất</SelectItem>
                 <SelectItem value="price-asc">Giá thấp nhất </SelectItem>
-                <SelectItem value="rating">Điểm đánh giá</SelectItem>
-                <SelectItem value="popularity">Độ phổ biến</SelectItem>
+                <SelectItem value="rating">Điểm đánh giá cao nhất</SelectItem>
               </SelectGroup>
             </SelectContent>
           </Select>

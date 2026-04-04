@@ -9,6 +9,7 @@ import { HotelCardProps } from "@/app/search/(root)/tmp-action";
 
 type SortType = "price-asc" | "price-desc" | "reviewPoints-desc";
 
+// TODO: filter here is in fact the search bar, the filter is another one.
 export async function fetchSearchResult(
   filter: SearchBarFormData,
   pagination?: PaginationState,
@@ -43,7 +44,7 @@ export async function fetchSearchResult(
     name: hotel.name,
     reviewPoints: hotel.reviewPoints,
     numberOfReviews: hotel.numberOfReviews,
-    roomTypes: [{ price: hotel.minPrice?.toString() ?? "N/A" }],
+    roomTypes: [{ price: hotel.minPrice?.toNumber() ?? 0 }],
     ward: {
       name: hotel.wardName,
       district: { province: { name: hotel.provinceName } }

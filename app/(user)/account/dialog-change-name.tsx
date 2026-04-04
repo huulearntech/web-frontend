@@ -1,4 +1,4 @@
-'use client';
+"use client";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 
@@ -28,7 +28,7 @@ export default function ChangeNameDialog({ originalName }: { originalName: strin
 
   const { register, handleSubmit, formState: { errors } } = useForm<{ newName: string }>({
     resolver: zodResolver(z.object({
-      newName: z.string().trim().min(1, "Name cannot be empty").max(100, "Name is too long"),
+      newName: z.string().trim().min(1, "Tên không được để trống").max(50, "Tên quá dài"),
     })),
     defaultValues: { newName: originalName },
   });
@@ -43,18 +43,18 @@ export default function ChangeNameDialog({ originalName }: { originalName: strin
     startTransition(async () => {
       try {
         const res = await updateUserName(newName);
-        if (!res?.success) {
+        if (!res.success) {
           // rollback on failure
           setName(previousName);
-          toast.error(res?.error ?? "Failed to update name");
+          toast.error(res.error);
           return;
         }
 
-        toast.success("Name updated");
+        toast.success("Cập nhật tên thành công");
       } catch {
         // rollback on network/unexpected errors
         setName(previousName);
-        toast.error("Failed to update name");
+        toast.error("Cập nhật tên thất bại. Vui lòng thử lại.");
       }
     });
   };
@@ -68,7 +68,7 @@ export default function ChangeNameDialog({ originalName }: { originalName: strin
            role="group"
            >
             <div className="flex flex-col">
-              <span className="text-sm font-medium">Full name</span>
+              <span className="text-sm font-medium">Họ và tên người dùng</span>
               <span className="text-sm text-muted-foreground">{name}</span>
             </div>
             <PencilIcon className="h-5 w-5 text-muted-foreground transition-transform group-hover:-translate-y-1" />
@@ -78,25 +78,25 @@ export default function ChangeNameDialog({ originalName }: { originalName: strin
 
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Change Full Name</DialogTitle>
-          <DialogDescription>Update your full name below.</DialogDescription>
+          <DialogTitle>Thay đổi tên người dùng</DialogTitle>
+          <DialogDescription>Cập nhật tên của bạn ở dưới đây.</DialogDescription>
         </DialogHeader>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <Input
             {...register("newName", { required: true })}
-            placeholder="Enter your full name"
+            placeholder="Nhập tên mới"
           />
           {errors.newName && (
-            <p className="text-sm text-red-500">Name is required</p>
+            <p className="text-sm text-red-500">{errors.newName.message}</p>
           )}
 
           <DialogFooter>
             <Button variant="ghost" size="sm" onClick={() => setOpen(false)} disabled={isPending}>
-              Cancel
+              Huỷ
             </Button>
             <Button type="submit" variant="default" size="sm" disabled={isPending}>
-              {isPending ? "Saving..." : "Save"}
+              {isPending ? "Đang lưu..." : "Lưu"}
             </Button>
           </DialogFooter>
         </form>

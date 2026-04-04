@@ -14,7 +14,7 @@ export async function hotelowner_deleteRoomById(id: string) {
 
   // TODO: handle errors properly.
   const res = await prisma.room.delete({
-    where: { id, hotel: { ownerId: session.user.id } },
+    where: { id, type: { hotel: { ownerId: session.user.id } } },
   }).then(() => ({ ok: true, message: null })).catch((err) => ({ ok: false, message: err.message }));
   
   if (!res.ok) {

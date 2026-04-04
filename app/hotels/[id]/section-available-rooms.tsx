@@ -28,14 +28,18 @@ export default async function AvailableRoomsSection({
   return (
     <section id="available_rooms" className="w-full flex flex-col">
       <div className="rounded-4xl px-4 py-5 flex flex-col gap-y-5 shadow-xl">
-        <h2 className="font-bold text-[1.25rem]">Những phòng còn trống tại {hotel.name}</h2>
+        <h2 className="font-bold text-[1.25rem]">Những phòng còn trống tại {hotelId}</h2>
         {roomsByType.length === 0 && (
           <div className="w-full h-48 flex items-center justify-center bg-muted rounded-lg">
             <span className="text-sm text-muted-foreground">Không có phòng nào còn trống cho khoảng thời gian này</span>
           </div>
         )}
-        {roomsByType.length > 0 && rooms.map((room) => (
-          <RoomCard key={room.id} room={room} breakfastAvailability={hotel.breakfastAvailability} />
+        {roomsByType.map((type) => (
+          <RoomTypeCard
+            key={type.id}
+            roomType={type}
+            breakfastAvailability={false}
+          />
         ))}
       </div>
     </section>
@@ -44,13 +48,14 @@ export default async function AvailableRoomsSection({
 
 // There should be more arguments to this.
 // E.g.: number of rooms,...
-function RoomCard({
-  room,
+function RoomTypeCard({
+  roomType,
   breakfastAvailability
 }: {
-  room: Omit<FetchAvailableRoomsResult, "rooms">[number];
+  roomType: FetchAvailableRoomsResult[number];
   breakfastAvailability: boolean
 }) {
+  const imageUrls = roomType.rooms.flatMap((room) => room.imageUrls);
   return (
     <div
       className="flex flex-col md:flex-row lg:flex-row bg-white rounded-xl p-4 shadow-md overflow-hidden"
@@ -63,11 +68,11 @@ function RoomCard({
     >
       {/* Image column */}
       <div className="w-full md:w-2/5 lg:w-1/3 shrink-0">
-        {room.imageUrls.length > 0
+        {imageUrls.length > 0
           ? (
             <Image
-              src={room.imageUrls[0]}
-              alt={room.type}
+              src={imageUrls[0]}
+              alt={roomType.name}
               width={400}
               height={300}
               className="w-full h-64 lg:h-full rounded-lg object-cover"
@@ -86,7 +91,7 @@ function RoomCard({
         <header className="flex items-start justify-between gap-x-4">
           <div className="min-w-0">
             <h2 className="text-lg lg:text-xl font-bold line-clamp-2">
-              {room.type}
+              {roomType.name}
             </h2>
           </div>
 
@@ -99,7 +104,7 @@ function RoomCard({
         <section className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 gap-3 mt-2">
           <div className="flex items-center gap-x-2 text-sm">
             <RulerDimensionLineIcon className="size-4" />
-            <span>{room.areaM2} m²</span>
+            <span>{roomType.areaM2} m²</span>
           </div>
 
           <div className="flex items-center gap-x-2 text-sm">
@@ -107,17 +112,15 @@ function RoomCard({
             <span>1 phòng</span>
           </div>
 
-          {room.adultCapacity > 0 && (
-            <div className="flex items-center gap-x-2 text-sm">
-              <UserIcon className="size-4" />
-              <span>{room.adultCapacity} người lớn</span>
-            </div>
-          )}
+          <div className="flex items-center gap-x-2 text-sm">
+            <UserIcon className="size-4" />
+            <span>{roomType.adultCapacity} người lớn</span>
+          </div>
 
-          {room.childrenCapacity > 0 && (
+          {roomType.childrenCapacity > 0 && (
             <div className="flex items-center gap-x-2 text-sm">
               <UserIcon className="size-4" />
-              <span>{room.childrenCapacity} trẻ em</span>
+              <span>{roomType.childrenCapacity} trẻ em</span>
             </div>
           )}
 
@@ -139,12 +142,12 @@ function RoomCard({
 
         <section className="mt-3">
           <h3 className="text-sm font-semibold mb-2">Tiện nghi</h3>
-          <ul className="flex flex-wrap gap-2">
+          <ul className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 gap-3 mt-2">
             <li className="flex items-center gap-x-2 text-sm">
               <BedDoubleIcon className="size-4" />
-              <span className="lowercase first-letter:capitalize">Giường {room.bedType}</span>
+              <span className="lowercase first-letter:capitalize">Giường {roomType.bedType}</span>
             </li>
-            {room.facilities.map((facility) => (
+            {roomType.facilities.map((facility) => (
               <li
                 key={facility.id}
                 className="flex items-center gap-x-2 text-sm"
@@ -166,7 +169,12 @@ function RoomCard({
 
         <footer className="mt-4 flex items-center justify-between">
           <div className="text-base lg:text-lg font-extrabold text-orange-600">
-            {room.price.toLocaleString()} VND
+            {new Intl.NumberFormat("vi-VN", {
+              style: "currency",
+              currency: "VND",
+              minimumFractionDigits: 0,
+              maximumFractionDigits: 0
+            }).format(roomType.price.toNumber())}
           </div>
 
           <div>
@@ -176,7 +184,7 @@ function RoomCard({
               target="_blank"
               rel="noreferrer"
               className="inline-flex items-center justify-center bg-primary text-white text-sm font-bold px-4 py-2 rounded-md"
-              aria-label={`Đặt phòng ${room.type}`}
+              aria-label={`Đặt phòng ${roomType.name} với giá ${roomType.price.toNumber()} VND`}
             >
               Chọn
             </a>

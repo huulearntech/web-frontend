@@ -54,8 +54,8 @@ export async function fetchHotel(hotelId: string) {
 
 export async function getRoomsByHotelIdGroupedByType(
   hotelId: string,
-  fromDate: Date,
-  toDate: Date,
+  checkInDate: Date,
+  checkOutDate: Date,
   numRooms: number,
   numAdults: number
 ) {
@@ -65,40 +65,43 @@ export async function getRoomsByHotelIdGroupedByType(
       hotelId,
       rooms: {
         none: {
-          bookingRooms: {
+          bookings: {
             some: {
-              booking: {
-                AND: [
-                  { checkInDate: { lt: toDate } },
-                  { checkOutDate: { gt: fromDate } },
-                  { status: { in: ["CONFIRMED", "PENDING"] } }, // be cautious!
-                ],
-              },
-            },
-          },
-        },  
+              AND: [
+                { checkInDate: { lt: checkOutDate } },
+                { checkOutDate: { gt: checkInDate } },
+                { status: { in: ["CONFIRMED", "PENDING", "CANCELLED"] } }, // The booking may be cancelled, but we still want to block the room for the booked dates to prevent overbooking. The hotel staff can manually unblock the room if needed.
+              ],
+            }
+          }
+        }
       },
     },
     include: {
       rooms: {
         where: {
-          bookingRooms: {
+          bookings: {
             none: {
-              booking: {
-                AND: [
-                  { checkInDate: { lt: toDate } },
-                  { checkOutDate: { gt: fromDate } },
-                  { status: { in: ["CONFIRMED", "PENDING"] } }, // be cautious!
-                ],
-              },
+              AND: [
+                { checkInDate: { lt: checkOutDate } },
+                { checkOutDate: { gt: checkInDate } },
+                { status: { in: ["CONFIRMED", "PENDING", "CANCELLED"] } },
+              ],
             },
           },
         },
         select: {
           _count: {
-            select: { bookingRooms: true },
+            select: { bookings: true },
           },
           imageUrls: true,
+        },
+      },
+      facilities: {
+        select: {
+          id: true,
+          name: true,
+          iconUrl: true,
         },
       },
     },
@@ -109,3 +112,14 @@ export async function getRoomsByHotelIdGroupedByType(
 export type FetchHotelResult = Awaited<ReturnType<typeof fetchHotel>>;
 
 export type FetchAvailableRoomsResult = Awaited<ReturnType<typeof getRoomsByHotelIdGroupedByType>>;
+        // none: {
+        //   bookings: {
+        //     some: {
+        //       AND: [
+        //         { checkInDate: { lt: checkInDate } },
+        //         { checkOutDate: { gt: checkOutDate } },
+        //         { status: { in: ["CONFIRMED", "PENDING", "CANCELLED"] } }, // The booking may be cancelled, but we still want to block the room for the booked dates to prevent overbooking. The hotel staff can manually unblock the room if needed.
+        //       ],
+        //     }
+        //   },
+        // },

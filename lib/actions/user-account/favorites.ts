@@ -1,5 +1,6 @@
 "use server";
 
+import { HotelCardProps } from "@/app/search/(root)/tmp-action";
 import { auth } from "@/auth";
 import prisma from "@/lib/prisma";
 
@@ -32,7 +33,7 @@ export async function user_fetchFavoriteHotels() {
             numberOfReviews: true,
             ward: { select: { name: true } },
             facilities: { select: { name: true } },
-            rooms: { select: { price: true }, orderBy: { price: "asc" }, take: 1 },
+            roomTypes: { select: { price: true }, orderBy: { price: "asc" }, take: 1 },
             type: true,
           }
         }
@@ -40,6 +41,6 @@ export async function user_fetchFavoriteHotels() {
       take: 10, // TODO: pagination
     }).then(favs => favs.map(fav => ({
       ...fav.hotel,
-      rooms: fav.hotel.rooms.map(r => ({ ...r, price: r.price.toString() })),
-    })))
+      roomTypes: fav.hotel.roomTypes.map(rt => ({ ...rt, price: rt.price.toNumber() })),
+    } as HotelCardProps)))
 }

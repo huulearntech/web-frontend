@@ -6,7 +6,7 @@ export default async function FavoritesPage() {
 
   return (
     <main className="content">
-      <h1 className="text-2xl font-bold mb-4">Your Favorites</h1>
+      <h1 className="text-2xl font-bold mb-4">Khách sạn yêu thích</h1>
       {favoriteHotels.length > 0 ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {favoriteHotels.map((hotel) => (
@@ -19,8 +19,8 @@ export default async function FavoritesPage() {
         </div>
       ) : (
         <div className="text-center text-gray-500 mt-10">
-          <p className="text-lg">You haven't added any hotels to your favorites yet.</p>
-          <p className="text-sm">Start exploring and add some hotels to your favorites!</p>
+          <p className="text-lg">Bạn chưa thêm khách sạn nào vào danh sách yêu thích.</p>
+          <p className="text-sm">Hãy bắt đầu khám phá và thêm những khách sạn mà bạn quan tâm vào danh sách yêu thích!</p>
         </div>
       )}
     </main>

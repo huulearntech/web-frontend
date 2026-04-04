@@ -5,11 +5,11 @@ import { renderToString } from "react-dom/server";
 
 import { type Map_HotelCardProps } from "@/lib/actions/search/map";
 
-function createPriceIcon(price: string) {
+function createPriceIcon(price: number) {
   const PriceIcon = () => {
     return (
       <div className="w-20 h-7.5 inline-flex items-center justify-center bg-white text-xs font-semibold text-primary border border-gray-accent rounded-full px-3 py-1 shadow-sm">
-        {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(parseFloat(price))}
+        {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(price)}
       </div>
     );
   }
@@ -39,12 +39,12 @@ export default function MyMarker({ hotel } : { hotel: Map_HotelCardProps }) {
           <div className="flex flex-col gap-y-1">
             <h3 className="text-base font-bold">{hotel.name}</h3>
             <div className="inline-flex items-center gap-x-1 text-xs">
-              <div className="font-black text-primary">{hotel.reviewPoints}/5</div>
+              <div className="font-black text-primary">{hotel.reviewPoints.toFixed(1)}/5</div>
               <div className="font-medium text-gray-500">({hotel.numberOfReviews} đánh giá)</div>
             </div>
 
             <div className="text-base font-bold text-orange-500">
-              { new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(parseFloat(hotel.price)) }
+              { new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(hotel.price) }
             </div>
             <div className="mt-2">
               <Button asChild className="w-full bg-orange-500 hover:bg-orange-600 focus:ring-orange-300">
