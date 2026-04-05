@@ -27,7 +27,6 @@ async function seedProvinces(country: Country, count = 5) {
 
 async function seedDistricts(provinces: Province[], countPerProvince = 5) {
   if (provinces.length === 0) {
-    // throw new Error("No provinces found. Please seed provinces before districts.");
     console.warn("No provinces found. Skipping district seeding.");
     return [];
   }
@@ -49,7 +48,6 @@ async function seedDistricts(provinces: Province[], countPerProvince = 5) {
 
 async function seedWards(districts: District[], countPerDistrict = 5) {
   if (districts.length === 0) {
-    // throw new Error("No districts found. Please seed districts before wards.");
     console.warn("No districts found. Skipping ward seeding.");
     return [];
   }

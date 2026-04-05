@@ -24,7 +24,6 @@ export default function Results({
   const { data: hotels = [], isLoading, isError } = useQuery({
     queryKey: ["hotels", page],
     queryFn: async () => {
-      console.log(hotels);
       return fetchSearchResult(searchBarFormValues);
     },
     placeholderData: keepPreviousData
@@ -163,7 +162,6 @@ import {
 } from "@/components/ui/pagination";
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 import { useFilterSheetSetOpen } from "../filter-sheet-context";
-import { SearchParamsCodec } from "./tmp";
 import { SearchBarFormData } from "@/lib/zod_schemas/search-bar";
 import { useSearchParams } from "next/navigation";
 

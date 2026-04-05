@@ -2,8 +2,8 @@
 
 import Image from "next/image";
 
-import { cn } from "@/lib/utils";
-import { HotelCardProps } from "@/app/search/(root)/tmp-action";
+import { cn, formatVND } from "@/lib/utils";
+import { HotelCardProps } from "@/lib/types/hotel-card";
 
 import { hotel as hotelIcon } from "@/public/icons/index";
 import { MapPin, Heart } from "lucide-react";
@@ -90,15 +90,15 @@ export default function HotelCard({
 
         <div className="flex justify-between items-end">
           <div className="flex flex-col w-full gap-y-1">
-            <div className="text-sm line-through">{price} VND</div>
-            <div className="font-bold text-orange-600">{price} VND</div>
+            <div className="text-sm line-through">{formatVND(price)}</div>
+            <div className="font-bold text-orange-600">{formatVND(price)}</div>
 
             <div className="h-8 relative overflow-hidden">
                 <div className="h-8 absolute top-0 animate-slide-updown flex flex-col text-xs text-orange-600 font-medium">
-                  Only 1 room(s) left at this price
+                  Chỉ còn 1 phòng với mức giá này!
                 </div>
               <div className="h-8 absolute top-full animate-slide-updown flex flex-col text-xs font-medium">
-                  Total {price} VND for 1 room <br/> Exclude taxes and fees
+                  Total {formatVND(price)} VND for 1 room <br/> Exclude taxes and fees
               </div>
             </div>
           </div>
@@ -196,14 +196,15 @@ function FacilityBadges({ facilities }: { facilities: string[] }) {
         ))}
       </div>
 
-      <TooltipContent aria-hidden>
-        <div className="flex flex-col space-y-1">
-          {facilities.map((facility, i) => (
-            <span key={i} className="text-sm font-medium">
-              {facility}
-            </span>
+      <TooltipContent aria-hidden className="flex flex-col gap-y-2">
+        <span className="text-sm font-semibold mb-1 block">Cơ sở lưu trú này có các tiện ích:</span>
+        <ul className="flex flex-col space-y-1">
+          {facilities.map(facility => ( // Should have indexed by id
+            <li key={facility} className="text-sm font-medium">
+              <span> {facility} </span>
+            </li>
           ))}
-        </div>
+        </ul>
       </TooltipContent>
     </Tooltip>
   );

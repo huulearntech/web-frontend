@@ -29,10 +29,10 @@ export default function HeroSection() {
         <div className="min-h-30 relative bg-black/50 w-full gap-y-1 py-4 px-4 rounded-4xl lg:pb-0 lg:rounded-b-none lg:mb-20">
           <h1 className="text-[26px] font-semibold text-white">
             Điểm đến tiếp theo của bạn? Đặt khách sạn giá tốt với Hoteloka
-          </h1> <h2 className="text-white">
+          </h1>
+          <h2 className="text-white">
             Khám phá nhiều lựa chọn từ khách sạn, biệt thự, resort và hơn thế nữa
           </h2>
-          {/* <SearchBarImpl isDesktop className="w-full bg-white text-primary placeholder:text-secondary p-6 rounded-4xl border mt-4 lg:absolute lg:inset-x-0" /> */}
           <SearchBar__NonCollapsible className="bg-white text-primary placeholder:text-secondary p-6 rounded-4xl border mt-4 lg:absolute lg:inset-x-0" />
         </div>
       </div>

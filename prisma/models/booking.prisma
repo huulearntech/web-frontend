@@ -1,23 +1,23 @@
 model Booking {
   id                String         @id @default(cuid())
-  userId            String
+  userId            String         @map("user_id")
   user              User           @relation(fields: [userId], references: [id], onDelete: Cascade)
-  hotelId           String
+  hotelId           String         @map("hotel_id")
   hotel             Hotel          @relation(fields: [hotelId], references: [id], onDelete: Cascade)
 
-  checkInDate       DateTime       @db.Date
-  checkOutDate      DateTime       @db.Date
+  checkInDate       DateTime       @db.Date @map("check_in_date")
+  checkOutDate      DateTime       @db.Date @map("check_out_date")
 
   rooms             Room[]         
-  snapshotRoomPrice Decimal
+  snapshotRoomPrice Decimal        @db.Decimal(10, 2) @map("snapshot_room_price") // price per room at the time of booking (for historical price tracking)
 
   status            BookingStatus  @default(DRAFT)
   notes             String?
   
   review            Review?        // optional review for this booking (one review per booking)
 
-  createdAt         DateTime       @default(now())
-  updatedAt         DateTime       @updatedAt
+  createdAt         DateTime       @default(now()) @map("created_at")
+  updatedAt         DateTime       @updatedAt      @map("updated_at")
 
   @@index([userId])
   @@index([hotelId])
@@ -27,12 +27,17 @@ model Booking {
 
 model Review {
   id        String   @id @default(cuid())
-  bookingId String   @unique
+  bookingId String   @unique @map("booking_id")
   booking   Booking  @relation(fields: [bookingId], references: [id], onDelete: Cascade)
 
   rating    Int      // 1..5
   comment   String?
-  createdAt DateTime @default(now())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt      @map("updated_at")
+
+  // TODO: reply logic
+  reply     String?  // optional reply from hotel owner
+  repliedAt DateTime? @map("replied_at") // timestamp of when the hotel owner replied
 
   @@map("reviews")
 }

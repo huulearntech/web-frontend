@@ -4,10 +4,9 @@ import { useForm, FormProvider, useFormContext } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 
-// TODO: Nextjs won't handle i18n at compile time, so either use some libraries or move
-// this to server component
 const InformationFormSchema = z.object({
   contactFullName: z.string().min(1, "Vui lòng nhập họ và tên"),
+  // TODO: edit the phone regex to fit the vietnamese phone number format
   phone: z.string().regex(/^[0-9()+-\s]{6,20}$/, "Số điện thoại không hợp lệ"),
   email: z.email("Email không hợp lệ"),
   bookingForSomeoneElse: z.boolean(),
@@ -20,7 +19,7 @@ const InformationFormSchema = z.object({
   },
   {
     path: ["customerFullName"],
-    message: "Vui lòng nhập họ tên khách hàng",
+    error: "Vui lòng nhập họ tên khách hàng",
   }
 );
 

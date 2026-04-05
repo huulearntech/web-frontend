@@ -15,9 +15,9 @@ async function seedHotels(data: { wardId: string, ownerId: string }[]) {
 
   const hotels: Prisma.HotelUncheckedCreateInput[] = data.map(({ wardId, ownerId }) => {
     // check-in between 10:00 and 12:00
-    const checkInMinutes = faker.number.int({ min: 10 * 60, max: 12 * 60 });
+    const checkInMinutes = faker.number.int({ min: 10 * 60, max: 12 * 60, multipleOf: 15 });
     // check-out at least 1 hour before check-in, at most 2 hours before
-    const checkOutMinutes = Math.max(checkInMinutes - faker.number.int({ min: 60, max: 2 * 60 }), 0);
+    const checkOutMinutes = Math.max(checkInMinutes - faker.number.int({ min: 60, max: 2 * 60, multipleOf: 15 }), 0);
 
     // Use UTC date to avoid timezone issues; date component is arbitrary for time-only storage
     const now = new Date();
@@ -72,14 +72,15 @@ async function seedRoomTypes(hotels: Hotel[]) {
 
     typeNames.forEach((type) => {
       roomTypes.push({
-      hotelId: hotel.id,
-      name: type,
-      description: `A ${type.toLowerCase()} room at ${hotel.name}`,
-      adultCapacity: faker.number.int({ min: 1, max: 4 }),
-      childrenCapacity: faker.number.int({ min: 0, max: 4 }),
-      price: new Decimal(faker.number.int({ min: 100_000, max: 500_000, multipleOf: 1_000 })),
-      areaM2: faker.number.int({ min: 20, max: 100 }),
-      bedType: faker.helpers.arrayElement(Object.values(BedType)),
+        hotelId: hotel.id,
+        name: type,
+        description: `A ${type.toLowerCase()} room at ${hotel.name}`,
+        adultCapacity: faker.number.int({ min: 1, max: 4 }),
+        childrenCapacity: faker.number.int({ min: 0, max: 4 }),
+        price: new Decimal(faker.number.int({ min: 100_000, max: 500_000, multipleOf: 1_000 })),
+        areaM2: faker.number.int({ min: 20, max: 100 }),
+        bedType: faker.helpers.arrayElement(Object.values(BedType)),
+        imageUrls: faker.helpers.uniqueArray(() => faker.image.url({ width: 400, height: 300 }), 1),
       });
     });
   }
@@ -103,7 +104,6 @@ async function seedRooms(roomTypes: RoomType[]) {
       rooms.push({
         typeId: roomType.id,
         name: `${roomType.name} Room ${String(i + 1).padStart(3, "0")}`,
-        imageUrls: faker.helpers.uniqueArray(() => faker.image.url({ width: 400, height: 300 }), 1),
       });
     }
   });

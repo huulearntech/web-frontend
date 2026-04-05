@@ -6,6 +6,7 @@ import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbS
 import { ChevronRight, MapPin } from 'lucide-react';
 import { tvlk_favicon } from "@/public/logos";
 import { MAX_REVIEW_POINTS } from "@/lib/constants";
+import { formatVND } from "@/lib/utils";
 
 const mock_nearby_locations = [
   {
@@ -28,15 +29,14 @@ const mock_nearby_locations = [
 
 export default async function OverviewSection({
   hotel,
-  minPrice,
 }: {
   hotel: Awaited<ReturnType<typeof fetchHotel>>
-  minPrice: number;
 }) {
 
   if (!hotel) return null;
 
   const {
+    roomTypes: [{ price: minPrice }],
     bookings,
     imageUrls,
     facilities,
@@ -109,7 +109,7 @@ export default async function OverviewSection({
           <div className="flex gap-x-2 py-2">
             <div className="flex flex-col text-end">
               <span className="text-xs">Giá/phòng/đêm</span>
-              <span className="h-fit text-[1.25rem] font-bold text-orange-600">{minPrice} VND</span>
+              <span className="h-fit text-[1.25rem] font-bold text-orange-600">{formatVND(minPrice.toNumber())}</span>
             </div>
             <a
               href="#available_rooms"

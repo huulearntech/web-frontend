@@ -15,11 +15,9 @@ export const nextAuthConfig = {
         password: { label: "Password", type: "password", placeholder: "Your password" },
       },
       async authorize(credentials) {
-        const parsedCredentials = await schemaSignIn.safeParseAsync(credentials);
-        if (!parsedCredentials.success) {
-          console.log("Invalid credentials");
-          return null;
-        }
+        const parsedCredentials = schemaSignIn.safeParse(credentials);
+        if (!parsedCredentials.success) return null;
+
         const { email, password } = parsedCredentials.data;
         const user = await prisma.user.findUnique({
           where: { email },

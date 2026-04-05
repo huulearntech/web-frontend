@@ -7,58 +7,57 @@
 SELECT
   h.id,
   h.name,
-  h."imageUrls",
+  h.image_urls AS "imageUrls",
   h.review_points AS "reviewPoints",
   h.number_of_reviews AS "numberOfReviews",
   h.type,
   w.name AS "wardName",
-  province.name AS "provinceName",
+  p.name AS "provinceName",
   available.min_price AS "minPrice",
   available.available_count AS "availableCount",
-  facility_list.facilities
-FROM "hotels" h
-LEFT JOIN "wards" w ON w.id = h."ward_id"
-LEFT JOIN "districts" district ON district.id = w."district_id"
-LEFT JOIN "provinces" province ON province.id = district."province_id"
+  facility_list.facility_names AS "facilityNames"
+FROM hotels h
+LEFT JOIN wards     w ON w.id = h."ward_id"
+LEFT JOIN districts d ON d.id = w."district_id"
+LEFT JOIN provinces p ON p.id = d."province_id"
 JOIN LATERAL (
   SELECT
     COUNT(r.id) AS available_count,
     MIN(rt.price) AS min_price,
     MAX(rt.price) AS max_price
-  FROM "rooms" r
-  JOIN "room_types" rt ON rt.id = r."type_id"
-  WHERE rt."hotel_id" = h.id
-    AND rt."adult_capacity" >= CEIL($4::numeric / NULLIF($5::numeric, 0))
+  FROM rooms r
+  JOIN room_types rt ON rt.id = r.type_id
+  WHERE rt.hotel_id = h.id
+    AND rt.adult_capacity >= CEIL($4::numeric / NULLIF($5::numeric, 0))
     AND NOT EXISTS (
       SELECT 1
-      FROM "_BookingToRoom" br
-      JOIN "bookings" b ON br."A" = b.id
-      WHERE br."B" = r.id
+      FROM "_BookingToRoom" b2r
+      JOIN bookings b ON b2r."A" = b.id
+      WHERE b2r."B" = r.id
         -- overlap: booking.start < requested_to AND booking.end > requested_from
-        AND b."checkInDate"  < $3
-        AND b."checkOutDate" > $2
-        AND b."status" IN ('CONFIRMED', 'PENDING') -- be cautious!
+        AND b.check_in_date  < $3
+        AND b.check_out_date > $2
+        AND b.status IN ('CONFIRMED', 'PENDING') -- be cautious!
     )
 ) AS available ON true
 LEFT JOIN LATERAL (
-  SELECT COALESCE(array_agg(DISTINCT fac.name ORDER BY fac.name), ARRAY[]::text[]) AS facilities
-  FROM "_FacilityToHotel" fth
-  JOIN "facilities" fac ON fac.id = fth."A"
-  WHERE fth."B" = h.id
+  SELECT COALESCE(array_agg(DISTINCT fac.name ORDER BY fac.name), ARRAY[]::text[]) AS facility_names
+  FROM "_FacilityToHotel" f2h
+  JOIN facilities fac ON fac.id = f2h."A"
+  WHERE f2h."B" = h.id
 ) AS facility_list ON true
 WHERE available.available_count >= $5
   -- use Vietnamese full-text search on hotel name and province/ward/district names
   AND (
-    to_tsvector_vietnamese(coalesce(h.name, '')) @@ websearch_to_tsquery('vietnamese', unaccent($1))
-    OR to_tsvector_vietnamese(coalesce(province.name, '')) @@ websearch_to_tsquery('vietnamese', unaccent($1))
-    OR to_tsvector_vietnamese(coalesce(district.name, '')) @@ websearch_to_tsquery('vietnamese', unaccent($1))
+       to_tsvector_vietnamese(coalesce(h.name, '')) @@ websearch_to_tsquery('vietnamese', unaccent($1))
+    OR to_tsvector_vietnamese(coalesce(p.name, '')) @@ websearch_to_tsquery('vietnamese', unaccent($1))
+    OR to_tsvector_vietnamese(coalesce(d.name, '')) @@ websearch_to_tsquery('vietnamese', unaccent($1))
     OR to_tsvector_vietnamese(coalesce(w.name, '')) @@ websearch_to_tsquery('vietnamese', unaccent($1))
   )
 ORDER BY
-  (CASE WHEN $6 = 'price_desc' THEN available.max_price END) DESC,
-  (CASE WHEN $6 = 'price_asc' THEN available.min_price END) ASC,
-  (CASE WHEN $6 = 'review_points_desc' THEN h.review_points END) DESC,
-  -- (CASE WHEN $6 = 'review_points_asc' THEN h.review_points END) ASC,
+  (CASE WHEN $6 = 'price_desc'         THEN available.max_price END) DESC,
+  (CASE WHEN $6 = 'price_asc'          THEN available.min_price END) ASC,
+  (CASE WHEN $6 = 'review_points_desc' THEN h.review_points     END) DESC,
   h.id ASC -- fallback to deterministic order
 ;
 

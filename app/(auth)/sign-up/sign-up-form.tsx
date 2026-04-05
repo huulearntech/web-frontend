@@ -69,7 +69,7 @@ export default function SignUpForm() {
           name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Name</FormLabel>
+              <FormLabel>Họ và tên</FormLabel>
               <FormControl>
                 <Input {...field} disabled={isPending} className="md:text-base"/>
               </FormControl>
@@ -82,7 +82,7 @@ export default function SignUpForm() {
           name="password"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Password</FormLabel>
+              <FormLabel>Mật khẩu</FormLabel>
               <FormControl>
                 <PasswordInput {...field} disabled={isPending} className="md:text-base"/>
               </FormControl>
@@ -93,23 +93,19 @@ export default function SignUpForm() {
         <Button type="submit" className="mt-2 md:text-base" disabled={isPending}>
           {isPending ? (
             <div className="flex items-center gap-2">
-              Signing up...
+              Đang đăng ký...
               <Loader2Icon className="animate-spin" />
             </div>
           ) : (
             <div className="flex items-center gap-2">
-              Sign Up
+              Đăng ký
               <ArrowRight />
             </div>
           )}
         </Button>
         <div className="flex flex-col gap-4 mt-4 text-sm">
-          <Link href={PATHS.signIn} replace>
-            Already have an account? Sign In
-          </Link>
-          <Link href={PATHS.forgotPassword}>
-            Forgot Password?
-          </Link>
+          <Link href={PATHS.signIn} replace> Bạn đã có tài khoản? Đăng nhập ở đây. </Link>
+          <Link href={PATHS.forgotPassword}> Bạn quên mật khẩu? </Link>
         </div>
       </form>
     </Form>

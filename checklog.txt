@@ -7,6 +7,10 @@ filter: cleanup className
 
 search bar form: consider? merge adult and children capacity into only one capacity
 
+search bar schema: validate that from <= to and transform from z.date() to z.iso.date().
+
+types: unified them into one place, such as "types" folder.
+
 // TODO: Flow
 // 1. Basic info (name, email, phone) -> sign up for account
 // 1.1. verify email/phone with OTP -> after verification, we can create the account and sign in the user immediately

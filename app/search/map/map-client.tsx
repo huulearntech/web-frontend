@@ -11,6 +11,7 @@ import MyMarker from "./my-marker";
 import { type Map_HotelCardProps, type BBox, getHotelsByBoundingBox } from "@/lib/actions/search/map";
 import { haversineMeters } from "@/lib/utils";
 
+// TODO: May add an error state and show error if fetch fails.
 function MapController({
   onUpdateBBox,
   debounceMs = 2000,
@@ -131,7 +132,6 @@ export default function MapClient({
   // optional external hook for bbox changes (minimal)
   const handleBBoxChange = useCallback((b: BBox) => {
     // can log or use analytics; kept minimal so it doesn't trigger re-renders
-    // console.log("bbox changed", b);
   }, []);
 
   return (

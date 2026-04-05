@@ -41,7 +41,7 @@ import {
 
 import { ArrowRight, ChevronDown, Minus, Plus, Search, RotateCwIcon, LoaderCircleIcon } from "lucide-react";
 
-import { SearchBarFormSchema, type SearchBarFormData } from "@/lib/zod_schemas/search-bar";
+import { SearchBarFormSchema, SearchParamsCodec, type SearchBarFormData } from "@/lib/zod_schemas/search-bar";
 import {
   MAX_ADULTS,
   MAX_CHILDREN,
@@ -54,7 +54,6 @@ import {
 } from "@/lib/constants";
 
 import useSWR, { mutate } from "swr";
-import { SearchParamsCodec } from "@/app/search/(root)/tmp";
 import { ComponentProps, useState, useEffect } from "react";
 import { user_getLocationOrHotelByQueryString } from "@/lib/actions/search-bar";
 
@@ -162,8 +161,8 @@ export function SearchBarForm({
 }) {
   const router = useRouter();
 
-  // TODO Tooltip for error when location is empty / number of guests is less than number of rooms
-  // TODO: checkin & checkout -> date only
+  // TODO: Tooltip for error when location is empty / number of guests is less than number of rooms
+  // TODO: Different behaviors when on map page vs other pages. 
   const onSubmit = (values: SearchBarFormData) => {
     const searchParams = new URLSearchParams(SearchParamsCodec.encode(values)).toString();
     router.push(`${PATHS.search}?${searchParams}`);
@@ -202,9 +201,9 @@ export function SearchBarForm({
             <Popover>
               <PopoverTrigger asChild>
                 <Button variant="outline" id="date-range-picker" className="text-sm lg:text-base overflow-hidden items-start">
-                  {new Intl.DateTimeFormat("vi-VN", { month: "numeric", day: "numeric", year: "numeric" }).format(field.value.from) ?? "Nhận phòng"}
+                  {new Intl.DateTimeFormat("vi-VN", { month: "numeric", day: "numeric", year: "numeric" }).format(field.value.from) || "Nhận phòng"}
                   <ArrowRight />
-                  {new Intl.DateTimeFormat("vi-VN", { month: "numeric", day: "numeric", year: "numeric" }).format(field.value.to) ?? "Trả phòng"}
+                  {new Intl.DateTimeFormat("vi-VN", { month: "numeric", day: "numeric", year: "numeric" }).format(field.value.to) || "Trả phòng"}
                 </Button>
               </PopoverTrigger>
 

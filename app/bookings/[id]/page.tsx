@@ -19,15 +19,14 @@ import imageGirlJump from "@/public/images/booking-page-remind-user-to-signin.we
 
 import { InformationFormProvider } from "./information-form-context";
 import { PATHS } from "@/lib/constants";
+import prisma from "@/lib/prisma";
 
 export default async function BookingPage({ params }: { params: Promise<{ id: string }> }) {
-  const session = await auth();
   const { id } = await params;
-  console.log("booking id: ", id);
+  const session = await auth();
+  // const booking = await fetchBooking(id); // will related to session.user.id
 
-  // const booking = await fetchBooking(id);
-
-  // TODO: callbackUrl
+  // TODO: Remove the sign-in reminder, because it adds complexity.
   return (
     <InformationFormProvider >
       {!session && (
@@ -69,19 +68,26 @@ export default async function BookingPage({ params }: { params: Promise<{ id: st
   )
 };
 
-function BookingSummary() {
+async function BookingSummary() {
+  const hotel = await prisma.hotel.findFirst({ include: { roomTypes: { select: { name: true }, take: 1 } } }); // example
+  if (!hotel) return null;
   return (
     <div className="flex flex-col rounded-4xl bg-white shadow-lg p-4 gap-y-2">
       <div className="flex flex-col gap-y-1">
-        <h2 className="text-[1.25rem] font-semibold">(1x) Dragon's Nest - Super Saver</h2>
+        <h2 className="text-[1.25rem] font-semibold">(1x) {hotel.roomTypes[0].name}</h2>
         <div className="text-sm text-red-500">Chi con 1 phong</div>
       </div>
 
       <div className="flex bg-blue-50 rounded-[10px] p-1 gap-x-1">
         <div className="flex flex-col p-2 gap-y-1 flex-1">
-          <div className="text-xs">Nhan phong</div>
+          <div className="text-xs">Nhận phòng</div>
           <div className="text-sm font-bold">Thứ Ba, 10 tháng 02 2026</div>
-          <div className="text-xs">Từ 14:00</div>
+          <div className="text-xs">
+            Từ {new Intl.DateTimeFormat('vi-VN', {
+              hour: '2-digit',
+              minute: '2-digit'
+            }).format(hotel.checkInTime)}
+          </div>
         </div>
 
         <div className="flex flex-col justify-center items-center min-w-fit">
@@ -92,7 +98,12 @@ function BookingSummary() {
         <div className="flex flex-col p-2 gap-y-1 flex-1">
           <div className="text-xs">Trả phong</div>
           <div className="text-sm font-bold">Thứ Ba, 10 tháng 02 2026</div>
-          <div className="text-xs">Trước 12:00</div>
+          <div className="text-xs">
+            Trước {new Intl.DateTimeFormat('vi-VN', {
+              hour: '2-digit',
+              minute: '2-digit'
+            }).format(hotel.checkOutTime)}
+          </div>
         </div>
       </div>
 

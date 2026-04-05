@@ -24,11 +24,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
     where: { id: hotelId },
   });
 
-  if (!hotel) {
-    return {
-      title: "Hotel not found",
-    };
-  }
+  if (!hotel) return { title: "Hotel not found" };
   
   return {
     title: hotel.name,

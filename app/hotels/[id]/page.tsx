@@ -9,7 +9,7 @@ import { fetchHotel } from "@/lib/actions/hotel";
 import Navbar from "./navbar";
 import { notFound } from "next/navigation";
 import SearchBar from "@/components/search-bar";
-import { SearchParams, SearchParamsCodec } from "@/app/search/(root)/tmp";
+import { SearchParams, SearchParamsCodec } from "@/lib/zod_schemas/search-bar";
 
 
 // TODO: This page is not yet responsive
@@ -51,7 +51,7 @@ export default async function Page(props: {
         <Navbar />
       </div>
       <main className="flex flex-col gap-y-4 content my-4 [&>section]:scroll-mt-35">
-        <OverviewSection hotel={hotel} minPrice={100} /> {/** TODO: */}
+        <OverviewSection hotel={hotel} />
         <AvailableRoomsSection hotelId={hotel.id} />
         <LocationSection hotel={hotel} />
         <FacilitiesSection hotel={hotel} />

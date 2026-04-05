@@ -24,8 +24,8 @@ import LocationSelect from "./location-select";
 const formSchema = z.object({
   name:         z.string().trim().min(1, "Hotel name is required."),
   wardId:       z.string().trim().min(1, "Ward / location id is required."),
-  longitude:    z.string().min(1, "Longitude cannot be empty").pipe(z.coerce.number()),
-  latitude:     z.string().min(1, "Latitude cannot be empty").pipe(z.coerce.number()),
+  longitude:    z.coerce.number().refine((val) => val >= -180 && val <= 180, { error: "Longitude must be between -180 and 180." }),
+  latitude:     z.coerce.number().refine((val) => val >= -90 && val <= 90, { error: "Latitude must be between -90 and 90." }),
   type:         z.enum(Object.values(HotelType)),
   description:  z.string().optional(),
   checkInTime:  z.iso.time({ precision: -1, error: "Check-in time must be a valid time." }),

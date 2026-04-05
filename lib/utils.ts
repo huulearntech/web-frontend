@@ -34,14 +34,6 @@ export function haversineMeters([lat1, lon1]: [number, number], [lat2, lon2]: [n
   return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 }
 
-// TODO: Handle vietnamese accents properly in search (e.g. "Ha Noi" should match "Hà Nội")
-// export function simulateFetchLocations(query: string, delay = 400): Promise<string[]> {
-//   return new Promise((resolve) => {
-//     setTimeout(() => {
-//       const filtered = fake_locations.filter((loc) =>
-//         loc.toLowerCase().includes(query.toLowerCase())
-//       );
-//       resolve(filtered);
-//     }, delay);
-//   });
-// }
+export function formatVND(amount: number) {
+  return new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(amount);
+}

@@ -5,7 +5,7 @@ import { type PaginationState } from "@tanstack/react-table";
 import { type SearchBarFormData } from "@/lib/zod_schemas/search-bar";
 
 import { getHotelsBySearchBarForm } from "@/lib/generated/prisma/sql";
-import { HotelCardProps } from "@/app/search/(root)/tmp-action";
+import { HotelCardProps } from "@/lib/types/hotel-card";
 
 type SortType = "price-asc" | "price-desc" | "reviewPoints-desc";
 
@@ -36,9 +36,7 @@ export async function fetchSearchResult(
     numAdults,
     numRooms,
     sort as string
-  )).then((hotels) => hotels.map((hotel) => {
-    console.log(hotel);
-    return {
+  )).then((hotels) => hotels.map((hotel) => ({
     id: hotel.id,
     type: hotel.type,
     name: hotel.name,
@@ -50,6 +48,6 @@ export async function fetchSearchResult(
       district: { province: { name: hotel.provinceName } }
     },
     imageUrls: hotel.imageUrls ?? [],
-    facilities: hotel.facilities?.map(facilityName => ({ name: facilityName })) ?? []
-  }}));
+    facilities: hotel.facilityNames?.map(facilityName => ({ name: facilityName })) ?? []
+  })));
 }

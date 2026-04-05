@@ -35,7 +35,6 @@ export default async function Layout({
                 {hotel.name}
               </div>
               <div className="flex items-center gap-x-2 text-xs">
-                {/* <RatingStars rating={4.5} /> Replace Rating stars with review point */}
                 <span className="text-primary font-black">{hotel.reviewPoints.toFixed(1) + " / " + MAX_REVIEW_POINTS}</span>
                 <span className="text-gray-500 font-semibold">({hotel.numberOfReviews} đánh giá)</span>
               </div>

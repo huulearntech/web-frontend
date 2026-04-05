@@ -17,7 +17,8 @@ import { fetchFeed } from "@/lib/actions/home";
 
 // This can be named as Promotion, because admin can "promote" things
 export default async function Feed () {
-  const { title, locations } = await fetchFeed();
+  const title = "Khám phá điểm đến";
+  const locations = await fetchFeed();
   return (
     <section className="flex flex-col gap-y-4">
       <div className="content">

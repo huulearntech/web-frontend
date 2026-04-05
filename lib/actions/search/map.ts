@@ -40,7 +40,7 @@ export async function getHotelsByBoundingBox(bbox: BBox) {
     ...hotel,
     price: hotel.roomTypes[0].price.toNumber() || 0, // convert Decimal to number, default to 0 if no room types
     thumbnailUrl: hotel.imageUrls[0] ?? null,
-    rooms: undefined, // remove rooms from the result since we only needed the price
+    roomTypes: undefined, // remove rooms from the result since we only needed the price
   })));
 
   return hotels;

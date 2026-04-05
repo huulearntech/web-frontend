@@ -14,7 +14,11 @@ export const SearchBarFormSchema = z.object({
         path: ["to"],
       });
     }
-  }),
+  }).transform(({ from, to }) => ({
+    // normalize to YYYY-MM-DD string
+    from: from.toISOString().split("T")[0],
+    to: to.toISOString().split("T")[0],
+  })),
   guestsAndRooms: z.object({
     numAdults: z.number().min(1).max(30),
     numChildren: z.number().min(0).max(6),
@@ -30,10 +34,14 @@ export const SearchBarFormSchema = z.object({
   }),
 });
 
-export type SearchBarFormData = z.infer<typeof SearchBarFormSchema>;
 
-// TODO: Name these types better. These are used for encoding/decoding search params in URL, so they are all strings. But the naming is not great.
-export type SearchParams = {
+export type SearchBar_FormInput  = z.input<typeof SearchBarFormSchema>;
+export type SearchBar_FormOutput = z.output<typeof SearchBarFormSchema>;
+
+
+
+// This is really bloated.
+export type SearchSpecs = {
   location: string,
   checkInDate: string,
   checkOutDate: string,
@@ -42,29 +50,45 @@ export type SearchParams = {
   numRooms: string,
 }
 
-export const SearchParamsCodec = z.codec(
-  z.object({
-    location:     z.string(),
-    checkInDate:  z.iso.date(),
-    checkOutDate: z.iso.date(),
-    numAdults:    z.string(),
-    numChildren:  z.string(),
-    numRooms:     z.string(),
+const SearchInputSchema = z.object({
+  location: z.string(),
+  inOutDates: z.object({
+    from: z.date(),
+    to: z.date(),
   }),
-  SearchBarFormSchema,
-  {
-  encode(data: z.infer<typeof SearchBarFormSchema>) {
-    return {
-      location:     data.location,
-      checkInDate:  data.inOutDates.from.toISOString().split("T")[0],
-      checkOutDate: data.inOutDates.to.toISOString().split("T")[0],
-      numAdults:    data.guestsAndRooms.numAdults.toString(),
-      numChildren:  data.guestsAndRooms.numChildren.toString(),
-      numRooms:     data.guestsAndRooms.numRooms.toString(),
-    };
-  },
+  guestsAndRooms: z.object({
+    numAdults: z.string(),
+    numChildren: z.string(),
+    numRooms: z.string(),
+  }),
+});
 
-  decode(input: SearchParams): z.infer<typeof SearchBarFormSchema> {
+const SearchSpecsSchema = z.object({
+  location: z.string(),
+  checkInDate: z.iso.date(),
+  checkOutDate: z.iso.date(),
+  numAdults: z.string(),
+  numChildren: z.string(),
+  numRooms: z.string(),
+});
+
+
+export const SearchSpecsCodec = z.codec(
+  SearchSpecsSchema,
+  SearchInputSchema,
+  {
+    encode(data) {
+      return {
+        location: data.location,
+        checkInDate: data.inOutDates.from.toISOString().split("T")[0],
+        checkOutDate: data.inOutDates.to.toISOString().split("T")[0],
+        numAdults: data.guestsAndRooms.numAdults.toString(),
+        numChildren: data.guestsAndRooms.numChildren.toString(),
+        numRooms: data.guestsAndRooms.numRooms.toString(),
+      };
+    },
+
+  decode(input) {
     const {
       location,
       checkInDate,
@@ -74,7 +98,7 @@ export const SearchParamsCodec = z.codec(
       numRooms,
     } = input;
 
-    return SearchBarFormSchema.parse({
+    return SearchInputSchema.parse({
       location,
       inOutDates: {
         from: new Date(checkInDate),

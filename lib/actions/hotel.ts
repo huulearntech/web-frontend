@@ -6,6 +6,11 @@ export async function fetchHotel(hotelId: string) {
   return prisma.hotel.findUnique({
     where: { id: hotelId },
     include: {
+      roomTypes: {
+        select: { price: true },
+        orderBy: { price: "asc" },
+        take: 1, // only need the cheapest room for the overview section
+      },
       ward: {
         select: {
           name: true,
@@ -94,7 +99,6 @@ export async function getRoomsByHotelIdGroupedByType(
           _count: {
             select: { bookings: true },
           },
-          imageUrls: true,
         },
       },
       facilities: {
@@ -112,14 +116,3 @@ export async function getRoomsByHotelIdGroupedByType(
 export type FetchHotelResult = Awaited<ReturnType<typeof fetchHotel>>;
 
 export type FetchAvailableRoomsResult = Awaited<ReturnType<typeof getRoomsByHotelIdGroupedByType>>;
-        // none: {
-        //   bookings: {
-        //     some: {
-        //       AND: [
-        //         { checkInDate: { lt: checkInDate } },
-        //         { checkOutDate: { gt: checkOutDate } },
-        //         { status: { in: ["CONFIRMED", "PENDING", "CANCELLED"] } }, // The booking may be cancelled, but we still want to block the room for the booked dates to prevent overbooking. The hotel staff can manually unblock the room if needed.
-        //       ],
-        //     }
-        //   },
-        // },

@@ -4,12 +4,13 @@ import { Button } from "@/components/ui/button";
 import { renderToString } from "react-dom/server";
 
 import { type Map_HotelCardProps } from "@/lib/actions/search/map";
+import { formatVND } from "@/lib/utils";
 
 function createPriceIcon(price: number) {
   const PriceIcon = () => {
     return (
       <div className="w-20 h-7.5 inline-flex items-center justify-center bg-white text-xs font-semibold text-primary border border-gray-accent rounded-full px-3 py-1 shadow-sm">
-        {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(price)}
+        {formatVND(price)}
       </div>
     );
   }
@@ -44,7 +45,7 @@ export default function MyMarker({ hotel } : { hotel: Map_HotelCardProps }) {
             </div>
 
             <div className="text-base font-bold text-orange-500">
-              { new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(hotel.price) }
+              { formatVND(hotel.price) } / đêm
             </div>
             <div className="mt-2">
               <Button asChild className="w-full bg-orange-500 hover:bg-orange-600 focus:ring-orange-300">

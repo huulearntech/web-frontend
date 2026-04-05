@@ -3,7 +3,7 @@
 import { auth } from "@/auth";
 import prisma from "@/lib/prisma";
 
-import { HotelCardProps } from "@/app/search/(root)/tmp-action";
+import { HotelCardProps } from "@/lib/types/hotel-card";
 
 export async function user_getRecentlyViewedHotels() {
   const session = await auth();

@@ -50,40 +50,7 @@ async function main() {
   console.log("Database seeded successfully!");
 }
 
-// main()
-//   .catch((e) => {
-//     console.error(e);
-//     process.exit(1);
-//   })
-//   .finally(async () => {
-//     await prisma.$disconnect();
-//   });
-
-async function tmpSeed() {
-  const bookings = await prisma.booking.findMany({
-    where: {
-      status: "COMPLETED",
-      review: { is: null },
-    },
-    select: {
-      id: true,
-      hotelId: true,
-    },
-  });
-
-  const reviews = bookings.map(({ id }) => ({
-    bookingId: id,
-    rating: faker.number.int({ min: 1, max: 5 }),
-    comment: faker.lorem.sentences(2),
-    createdAt: faker.date.recent(),
-  }));
-
-  prisma.review.createMany({
-    data: reviews,
-  });
-}
-
-tmpSeed()
+main()
   .catch((e) => {
     console.error(e);
     process.exit(1);

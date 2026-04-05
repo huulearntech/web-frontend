@@ -1,6 +1,6 @@
 "use server";
 
-import { HotelCardProps } from "@/app/search/(root)/tmp-action";
+import { HotelCardProps } from "@/lib/types/hotel-card";
 import { auth } from "@/auth";
 import prisma from "@/lib/prisma";
 

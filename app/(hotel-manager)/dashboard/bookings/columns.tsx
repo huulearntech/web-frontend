@@ -14,6 +14,7 @@ import { ArrowRight, MoreHorizontal } from "lucide-react"
 
 import type { BookingSerialized } from "@/lib/actions/hotel-manager/bookings"
 import { BookingStatus } from "@/lib/generated/prisma/enums"
+import { formatVND } from "@/lib/utils"
 
 export const columns: ColumnDef<BookingSerialized>[] = [
   {
@@ -49,12 +50,8 @@ export const columns: ColumnDef<BookingSerialized>[] = [
     header: () => <div className="text-right">Price</div>,
     cell: ({ row }) => {
       const price = parseFloat(row.getValue("totalPrice"));
-      const formatted = new Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency: "USD",
-      }).format(price);
       return (
-        <div className="text-right font-medium"> {formatted} </div>
+        <div className="text-right font-medium"> {formatVND(price)} </div>
       )
     },
   },

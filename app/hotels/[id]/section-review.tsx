@@ -2,10 +2,11 @@ import Image from "next/image"
 import { tvlk_favicon, tvlk_logo_text_dark } from "@/public/logos"
 import { ThumbsUp } from "lucide-react"
 
-import { differenceInDays, differenceInWeeks } from "date-fns"
+import { differenceInDays } from "date-fns"
 
 import { fetchHotel } from "@/lib/actions/hotel"
 
+// TODO: standardize the types inferred from server actions
 type Hotel = NonNullable<Awaited<ReturnType<typeof fetchHotel>>>;
 
 export default async function ReviewSection({
@@ -61,6 +62,18 @@ function ReviewCard({
 }) {
   if (!booking.review) return null;
   const today = new Date();
+  const diff = differenceInDays(today, booking.review.createdAt);
+  let timeAgo = "";
+  if (diff < 1) {
+    timeAgo = "hôm nay";
+  } else if (diff < 7) {
+    timeAgo = `cách đây ${diff} ngày trước`;
+  } else if (diff < 30) {
+    timeAgo = `cách đây ${Math.floor(diff / 7)} tuần trước`;
+  } else {
+    timeAgo = `cách đây ${Math.floor(diff / 30)} tháng trước`;
+  }
+
   return (
     <div className="px-6 py-4 rounded-xl border flex gap-x-12 h-40">
       <div className="flex flex-col items-center gap-y-2 shrink-0 w-1/6">
@@ -86,14 +99,7 @@ function ReviewCard({
               </div>
             </div>
 
-            <div className="text-sm font-bold mt-2 sm:mt-0">
-              Đánh giá cách đây {
-                // TODO: improve this logic
-                differenceInWeeks(today, booking.review.createdAt) >= 1
-                  ? `${differenceInWeeks(today, booking.review.createdAt)} tuần`
-                  : `${differenceInDays(today, booking.review.createdAt)} ngày`
-              }
-            </div>
+            <div className="text-sm font-bold mt-2 sm:mt-0"> Đánh giá {timeAgo} </div>
           </div>
 
           <p className="text-sm font-medium">{booking.review.comment}</p>

@@ -12,6 +12,7 @@ import {
 
 import { PATHS } from "@/lib/constants";
 import { getRoomsByHotelIdGroupedByType, type FetchAvailableRoomsResult } from "@/lib/actions/hotel";
+import { formatVND } from "@/lib/utils";
 
 export default async function AvailableRoomsSection({
   hotelId
@@ -55,7 +56,7 @@ function RoomTypeCard({
   roomType: FetchAvailableRoomsResult[number];
   breakfastAvailability: boolean
 }) {
-  const imageUrls = roomType.rooms.flatMap((room) => room.imageUrls);
+  const { imageUrls } = roomType;
   return (
     <div
       className="flex flex-col md:flex-row lg:flex-row bg-white rounded-xl p-4 shadow-md overflow-hidden"
@@ -169,17 +170,12 @@ function RoomTypeCard({
 
         <footer className="mt-4 flex items-center justify-between">
           <div className="text-base lg:text-lg font-extrabold text-orange-600">
-            {new Intl.NumberFormat("vi-VN", {
-              style: "currency",
-              currency: "VND",
-              minimumFractionDigits: 0,
-              maximumFractionDigits: 0
-            }).format(roomType.price.toNumber())}
+            {formatVND(roomType.price.toNumber())}
           </div>
 
           <div>
             <a
-            // TODO: link to booking page
+            // TODO: link to booking page (onclick must handle something)
               href={PATHS.bookings + "/1"}
               target="_blank"
               rel="noreferrer"

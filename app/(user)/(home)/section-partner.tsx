@@ -45,8 +45,8 @@ const ScrollingLogos = ({
   return (
     <div className="w-full overflow-hidden">
       <div
-        className="flex items-center gap-4 will-change-transform animate-scroll-infinite-loop"
-        style={{ animationDuration: `${durationSeconds}s`, width: "max-content" }}
+        className="flex items-center gap-4 will-change-transform animate-scroll-infinite-loop w-max"
+        style={{ animationDuration: `${durationSeconds}s` }}
       >
         {items.map((logo, index) => (
           <div

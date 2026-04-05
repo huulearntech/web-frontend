@@ -45,3 +45,4 @@ next-env.d.ts
 # Temporarily ignore prisma migrations, since we don't want to commit them until we have a stable schema.
 # We can remove this line once we have a stable schema and are ready to commit the migrations.
 /prisma/migrations
+/tmp

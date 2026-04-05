@@ -4,20 +4,17 @@ import prisma from "@/lib/prisma";
 import { Separator } from "@/components/ui/separator"
 import { SidebarTrigger } from "@/components/ui/sidebar"
 
+// NOTE: user role must be enforced in the proxy route to avoid the awkwardness in these components.
 export default async function DashboardHeader() {
   const session = await auth();
-  if (session?.user?.role !== "HOTEL_OWNER") {
-    return null; // or a loading state, or a redirect to login
-  }
+  if (session?.user.role !== "HOTEL_OWNER") return null;
 
   const hotel = await prisma.hotel.findUnique({
     where: { ownerId: session.user.id },
     select: { name: true },
   });
 
-  if (!hotel) {
-    return null; // or a loading state, or a message indicating no hotel found
-  }
+  if (!hotel) return null;
 
 
   return (
