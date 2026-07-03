@@ -73,7 +73,7 @@ export default function Navbar({ hotelId }: { hotelId: string }) {
 
   return (
     <nav className="content flex justify-between items-center">
-      <ul className="flex gap-x-5 font-bold text-sm">
+      <ul className="flex gap-x-5 font-bold text-xs md:text-sm">
         {Object.entries(sections).map(([id, label]) => (
           <li key={id} className={cn(
             "pb-1 border-b-2 hover:text-primary hover:border-primary",

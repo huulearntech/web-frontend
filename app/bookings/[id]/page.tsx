@@ -129,20 +129,20 @@ export default async function BookingPage({
   return (
     <InformationFormProvider defaultValues={{ name: name || "", email: email || "" }} >
       <header className="w-full z-60 bg-white shadow-md sticky top-0">
-        <div className="flex flex-col gap-y-4 sm:flex-row py-4 h-full justify-between items-center content">
+        <div className="flex flex-col gap-y-4 md:flex-row py-4 h-full justify-between items-center content">
           <div className="flex items-center">
-            <Image src={tvlk_logo_text_dark} alt="" />
+            <Image src={tvlk_logo_text_dark} alt="" className="w-25 sm:w-[173px] h-auto"/>
             <div className="h-10 w-px bg-gray-200 mx-3"></div>
             <div className="flex flex-col gap-y-1 px-4">
-              <div className="flex items-center gap-x-2">
-                <span className="text-base text-black font-semibold"> {roomType.hotel.name} </span>
-                <span className="px-2 py-1 rounded-full text-xs bg-blue-50 text-primary lowercase first-letter:capitalize">
+              <span className="text-base text-black font-semibold"> {roomType.hotel.name} </span>
+              <div className="flex flex-col gap-y-1 sm:flex-row sm:items-center sm:gap-x-2 text-xs">
+                <span className="w-fit px-2 py-1 rounded-full text-xs bg-blue-50 text-primary lowercase first-letter:capitalize">
                   {roomType.hotel.type}
                 </span>
-              </div>
-              <div className="flex items-center gap-x-2 text-xs">
-                <span className="text-primary font-black">{roomType.hotel.rating.toFixed(1) + " / " + MAX_RATING}</span>
-                <span className="text-gray-500 font-semibold">({roomType.hotel.numberOfReviews} đánh giá)</span>
+                <div className="flex items-center gap-x-1">
+                  <span className="text-primary font-black">{roomType.hotel.rating.toFixed(1) + " / " + MAX_RATING}</span>
+                  <span className="text-gray-500 font-semibold">({roomType.hotel.numberOfReviews} đánh giá)</span>
+                </div>
               </div>
             </div>
           </div>
@@ -152,8 +152,8 @@ export default async function BookingPage({
         </div>
       </header>
 
-      <div className="bg-[url('/images/bg-booking-page.webp')] bg-no-repeat bg-bottom">
-        <main className="content grid gap-6 pt-6 grid-cols-1 lg:grid-cols-[1fr_25rem] lg:items-start">
+      <div className="bg-[url('/images/bg-booking-page.webp')] bg-no-repeat bg-bottom py-6 min-h-screen">
+        <main className="content grid gap-6 grid-cols-1 lg:grid-cols-[1fr_25rem] lg:items-start">
           <div className="order-2 lg:col-start-2 lg:row-start-1">
             <BookingSummary
               numRooms={searchSpec.data.guestsAndRooms.numRooms}
@@ -170,7 +170,7 @@ export default async function BookingPage({
             />
           </div>
 
-          <div className="order-3 row-span-3 lg:col-start-1 min-w-100">
+          <div className="order-3 row-span-3 lg:col-start-1">
             <InformationForm />
           </div>
           <div className="order-4 lg:col-start-2 lg:row-start-2">
@@ -223,7 +223,7 @@ async function BookingSummary({
       </div>
 
       <div className="flex bg-blue-50 rounded-[10px] p-1 gap-x-1">
-        <div className="flex flex-col p-2 gap-y-1 flex-1">
+        <div className="flex flex-col p-2 gap-y-1 flex-1 text-end">
           <div className="text-xs">Nhận phòng</div>
           <div className="text-sm font-bold">
             {new Intl.DateTimeFormat('vi-VN', {
@@ -311,7 +311,7 @@ function Stepper({ step }: { step: 1 | 2 }) {
         </span>
       </div>
 
-      <div className={`h-px w-10 mx-3 ${step === 2 ? "bg-primary" : "bg-gray-200"}`} />
+      <div className={`h-px w-5 mx-1 ${step === 2 ? "bg-primary" : "bg-gray-200"}`} />
 
       <div className="flex items-center">
         <div

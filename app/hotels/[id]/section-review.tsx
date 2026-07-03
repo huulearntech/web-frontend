@@ -79,8 +79,8 @@ export default function ReviewSectionClient({
             <div className="flex flex-col space-y-3">
               {numberOfReviews > 0 && <div className="text-[1.25rem] font-bold">Từ {numberOfReviews} đánh giá</div>}
               <div className="font-medium flex">
-                <div className="whitespace-pre">Bởi khách du lịch trong </div>
-                <Image src={tvlk_logo_text_dark} alt="hoteloka" className="h-6.25 w-auto" />
+                <div>Bởi khách du lịch trong Hoteloka</div>
+                {/* <Image src={tvlk_logo_text_dark} alt="hoteloka" className="h-6.25 w-auto" /> */}
               </div>
             </div>
           </div>
