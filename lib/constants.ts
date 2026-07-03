@@ -46,6 +46,7 @@ export const PATHS = {
   search: '/search',
   searchMap: '/search/map',
   forgotPassword: '/forgot-password',
+  resetPassword: '/reset-password',
 
   hotelDashboard: '/dashboard',
   hotelAccount: '/dashboard/account',

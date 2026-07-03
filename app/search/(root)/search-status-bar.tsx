@@ -30,10 +30,10 @@ export default function SearchStatusBar({
   onSortChange: (value: SortType) => void;
 }) {
   return (
-    <div className="flex items-center justify-between sticky top-21 lg:top-20.5 border-b p-3 -mt-3 z-10 bg-background shadow-md">
-      <span className="text-sm"> {total} nơi lưu trú được tìm thấy </span>
+    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between sticky top-21 lg:top-20.5 border-b p-3 -mt-3 z-10 bg-background shadow-md">
+      <span className="text-sm self-start"> {total} nơi lưu trú được tìm thấy </span>
       <div className="flex gap-x-4 items-center">
-        <div className="flex gap-x-2">
+        <div className="flex gap-x-2 justify-between sm:justify-normal">
           <Label htmlFor="sort-by-select" className="text-xs font-semibold" >Sắp xếp theo:</Label>
           <Select value={sortedBy} onValueChange={(value) => onSortChange(value as SortType)}>
             <SelectTrigger id="sort-by-select" className="text-xs font-semibold py-2 px-3 rounded-full">
@@ -49,18 +49,20 @@ export default function SearchStatusBar({
             </SelectContent>
           </Select>
         </div>
-        <Button
-          asChild
-          className="h-fit bg-primary text-primary-foreground px-3 py-2 rounded-full flex items-center gap-x-2"
-        >
-          <a href={`${PATHS.searchMap}?${searchParams.toString()}`} target="_blank" >
-            <MapPinnedIcon className="size-4" />
-            <span className="text-xs font-semibold">Xem bản đồ</span>
-          </a>
-        </Button>
-        <ButtonOpenFilterSheet className="lg:hidden w-fit rounded-full">
-          <span className="text-xs font-semibold">Mở bộ lọc</span>
-        </ButtonOpenFilterSheet>
+        <div className="flex gap-x-4">
+          <Button
+            asChild
+            className="h-fit bg-primary text-primary-foreground px-3 py-2 rounded-full flex items-center gap-x-2"
+          >
+            <a href={`${PATHS.searchMap}?${searchParams.toString()}`} target="_blank" >
+              <MapPinnedIcon className="size-4" />
+              <span className="sr-only sm:not-sr-only text-xs font-semibold">Xem bản đồ</span>
+            </a>
+          </Button>
+          <ButtonOpenFilterSheet className="lg:hidden w-fit rounded-full">
+            <span className="sr-only sm:not-sr-only text-xs font-semibold">Mở bộ lọc</span>
+          </ButtonOpenFilterSheet>
+        </div>
       </div>
     </div>
   );

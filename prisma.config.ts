@@ -8,7 +8,7 @@ export default defineConfig({
   // We need recursive path to generate types, but then the extension goes crazy
   // and eats the whole computer resources.
   // But if we specify the direct path to the main schema, it can't generate type. WTF?
-  // So I comment this out for a little work-around convinience.
+  // So I comment this out for a little work-around convenience.
 
   schema: "prisma/schema.prisma", // Uncomment when need to use Prisma extension for syntax highlighting
   // schema: "prisma", // Uncomment when need to generate types

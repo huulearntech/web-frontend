@@ -10,8 +10,8 @@ import { addMinutes } from "date-fns";
 
 
 import { Prisma, VerificationType } from "@/lib/generated/prisma/client";
-import { sendOtpToEmail } from "@/lib/mailgun";
-import { SignUpData, SignInData, schemaSignUp, schemaSignIn } from "@/lib/zod_schemas/auth";
+import { sendMagicLinkToEmail, sendOtpToEmail } from "@/lib/mailgun";
+import { SignUpData, SignInData, schemaSignUp, schemaSignIn, ResetPasswordOutput, schemaResetPassword } from "@/lib/zod_schemas/auth";
 import { MAX_OTP_ATTEMPTS, MIN_RESEND_OTP_MS, PATHS } from "../constants";
 import { redirect } from "next/navigation";
 
@@ -144,17 +144,18 @@ export async function signInUser(
   if (user) {
     const passwordMatch = await bcrypt.compare(password, user.password);
 
-  if (!passwordMatch) return { error: "Thông tin đăng nhập không chính xác!" };
-  const lastToken = await prisma.verificationToken.findFirst({
-    where: {
-      user: { email },
-      type: "REGISTRATION",
-      used: false,
-      expiresAt: { gte: new Date() },
-    },
-    orderBy: { createdAt: "desc" },
-    select: { id: true },
-  });
+    if (!passwordMatch) return { error: "Thông tin đăng nhập không chính xác!" };
+
+    const lastToken = await prisma.verificationToken.findFirst({
+      where: {
+        user: { email },
+        type: "REGISTRATION",
+        used: false,
+        expiresAt: { gte: new Date() },
+      },
+      orderBy: { createdAt: "desc" },
+      select: { id: true },
+    });
 
     if (lastToken) {
       redirect(`${PATHS.otp}/${lastToken.id}`);
@@ -344,4 +345,128 @@ export async function resendOtpToEmail(referenceId: string, verificationType: Ve
     ]);
     throw sendErr;
   }
+}
+
+
+import { schemaForgotPassword, ForgotPasswordData } from "@/lib/zod_schemas/auth";
+// TODO: this should need help from a rate limiter to prevent abuse, but for now just return success to avoid revealing email validity.
+export async function requestPasswordReset(data: ForgotPasswordData) {
+  const safeParsedData = schemaForgotPassword.safeParse(data);
+  if (!safeParsedData.success) {
+    throw new Error("Email không hợp lệ.");
+  }
+
+  const { email } = safeParsedData.data;
+
+  const user = await prisma.user.findUnique({
+    where: { email },
+    select: { id: true, name: true, status: true },
+  });
+
+  if (!user || user.status !== "ACTIVE") {
+    return { success: true }; // Return success even if user doesn't exist or is not active
+  }
+
+  const lastToken = await prisma.verificationToken.findFirst({
+    where: {
+      userId: user.id,
+      type: "PASSWORD_RESET",
+      used: false,
+      expiresAt: { gte: new Date() },
+    },
+    orderBy: { createdAt: "desc" },
+  });
+
+  if (lastToken && Date.now() - lastToken.createdAt.getTime() < MIN_RESEND_OTP_MS) {
+    return { success: true }; // Return success even if the last token was sent too recently
+  }
+
+  const { rawToken, hashedToken } = generateMagicLinkToken();
+  const newTokenId = await prisma.$transaction(async (tx) => {
+    if (lastToken) {
+      await tx.verificationToken.update({
+        where: { id: lastToken.id },
+        data: { used: true },
+      });
+    }
+
+    return await tx.verificationToken.create({
+      data: {
+        userId: user.id,
+        code: hashedToken,
+        type: "PASSWORD_RESET",
+        expiresAt: addMinutes(new Date(), 5),
+      },
+    });
+  })
+
+  if (!newTokenId) {
+    return { success: false, message: "Đã có lỗi xảy ra. Vui lòng thử lại." };
+  }
+
+  const magicLink = `${process.env.NEXT_PUBLIC_APP_URL}/${PATHS.resetPassword}?token=${rawToken}`;
+  try {
+    await sendMagicLinkToEmail({
+      email: email,
+      name: user.name,
+      magicLink
+    });
+
+    return { success: true };
+
+  } catch (sendMailError) {
+    return { success: false, message: "Đã có lỗi xảy ra. Vui lòng thử lại." };
+  }
+}
+
+
+
+import crypto from "crypto";
+
+function generateMagicLinkToken() {
+  const rawToken = crypto.randomBytes(32).toString("hex");
+  const hashedToken = crypto.createHash("sha256").update(rawToken).digest("hex");
+  return { rawToken, hashedToken };
+}
+
+export async function handlePasswordReset(rawToken: string, formData: ResetPasswordOutput) {
+  const safeParsedData = schemaResetPassword.safeParse(formData);
+  if (!safeParsedData.success) {
+    throw new Error("Dữ liệu không hợp lệ.");
+  }
+
+  const { newPassword } = safeParsedData.data;
+  const hashedToken = crypto.createHash("sha256").update(rawToken).digest("hex");
+
+  const resetTokenRecord = await prisma.verificationToken.findFirst({
+    where: {
+      code: hashedToken,
+      type: "PASSWORD_RESET",
+      used: false,
+      expiresAt: { gte: new Date() },
+    },
+    select: { id: true, userId: true },
+  });
+
+  if (!resetTokenRecord) {
+    throw new Error("Mã đặt lại mật khẩu không hợp lệ hoặc đã hết hạn.");
+  }
+
+  const saltRounds = 10;
+
+  const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
+
+  await prisma.$transaction(async (tx) => {
+    await tx.user.update({
+      where: { id: resetTokenRecord.userId },
+      data: { password: hashedPassword },
+    });
+
+    await tx.verificationToken.update({
+      where: { id: resetTokenRecord.id },
+      data: { used: true },
+    });
+  });
+
+  return { success: true };
 }

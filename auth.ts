@@ -33,14 +33,7 @@ export const nextAuthConfig = {
         });
         if (!user) return null;
         
-
-        // FIXME: Remove this on production
-        const isDevelopment = process.env.NODE_ENV === "development";
-        let passwordMatch = false;
-        if (isDevelopment) passwordMatch = (password === user.password);
-        else passwordMatch = await bcrypt.compare(
-
-        // const passwordMatch = await bcrypt.compare(
+        const passwordMatch = await bcrypt.compare(
           password,
           user.password as string
         );

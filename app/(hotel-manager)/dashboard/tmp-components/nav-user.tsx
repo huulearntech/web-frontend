@@ -13,7 +13,7 @@ import {
 
 import {
   DropdownMenu,
-  DropdownMenuContent,
+  // DropdownMenuContent,
   DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
@@ -42,6 +42,7 @@ import SignOutButton from "@/components/button-signout"
 import { user_getInfoById } from "@/lib/actions/user-account"
 import Link from "next/link"
 import { PATHS } from "@/lib/constants"
+import NavUserDropdownMenuContent from "./nav-user-dropdown-menu-content"
 
 export async function NavUser() {
   const session = await auth();
@@ -73,9 +74,8 @@ export async function NavUser() {
                 <EllipsisVerticalIcon className="ml-auto size-4" />
               </SidebarMenuButton>
             </DropdownMenuTrigger>
-            <DropdownMenuContent
+            <NavUserDropdownMenuContent
               className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
-              side="right"
               align="end"
               sideOffset={4}
             >
@@ -109,7 +109,7 @@ export async function NavUser() {
                   Đăng xuất
                 </DropdownMenuItem>
               </AlertDialogTrigger>
-            </DropdownMenuContent>
+            </NavUserDropdownMenuContent>
           </DropdownMenu>
         </SidebarMenuItem>
       </SidebarMenu>

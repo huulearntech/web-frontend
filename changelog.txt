@@ -1,3 +1,1 @@
-1. drop column icon url in facility.
-2. make new table "PopularFacility" with column icon_url
-3. in the room type form -> facility: 3 options: create new, get popular, get hotel has.
+change otp to magic link
