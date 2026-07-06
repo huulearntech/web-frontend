@@ -16,7 +16,7 @@
 -- @param {Int}      $18:minRating
 -- @param {Int}      $19:maxRating
 
--- TODO: should join with inventory instead of rooms.
+-- Optimization: join with inventory instead of room and booking.
 WITH base AS (
   SELECT
     h.id,
@@ -40,33 +40,26 @@ WITH base AS (
   JOIN wards     w ON w.id = h.ward_id
   JOIN provinces p ON p.id = w.province_id
   JOIN LATERAL (
-    -- changed: group and HAVING so no rows are returned when no room types are available
     SELECT
       MIN(rt_count.rt_price) AS min_price,
       MAX(rt_count.rt_price) AS max_price
     FROM (
-      SELECT rt.id AS rt_id, rt.price AS rt_price, COUNT(r.id) AS total_rooms
+      SELECT
+        rt.id AS rt_id,
+        rt.price AS rt_price,
+        COUNT(DISTINCT rti.date) AS covered_dates,
+        MIN(COALESCE(rti.total_rooms, 0) - COALESCE(rti.booked_rooms, 0)) AS min_available_rooms
       FROM room_types rt
-      JOIN rooms r ON r.type_id = rt.id
+      JOIN room_type_inventories rti ON rti.room_type_id = rt.id
       WHERE rt.hotel_id = h.id
         AND rt.price BETWEEN $12 AND $13
+        AND rti.date >= $2::date
+        AND rti.date < $3::date
         AND rt.adult_capacity * $5 >= $4
         AND (rt.adult_capacity + rt.children_capacity) * $5 >= $4 + $16
       GROUP BY rt.id, rt.price
-      HAVING
-        -- ensure enough unbooked rooms for this type
-        (COUNT(r.id) - COALESCE(
-          (
-            SELECT COUNT(DISTINCT r2.id)
-            FROM rooms r2
-            LEFT JOIN "_BookingToRoom" b2r ON b2r."B" = r2.id
-            LEFT JOIN bookings b2 ON b2.id = b2r."A"
-            WHERE b2.check_in_date < $3
-              AND b2.check_out_date > $2
-              AND b2.status IN ('PAID','PENDING_TO_PAY', 'CHECKED_IN')
-              AND r2.type_id = rt.id
-          ), 0
-        )) >= $5
+      HAVING COUNT(DISTINCT rti.date) = ($3::date - $2::date)
+        AND MIN(COALESCE(rti.total_rooms, 0) - COALESCE(rti.booked_rooms, 0)) >= $5
     ) rt_count
   ) AS available ON true
   JOIN LATERAL (

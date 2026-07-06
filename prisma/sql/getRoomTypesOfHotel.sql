@@ -16,23 +16,16 @@ SELECT
   COALESCE(fac_list.common_facilities, '[]'::jsonb) AS "common_facilities"
 FROM room_types rt
 
--- total rooms for this room type (count actual rooms)
+-- compute availability from room_type_inventories for the requested date range
 JOIN LATERAL (
-  SELECT COUNT(r.id) AS total_rooms
-  FROM rooms r
-  WHERE r.type_id = rt.id
-) tr ON true
-
--- compute how many rooms are already booked for this room type in the given date range
-JOIN LATERAL (
-  SELECT COALESCE(SUM(b.num_rooms), 0) AS booked_rooms
-  FROM bookings b
-  WHERE b.room_type_id = rt.id
-    -- overlap check for [b.check_in_date, b.check_out_date) and [$2, $3)
-    AND b.check_in_date < $3
-    AND b.check_out_date > $2
-    AND b.status IN ('PAID', 'PENDING_TO_PAY', 'CHECKED_IN')
-) b ON true
+  SELECT
+    COUNT(DISTINCT rti.date) AS covered_dates,
+    MIN(COALESCE(rti.total_rooms, 0) - COALESCE(rti.booked_rooms, 0)) AS min_available_rooms
+  FROM room_type_inventories rti
+  WHERE rti.room_type_id = rt.id
+    AND rti.date >= $2::date
+    AND rti.date < $3::date
+) inv ON true
 
 -- aggregate common_facilities for this room type as a JSONB array of {id, name, iconUrl}
 JOIN LATERAL (
@@ -43,7 +36,8 @@ JOIN LATERAL (
 ) fac_list ON true
 
 WHERE rt.hotel_id = $1
-  AND tr.total_rooms - b.booked_rooms >= $6
+  AND inv.covered_dates = ($3::date - $2::date)
+  AND inv.min_available_rooms >= $6
   AND (
     rt.adult_capacity * $6 >= $4 -- can't treat adult as child
     AND (rt.adult_capacity + rt.children_capacity) * $6 >= $4 + $5 -- but can treat child as adult
