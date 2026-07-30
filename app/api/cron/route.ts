@@ -4,7 +4,7 @@ import prisma from "@/lib/prisma";
 
 const MAX_ROOM_TYPE_LOOPS = 10_000; // Limit to prevent excessive processing
 export async function GET(req: NextRequest) {
-  const authHeader = req.headers.get("Authorization");
+  const authHeader = req.headers.get("authorization");
   const cronSecret = process.env.CRON_SECRET;
   if (!cronSecret || authHeader !== `Bearer ${cronSecret}`) {
     return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
